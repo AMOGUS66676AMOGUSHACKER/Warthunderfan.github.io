@@ -1181,11 +1181,11 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 
 <script>
 /* ════════ KEY MANAGEMENT ════════ */
-let OR_KEY      = '';
-let GEMINI_KEY  = '';
-let CLAUDE_KEY  = '';
+let OR_KEY      = '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';
+let GEMINI_KEY  = 'AIzaSyBtR3m3r9zSLyYBRwEmkMCx01ahihIrwSg';
+let CLAUDE_KEY  = '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';
 let AI_PROVIDER = 'openrouter';
-let API_KEY     = '';
+let API_KEY     = OR_KEY;
 
 function setProvTab(prov){
   AI_PROVIDER=prov;
@@ -1239,14 +1239,13 @@ function updateKeyUI(){
   const disc=document.getElementById('aidisc');
   if(disc) disc.textContent=OR_KEY?'⚡ OpenRouter: Llama 3.3, Mistral, Gemma — безкоштовно, без ліміту орг.':GEMINI_KEY?'🔷 Gemini Flash — 1 500 запитів/день.':'Натисни "ШІ Ключ" → openrouter.ai/keys → безкоштовно.';
 }
-OR_KEY      = localStorage.getItem('wt_or_key')    ||'';
-GEMINI_KEY  = localStorage.getItem('wt_gemini_key')||'';
-CLAUDE_KEY  = localStorage.getItem('wt_claude_key')||'';
-AI_PROVIDER = localStorage.getItem('wt_ai_provider')||'openrouter';
+OR_KEY      = localStorage.getItem('wt_or_key')     || OR_KEY;
+GEMINI_KEY  = localStorage.getItem('wt_gemini_key') || GEMINI_KEY;
+CLAUDE_KEY  = localStorage.getItem('wt_claude_key') || CLAUDE_KEY;
+AI_PROVIDER = localStorage.getItem('wt_ai_provider')|| AI_PROVIDER;
 API_KEY     = OR_KEY||GEMINI_KEY||CLAUDE_KEY;
-const _hasAnyKey=!!(OR_KEY||GEMINI_KEY);
-if(!_hasAnyKey&&!sessionStorage.getItem('wt_v')){ sessionStorage.setItem('wt_v','1'); setTimeout(()=>document.getElementById('keyModal').classList.remove('hidden'),600); }
-else document.getElementById('keyModal').classList.add('hidden');
+// Завжди є ключі — не показуємо модал
+document.getElementById('keyModal')?.classList.add('hidden');
 updateKeyUI();
 
 /* ════════ NAV ════════ */
