@@ -993,7 +993,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
       <div class="cmp-col-label la">◆ Техніка A (Бурштин)</div>
       <div class="cmp-inp-wrap">
         <input class="cmp-sinp a" id="searchA" placeholder="Введи назву: Tiger II, T-80U, F-15C..." autocomplete="off"
-          oninput="onSearchInput('A',this.value)" onfocus="openDrop('A')" onblur="setTimeout(()=>closeDrop('A'),180)"/>
+          oninput="onSearchInput('A',this.value)" onfocus="openDrop('A')" onblur="setTimeout(()=>closeDrop('A'),320)"/>
         <div class="cmp-drop" id="dropA"></div>
       </div>
     </div>
@@ -1002,7 +1002,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
       <div class="cmp-col-label lb">◆ Техніка B (Блакитний)</div>
       <div class="cmp-inp-wrap">
         <input class="cmp-sinp b" id="searchB" placeholder="Введи назву: MiG-29, Leopard 2A6, Su-33..." autocomplete="off"
-          oninput="onSearchInput('B',this.value)" onfocus="openDrop('B')" onblur="setTimeout(()=>closeDrop('B'),180)"/>
+          oninput="onSearchInput('B',this.value)" onfocus="openDrop('B')" onblur="setTimeout(()=>closeDrop('B'),320)"/>
         <div class="cmp-drop" id="dropB"></div>
       </div>
     </div>
@@ -1983,7 +1983,8 @@ function parseWikiVehicle(wt, title){
 }
 
 /* ─── selectVehicle: VSPECS → Wiki(WT→Fandom) → AI → Estimate ─── */
-const _selLoading=new Set();
+// Per-side loading flags with auto-expiry (prevents stale locks)
+const _selActive={A:false, B:false};
 function _estimate(title,vType,fl,nat,br){
   const b=parseFloat(br)||5;
   if(vType==='tanks') return{fl,br,nation:nat,type:'tank',_estimated:true,
@@ -1995,9 +1996,11 @@ function _estimate(title,vType,fl,nat,br){
 }
 
 async function selectVehicle(title, side, btnEl){
-  const lockKey=title+'|'+side;
-  if(_selLoading.has(lockKey)) return;
-  _selLoading.add(lockKey);
+  // Simple per-side lock — never stale, always clearable
+  if(_selActive[side]) return;
+  _selActive[side]=true;
+  // Auto-release after 15s max to prevent permanent lock
+  const _lockTimer=setTimeout(()=>{ _selActive[side]=false; }, 15000);
 
   const entry =VI.find(x=>x[0]===title);
   const fl    =NAT_FLAGS_IDX[entry?.[1]]||'🌐';
@@ -2014,14 +2017,15 @@ async function selectVehicle(title, side, btnEl){
   if(local){
     pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,
       _loading:false,_src:'db'}, side);
-    _selLoading.delete(lockKey);
+    clearTimeout(_lockTimer); _selActive[side]=false;
     return;
   }
 
   /* ── 2. Показуємо estimate одразу ── */
   const est=_estimate(title,vType,fl,nat,br);
   pickObj({...est,id:baseId,name:title,_loading:true,_loadMsg:'⟳ wiki…'}, side);
-  _selLoading.delete(lockKey);
+  // Release lock now (async wiki/AI continues in background)
+  clearTimeout(_lockTimer); _selActive[side]=false;
 
   /* ── 3. WT Wiki ── */
   _updateCardMsg(side,'⟳ WT wiki…');
@@ -2197,7 +2201,12 @@ function renderDrop(side, hits, q, loading=false, wikiExtra=[]){
   drop.innerHTML=html;
   drop.classList.add('open');
   drop.querySelectorAll('.cmp-di[data-vtitle]').forEach(btn=>{
-    btn.addEventListener('mousedown', e=>{ e.preventDefault(); selectVehicle(btn.dataset.vtitle, btn.dataset.vside, btn); });
+    // mousedown + e.preventDefault() prevents input blur, click is backup
+    btn.addEventListener('mousedown', e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      selectVehicle(btn.dataset.vtitle, btn.dataset.vside, btn);
+    });
   });
 }
 
@@ -2210,7 +2219,23 @@ function openDrop(side){
     renderDrop(side, sample, '_');
   }
 }
-function closeDrop(side){ document.getElementById('drop'+side).classList.remove('open'); }
+function closeDrop(side){
+  const d=document.getElementById('drop'+side);
+  if(d) d.classList.remove('open');
+}
+// Event delegation on drop containers — bulletproof selection
+document.addEventListener('DOMContentLoaded',()=>{
+  ['A','B'].forEach(side=>{
+    const drop=document.getElementById('drop'+side);
+    if(!drop) return;
+    drop.addEventListener('mousedown', e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const btn=e.target.closest('.cmp-di[data-vtitle]');
+      if(btn) selectVehicle(btn.dataset.vtitle, btn.dataset.vside||side, btn);
+    });
+  });
+});
 
 function updateCard(side, v){
   const card=document.getElementById('card'+side);
