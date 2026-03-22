@@ -470,7 +470,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 <body>
 
 <!-- ══════ KEY MODAL ══════ -->
-<div id="keyModal" class="modal-overlay hidden">
+<div id="keyModal" class="modal-overlay">
   <div class="modal-box sz-sm">
     <div class="m-icon">🤖</div>
     <div class="m-title">ШІ РАДНИК — ВИБІР ПРОВАЙДЕРА</div>
@@ -479,48 +479,45 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
     <div style="display:flex;gap:.4rem;margin-bottom:1.2rem">
       <button id="provTabOR" onclick="setProvTab('openrouter')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:var(--gd);border:1px solid var(--g);color:var(--g);cursor:pointer;transition:all var(--T)">⚡ OPENROUTER</button>
       <button id="provTabGemini" onclick="setProvTab('gemini')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:transparent;border:1px solid rgba(10,184,212,.2);color:var(--dim);cursor:pointer;transition:all var(--T)">🔷 GEMINI</button>
-      <button id="provTabClaude" onclick="setProvTab('claude')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:transparent;border:1px solid rgba(255,100,50,.15);color:rgba(255,100,50,.4);cursor:not-allowed;transition:all var(--T)" title="Недоступно при відкритті з локального файлу">🟠 CLAUDE ⚠</button>
+      <button id="provTabClaude" onclick="setProvTab('claude')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:transparent;border:1px solid rgba(255,160,50,.2);color:var(--dim);cursor:pointer;transition:all var(--T)">🟠 CLAUDE</button>
     </div>
 
     <!-- OpenRouter panel -->
     <div id="provPanelOR">
-      <div class="m-badge" style="background:rgba(0,232,122,.08);border-color:rgba(0,232,122,.3);color:var(--g)">⚡ OPENROUTER — БЕЗКОШТОВНО · Llama 3 · Mistral · Gemma</div>
+      <div class="m-badge" style="background:rgba(0,232,122,.08);border-color:rgba(0,232,122,.3);color:var(--g)">⚡ OPENROUTER — БЕЗКОШТОВНО · 8 моделей · Llama · Mistral · Gemma · DeepSeek</div>
       <div class="m-sub" style="margin-top:.6rem">
-        OpenRouter — агрегатор ШІ з безкоштовними моделями. Реєстрація без організації та картки.<br><br>
-        Зареєструйся на <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — 2 хвилини. Ключ починається з <code style="color:var(--g)">sk-or-v1-</code>
+        Реєстрація без картки на <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — 2 хвилини. Ключ: <code style="color:var(--g)">sk-or-v1-</code>
       </div>
       <label class="m-label" for="orKeyInput">OpenRouter API Ключ</label>
       <input type="password" id="orKeyInput" class="m-inp" placeholder="sk-or-v1-..."/>
-      <div class="m-note">Безкоштовні моделі: Llama 3.3 70B, Mistral 7B, Gemma 2 9B та ін. Ключ лише у localStorage браузера.</div>
+      <div class="m-note">Моделі: Llama 3.3 70B, Mistral Small, Gemma 3 27B, Qwen3-8B, DeepSeek R1. Ключ лише у localStorage.</div>
     </div>
 
     <!-- GEMINI panel -->
     <div id="provPanelGemini" style="display:none">
-      <div class="m-badge" style="background:rgba(10,184,212,.08);border-color:rgba(10,184,212,.3);color:var(--c)">🔷 GEMINI — 1 500 запитів/день · Flash</div>
+      <div class="m-badge" style="background:rgba(10,184,212,.08);border-color:rgba(10,184,212,.3);color:var(--c)">🔷 GEMINI — 1 500 запитів/день · Flash 2.0</div>
       <div class="m-sub" style="margin-top:.6rem">
-        Google Gemini Flash. Іноді дає 429 (throttling) — тоді просто зачекай хвилину.<br><br>
-        Отримай ключ на <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> — 1 хвилина. Ключ починається з <code style="color:var(--c)">AIza</code>
+        Ключ на <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> — 1 хвилина. Ключ: <code style="color:var(--c)">AIza</code>
       </div>
       <label class="m-label" for="geminiKeyInput">Gemini API Ключ</label>
       <input type="password" id="geminiKeyInput" class="m-inp" placeholder="AIzaSy..."/>
-      <div class="m-note">Ключ лише у localStorage браузера — нікуди не передається.</div>
+      <div class="m-note">Ключ лише у localStorage — нікуди не передається.</div>
     </div>
 
     <!-- CLAUDE panel -->
     <div id="provPanelClaude" style="display:none">
-      <div class="m-badge" style="background:rgba(255,80,50,.08);border-color:rgba(255,80,50,.3);color:#ff6432">⚠ CLAUDE — Недоступний у режимі локального файлу</div>
+      <div class="m-badge" style="background:rgba(255,160,50,.08);border-color:rgba(255,160,50,.3);color:#ffa032">🟠 CLAUDE — Anthropic · Haiku 4.5 · через OpenRouter</div>
       <div class="m-sub" style="margin-top:.6rem">
-        Браузер блокує запити до api.anthropic.com з <code>file://</code> через CORS-політику. Це обмеження браузера — обійти неможливо.<br><br>
-        <strong style="color:var(--a)">Рішення:</strong> Використовуй ⚡ OpenRouter або 🔷 Gemini — вони підтримують cross-origin запити.
+        Claude надсилається через OpenRouter (потрібен OR ключ). Ключ Claude зберігається для ідентифікації.<br><br>
+        Ключ на <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Починається з <code style="color:#ffa032">sk-ant-</code>
       </div>
       <label class="m-label" for="claudeKeyInput">Anthropic API Ключ</label>
       <input type="password" id="claudeKeyInput" class="m-inp" placeholder="sk-ant-api03-..."/>
-      <div class="m-note">Claude Sonnet 4.5. Ключ лише у localStorage браузера — нікуди не передається.</div>
+      <div class="m-note">⚠ Для роботи Claude також потрібен OR ключ (вкладка OpenRouter). Ключ лише у localStorage.</div>
     </div>
 
     <div class="m-btns">
       <button class="m-btn-skip" onclick="skipKey()">Пропустити</button>
-      <button class="m-btn-skip" onclick="testKey()" style="border-color:rgba(10,184,212,.3);color:var(--c)" id="kmTestBtn">⬡ Тест</button>
       <button class="m-btn-save" onclick="saveKey()">Зберегти та активувати →</button>
     </div>
     <div class="m-status" id="kmStatus">✓ Збережено</div>
@@ -916,95 +913,57 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 </footer>
 
 <script>
-/* ════════ DUAL PROVIDER KEY MANAGEMENT ════════ */
-let API_KEY = ''; // legacy compat
-let OR_KEY = '';
-let GEMINI_KEY = '';
-let CLAUDE_KEY = '';
+/* ════════ KEY MANAGEMENT ════════ */
+let OR_KEY      = '';
+let GEMINI_KEY  = '';
+let CLAUDE_KEY  = '';
 let AI_PROVIDER = 'openrouter';
+let API_KEY     = '';
 
 function setProvTab(prov){
   AI_PROVIDER=prov;
   document.getElementById('provPanelOR').style.display=prov==='openrouter'?'':'none';
   document.getElementById('provPanelGemini').style.display=prov==='gemini'?'':'none';
   document.getElementById('provPanelClaude').style.display=prov==='claude'?'':'none';
-  const oBtn=document.getElementById('provTabOR'), mBtn=document.getElementById('provTabGemini'), cBtn=document.getElementById('provTabClaude');
-  oBtn.style.background='transparent';oBtn.style.borderColor='rgba(0,232,122,.2)';oBtn.style.color='var(--dim)';
-  mBtn.style.background='transparent';mBtn.style.borderColor='rgba(10,184,212,.2)';mBtn.style.color='var(--dim)';
-  cBtn.style.background='transparent';cBtn.style.borderColor='rgba(255,160,50,.2)';cBtn.style.color='var(--dim)';
-  if(prov==='openrouter'){ oBtn.style.background='var(--gd)';oBtn.style.borderColor='var(--g)';oBtn.style.color='var(--g)'; }
-  else if(prov==='gemini'){ mBtn.style.background='var(--cd)';mBtn.style.borderColor='var(--c)';mBtn.style.color='var(--c)'; }
-  else { cBtn.style.background='rgba(255,160,50,.1)';cBtn.style.borderColor='rgba(255,160,50,.8)';cBtn.style.color='#ffa032'; }
+  const tabs={openrouter:'provTabOR',gemini:'provTabGemini',claude:'provTabClaude'};
+  const colors={openrouter:['var(--gd)','var(--g)','var(--g)'],gemini:['var(--cd)','var(--c)','var(--c)'],claude:['rgba(255,160,50,.1)','rgba(255,160,50,.8)','#ffa032']};
+  Object.keys(tabs).forEach(p=>{
+    const btn=document.getElementById(tabs[p]);
+    if(!btn) return;
+    if(p===prov){ btn.style.background=colors[p][0]; btn.style.borderColor=colors[p][1]; btn.style.color=colors[p][2]; }
+    else { btn.style.background='transparent'; btn.style.borderColor='rgba(255,255,255,.1)'; btn.style.color='var(--dim)'; }
+  });
 }
 
 function openKeyModal(){
   document.getElementById('orKeyInput').value=OR_KEY||'';
   document.getElementById('geminiKeyInput').value=GEMINI_KEY||'';
-  document.getElementById('claudeKeyInput').value=CLAUDE_KEY||'';
+  if(document.getElementById('claudeKeyInput')) document.getElementById('claudeKeyInput').value=CLAUDE_KEY||'';
   setProvTab(AI_PROVIDER);
   document.getElementById('keyModal').classList.remove('hidden');
-}
-async function testKey(){
-  const ok=document.getElementById('orKeyInput').value.trim();
-  const mk=document.getElementById('geminiKeyInput').value.trim();
-  const prov=AI_PROVIDER;
-  const testKey=prov==='openrouter'?ok:mk;
-  if(!testKey){ alert('Спочатку введи ключ у поле вище'); return; }
-  const btn=document.getElementById('kmTestBtn');
-  const st=document.getElementById('kmStatus');
-  btn.textContent='⟳ Тестую...'; btn.disabled=true;
-  st.style.display='block'; st.style.color='var(--a)'; st.textContent='Підключення до '+( prov==='openrouter'?'OpenRouter':'Gemini')+'...';
-  try{
-    if(prov==='openrouter'){
-      const resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+testKey},
-        signal:AbortSignal.timeout?AbortSignal.timeout(15000):(()=>{const c=new AbortController();setTimeout(()=>c.abort(),15000);return c.signal;})(),
-        body:JSON.stringify({model:'meta-llama/llama-3.1-8b-instruct:free',messages:[{role:'user',content:'Hi'}],max_tokens:5})
-      });
-      if(resp.ok){ st.style.color='var(--g)'; st.textContent='✓ OpenRouter працює! Ключ дійсний.'; }
-      else if(resp.status===401||resp.status===403){ st.style.color='var(--r)'; st.textContent='✗ Невірний ключ ('+resp.status+'). Перевір на openrouter.ai/keys'; }
-      else if(resp.status===429){ st.style.color='var(--a)'; st.textContent='⚠ Rate limit (429). Ключ дійсний, але ліміт вичерпано. Зачекай хвилину.'; }
-      else{ st.style.color='var(--r)'; st.textContent='✗ Помилка HTTP '+resp.status; }
-    } else {
-      const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+testKey,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        signal:AbortSignal.timeout?AbortSignal.timeout(15000):(()=>{const c=new AbortController();setTimeout(()=>c.abort(),15000);return c.signal;})(),
-        body:JSON.stringify({contents:[{role:'user',parts:[{text:'Hi'}]}],generationConfig:{maxOutputTokens:5}})
-      });
-      if(resp.ok){ st.style.color='var(--g)'; st.textContent='✓ Gemini працює! Ключ дійсний.'; }
-      else if(resp.status===400){ const e=await resp.json().catch(()=>({})); st.style.color='var(--r)'; st.textContent='✗ Gemini 400: '+(e?.error?.message||'Невірний запит'); }
-      else if(resp.status===401||resp.status===403){ const e=await resp.json().catch(()=>({})); st.style.color='var(--r)'; st.textContent='✗ Невірний Gemini ключ: '+(e?.error?.message||resp.status); }
-      else if(resp.status===429){ st.style.color='var(--a)'; st.textContent='⚠ Gemini 429: ліміт запитів. Ключ дійсний, зачекай хвилину.'; }
-      else{ st.style.color='var(--r)'; st.textContent='✗ Gemini помилка HTTP '+resp.status; }
-    }
-  }catch(e){
-    if(e.name==='AbortError'){ st.style.color='var(--r)'; st.textContent='✗ Таймаут: сервер не відповідає. Перевір інтернет.'; }
-    else{ st.style.color='var(--r)'; st.textContent='✗ Мережева помилка: '+e.message; }
-  }
-  btn.textContent='⬡ Тест'; btn.disabled=false;
 }
 function skipKey(){ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); }
 function saveKey(){
   const ok=document.getElementById('orKeyInput').value.trim();
   const mk=document.getElementById('geminiKeyInput').value.trim();
-  const ck=document.getElementById('claudeKeyInput').value.trim();
-  if(ck){ CLAUDE_KEY=ck; localStorage.setItem('wt_claude_key',ck); }
-  if(ok && !ok.startsWith('sk-or-v1-')){ alert('OpenRouter ключ має починатись з "sk-or-v1-"'); return; }
+  const ck=document.getElementById('claudeKeyInput')?document.getElementById('claudeKeyInput').value.trim():'';
+  if(ok && !ok.startsWith('sk-or-')){ alert('OpenRouter ключ має починатись з "sk-or-v1-"'); return; }
   if(mk && !mk.startsWith('AIza')){ alert('Gemini ключ має починатись з "AIza"'); return; }
-  OR_KEY=ok; GEMINI_KEY=mk; API_KEY=mk||ok;
+  OR_KEY=ok; GEMINI_KEY=mk; CLAUDE_KEY=ck; API_KEY=ok||mk||ck;
   if(ok) localStorage.setItem('wt_or_key',ok); else localStorage.removeItem('wt_or_key');
   if(mk) localStorage.setItem('wt_gemini_key',mk); else localStorage.removeItem('wt_gemini_key');
+  if(ck) localStorage.setItem('wt_claude_key',ck); else localStorage.removeItem('wt_claude_key');
   localStorage.setItem('wt_ai_provider',AI_PROVIDER);
   const st=document.getElementById('kmStatus'); st.style.display='block';
-  st.textContent='✓ Збережено — '+(AI_PROVIDER==='openrouter'?'⚡ OpenRouter активний':'🔷 Gemini активний');
+  st.textContent='✓ Збережено!';
   setTimeout(()=>{ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); },900);
 }
 function updateKeyUI(){
   const hasKey=!!(OR_KEY||GEMINI_KEY);
   document.getElementById('nKeyBtn').classList.toggle('keyed',hasKey);
   document.getElementById('keyDot').style.background=hasKey?'var(--g)':'';
-  document.getElementById('keyBtnTxt').textContent=OR_KEY?(AI_PROVIDER==='openrouter'?'⚡ OR ✓':'⚡+🔷'):GEMINI_KEY?'🔷 Gemini ✓':'ШІ Ключ';
+  const _hasOr=!!OR_KEY,_hasG=!!GEMINI_KEY,_hasC=!!CLAUDE_KEY;
+  document.getElementById('keyBtnTxt').textContent=_hasOr?'⚡ OR ✓':_hasG?'🔷 Gemini ✓':_hasC?'🟠 Claude ✓':'ШІ Ключ';
   document.getElementById('aiStatusDot').classList.toggle('off',!hasKey);
   document.getElementById('aiStatusTxt').textContent=hasKey?(AI_PROVIDER==='openrouter'?'⚡ OpenRouter · Готовий':'🔷 Gemini · Готовий'):'Потрібен ключ';
   document.getElementById('noKeyBanner').style.display=hasKey?'none':'block';
@@ -1013,13 +972,14 @@ function updateKeyUI(){
   const disc=document.getElementById('aidisc');
   if(disc) disc.textContent=OR_KEY?'⚡ OpenRouter: Llama 3.3, Mistral, Gemma — безкоштовно, без ліміту орг.':GEMINI_KEY?'🔷 Gemini Flash — 1 500 запитів/день.':'Натисни "ШІ Ключ" → openrouter.ai/keys → безкоштовно.';
 }
-OR_KEY=localStorage.getItem('wt_or_key')||'';
-GEMINI_KEY=localStorage.getItem('wt_gemini_key')||'';
-CLAUDE_KEY=localStorage.getItem('wt_claude_key')||'';
-AI_PROVIDER=localStorage.getItem('wt_ai_provider')||'openrouter';
-API_KEY=GEMINI_KEY||OR_KEY;
+OR_KEY      = localStorage.getItem('wt_or_key')    ||'';
+GEMINI_KEY  = localStorage.getItem('wt_gemini_key')||'';
+CLAUDE_KEY  = localStorage.getItem('wt_claude_key')||'';
+AI_PROVIDER = localStorage.getItem('wt_ai_provider')||'openrouter';
+API_KEY     = OR_KEY||GEMINI_KEY||CLAUDE_KEY;
 const _hasAnyKey=!!(OR_KEY||GEMINI_KEY);
 if(!_hasAnyKey&&!sessionStorage.getItem('wt_v')){ sessionStorage.setItem('wt_v','1'); setTimeout(()=>document.getElementById('keyModal').classList.remove('hidden'),600); }
+else document.getElementById('keyModal').classList.add('hidden');
 updateKeyUI();
 
 /* ════════ NAV ════════ */
@@ -1205,7 +1165,18 @@ const VI=[
 ['F-16A Netz','israel','a'],['F-16C Barak II','israel','a'],['F-16D Barak II','israel','a'],
 ];
 
-/* ── BATTLE RATING MAP — всі техніки у VI ── */
+function searchVI(q, typeF){
+  const ql=q.toLowerCase();
+  if(!ql||ql.length<1) return [];
+  return VI.filter(v=>{
+    if(typeF==='t'&&v[2]!=='t') return false;
+    if(typeF==='a'&&v[2]!=='a') return false;
+    const n=v[0].toLowerCase();
+    return n.includes(ql)||n.replace(/[.\-()/]/g,' ').includes(ql);
+  }).slice(0,12);
+}
+
+
 const BR_MAP={
 /* Germany tanks */'Pz.II C':1.0,'Pz.II F':1.3,'Pz.III J1':2.7,'Pz.III L':3.0,'Pz.III M':3.0,'Pz.IV C':2.0,'Pz.IV F2':3.3,'Pz.IV G':3.7,'Pz.IV H':4.0,'Pz.IV J':4.0,
 'StuG III A':2.7,'StuG III G':4.0,'Jagdpanzer IV':4.7,'Jagdpanther':6.0,'Panther D':5.3,'Panther A':5.7,'Panther G':5.7,
@@ -1347,6 +1318,7 @@ function searchVI(q, typeF){
    Формат танків: {scores:{armor,firepower,speed,agility,reload,crew}, specs:{frontal,gun,pen,speed,reload,weight}}
    Формат літаків: {scores:{speed,climb,turn,firepower,altitude,durability}, specs:{topSpeed,climbRate,turnTime,ceiling,armament,engine}}
 ══════════════════════════════════════════════════════ */
+
 const VSPECS={
 /* ══ KEY AIRCRAFT ══ */
 'Su-25':{scores:{speed:48,climb:68,turn:55,firepower:85,altitude:45,durability:82},specs:{topSpeed:'975 км/г',climbRate:'68 м/с',turnTime:'26с',ceiling:'7000м',armament:'1×30мм GSh-6-30, Х-23/25, Р-60М',engine:'2×Р-195 (44.9кН)'}},
@@ -1449,180 +1421,109 @@ const VSPECS={
 'Merkava Mk.3 Baz':{scores:{armor:88,firepower:88,speed:55,agility:52,reload:80,crew:75},specs:{frontal:'≥700 мм RHA-eq.',gun:'120мм MG253',pen:'570 мм M322',speed:'60 км/г',reload:'7.5с',weight:'62т'}},
 };
 
-/* ── Multi-source wiki fetch ── */
-const WT_API='https://wiki.warthunder.com/api.php';
-const WT_FANDOM='https://warthunder.fandom.com/api.php';
-const _pageCache={};
+/* ════════════════════════════════════════════════════
+   WIKI — офіційна WT wiki → Fandom як fallback
+   Кожен проксі пробується по черзі (не паралельно)
+════════════════════════════════════════════════════ */
+const WT_WIKI_URL   = 'https://wiki.warthunder.com/api.php';
+const WT_FANDOM_URL = 'https://warthunder.fandom.com/api.php';
+const _wikiCache    = {};
 
-function _parseWikiResponse(raw){
-  let data;
-  try{ const o=JSON.parse(raw); data=typeof o.contents==='string'?JSON.parse(o.contents):o; }
-  catch{ try{ data=JSON.parse(raw); }catch{ return null; } }
-  const pages=data?.query?.pages||{};
-  const page=Object.values(pages)[0];
-  if(!page||page.missing!==undefined) return null;
-  return page?.revisions?.[0]?.slots?.main?.['*']||page?.revisions?.[0]?.['*']||null;
+function safeAbort(ms){
+  try{ return AbortSignal.timeout(ms); }
+  catch(e){ const c=new AbortController(); setTimeout(()=>c.abort(),ms); return c.signal; }
 }
 
-// Try to fetch from official WT wiki with CORS proxies
-async function _fetchFromApi(apiBase, title){
-  const enc=encodeURIComponent(title.replace(/ /g,'_'));
-  const apiQ=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=*&origin=*`;
-  const proxies=[
-    ()=>fetch(`${apiBase}?${apiQ}`,{signal:safeAbort(7000)}),
-    ()=>fetch(`https://corsproxy.io/?${encodeURIComponent(apiBase+'?'+apiQ)}`,{signal:safeAbort(9000)}),
-    ()=>fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiBase+'?'+apiQ)}`,{signal:safeAbort(9000)}),
-    ()=>fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiBase+'?'+apiQ)}`,{signal:safeAbort(9000)}),
-    ()=>fetch(`https://thingproxy.freeboard.io/fetch/${apiBase}?${apiQ}`,{signal:safeAbort(9000)}),
+/* Парсить JSON відповідь від wiki API (враховує allorigins wrapper) */
+function _parseWikiJson(raw){
+  let d;
+  try{ d=JSON.parse(raw); }catch{ return null; }
+  if(typeof d?.contents==='string') try{ d=JSON.parse(d.contents); }catch{ return null; }
+  const page=Object.values(d?.query?.pages||{})[0];
+  if(!page || page.missing!==undefined) return null;
+  return page?.revisions?.[0]?.slots?.main?.['*'] || page?.revisions?.[0]?.['*'] || null;
+}
+
+/* Один запит через проксі-список (послідовно) */
+async function _wikiFetch(apiBase, title){
+  const enc = encodeURIComponent(title.replace(/ /g,'_'));
+  const q   = `action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=*&origin=*`;
+  const src = `${apiBase}?${q}`;
+  const proxies = [
+    src,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(src)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src)}`,
+    `https://corsproxy.io/?${encodeURIComponent(src)}`,
   ];
-  for(const attempt of proxies){
+  for(const url of proxies){
     try{
-      const r=await attempt();
+      const r = await fetch(url, {signal: safeAbort(8000)});
       if(!r.ok) continue;
-      const raw=await r.text();
-      const wt=_parseWikiResponse(raw);
+      const wt = _parseWikiJson(await r.text());
       if(wt) return wt;
     }catch(e){}
   }
   return null;
 }
 
-// Fetch plain HTML from Fandom and extract infobox data
-async function _fetchFandomHtml(title){
-  const slug=title.replace(/ /g,'_');
-  const url=`https://warthunder.fandom.com/wiki/${encodeURIComponent(slug)}`;
-  const proxies=[
-    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-  ];
-  for(const pUrl of proxies){
-    try{
-      const r=await fetch(pUrl,{signal:safeAbort(9000)});
-      if(!r.ok) continue;
-      const raw=await r.text();
-      const html=raw.includes('"contents"')
-        ?JSON.parse(raw).contents||raw : raw;
-      if(html.includes('warthunder.fandom.com')||html.includes('article')) return html;
-    }catch(e){}
-  }
-  return null;
-}
-
-// Parse Fandom HTML for vehicle stats
-function _parseFandomHtml(html, title){
-  if(!html) return null;
-  const get=(label)=>{
-    const re=new RegExp(label+'[^<]*<[^>]+>[^<]*<[^>]+>([^<]{1,80})','i');
-    const m=html.match(re); return m?m[1].trim():null;
-  };
-  // Try to extract from data tables or infoboxes
-  const brMatch=html.match(/Battle[_ ]rating[^:]*:?\s*<[^>]+>\s*([\d.]+)/i)||
-                html.match(/class="[^"]*br[^"]*"[^>]*>\s*([\d.]+)/i);
-  const br=brMatch?brMatch[1]:BR_MAP[title]?String(BR_MAP[title]):null;
-  if(!br) return null; // can't do much without BR
-  return {_fandom:true, br};
-}
-
 async function wikiGetPage(title){
-  if(_pageCache[title]) return _pageCache[title];
-  // 1. Try official WT wiki
-  const wt1=await _fetchFromApi(WT_API, title);
-  if(wt1){ _pageCache[title]=wt1; return wt1; }
-  // 2. Try Fandom wiki API
-  const wt2=await _fetchFromApi(WT_FANDOM, title);
-  if(wt2){ _pageCache[title]=wt2; return wt2; }
-  return null;
+  if(_wikiCache.hasOwnProperty(title)) return _wikiCache[title];
+  const wt = await _wikiFetch(WT_WIKI_URL, title)
+          || await _wikiFetch(WT_FANDOM_URL, title);
+  _wikiCache[title] = wt;   // null means "tried, not found"
+  return wt;
 }
 
 function wikiVal(wt,...keys){
   for(const k of keys){
-    const m=wt.match(new RegExp('\\|\\s*'+k+'\\s*=\\s*([^|\\n{}\\[\\]<>]{1,120})','i'));
-    if(m){const v=m[1].trim().replace(/<!--.*?-->/g,'').replace(/\s+/g,' ').replace(/&nbsp;/g,' ').trim();if(v&&v.length>0&&v.length<100)return v;}
+    const m=wt.match(new RegExp('\\|\\s*'+k+'\\s*=\\s*([^|\\n{}\\[\\]<>]{1,80})','i'));
+    if(m){const v=m[1].trim().replace(/<!--.*?-->/g,'').replace(/\s+/g,' ').trim();if(v&&v.length>0&&v.length<75)return v;}
   }
   return null;
 }
 
-function numOf(s){ if(!s) return null; const n=parseFloat(s.replace(/[^\d.]/g,'')); return isNaN(n)?null:n; }
-
 function parseWikiVehicle(wt,title){
-  const localBR=BR_MAP[title];
-  const isTank=/\|type\s*=\s*(tank|spaa|td|spg|heavy|medium|light|tank_destroyer)|hull_armour|armour_front|tracks_width|hull_front/i.test(wt);
-  const isAir=/\|type\s*=\s*(fighter|bomber|attacker|helicopter|jet)|max_speed_at_altitude|wing_span|climb_rate|turn_time|max_speed_at/i.test(wt);
+  const isTank=/\|type\s*=\s*(tank|spaa|td|spg|heavy|medium|light)|hull_armour|armour_front|tracks_width/i.test(wt);
+  const isAir=/\|type\s*=\s*(fighter|bomber|attacker|helicopter|jet)|max_speed_at_altitude|wing_span|climb_rate|turn_time/i.test(wt);
   const natRaw=(wikiVal(wt,'country','nation')||'').toLowerCase().trim();
   const fl=NAT_FLAGS_IDX[natRaw]||'🌐';
   const natName=NAT_NAMES_IDX[natRaw]||natRaw||'Вікі';
-
-  // BR: prefer local BR_MAP, then wiki
-  let br=localBR?String(localBR):null;
-  if(!br){
-    br=wikiVal(wt,'br_rb_1','br_rb','br_1','battle_rating_rb_1','battle_rating_1')||null;
-    if(!br){ const m=wt.match(/\|\s*br[_\s]?rb[_\s]?(?:1)?\s*=\s*([\d.]+)/i); if(m) br=m[1]; }
-    if(!br){ const m=wt.match(/\|\s*battle_rating\s*=\s*([\d.]+)/i); if(m) br=m[1]; }
-  }
+  let br=BR_MAP[title]?String(BR_MAP[title]):wikiVal(wt,'br_rb_1','br_rb','br_1','battle_rating_rb_1')||null;
+  if(!br){const m=wt.match(/\|\s*br[_\s]rb\s*=\s*([\d.]+)/i);if(m)br=m[1];}
   br=br||'?';
-
   if(isTank){
-    const frontalRaw=wikiVal(wt,'armour_front','hull_front','hull_armour','front_armour')||null;
-    const gun=wikiVal(wt,'gun_name','main_armament','calibre','weapon1','armament')||null;
-    const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1','armor_penetration')||null;
-    const spdRaw=wikiVal(wt,'speed_max','max_speed','speed','top_speed')||null;
-    const relRaw=wikiVal(wt,'reload','reload_time','reload_basic','irl_reload')||null;
-    const wgtRaw=wikiVal(wt,'weight','mass','weight_kg','combat_weight')||null;
-
-    const frontalN=numOf(frontalRaw)||50;
-    const spdN=numOf(spdRaw)||40;
-    const relN=numOf(relRaw)||10;
+    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour')||'?';
+    const gun=wikiVal(wt,'gun_name','main_armament','calibre','weapon1')||'?';
+    const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1')||'—';
+    const spd=wikiVal(wt,'speed_max','max_speed','speed')||'?';
+    const rel=wikiVal(wt,'reload','reload_time','reload_basic')||'?';
+    const wgtRaw=wikiVal(wt,'weight','mass','weight_kg');
     const wgt=wgtRaw?(parseFloat(wgtRaw)>1000?(parseFloat(wgtRaw)/1000).toFixed(1)+'т':wgtRaw+'т'):'?';
-
-    const armorSc=Math.min(99,Math.round(frontalN/3.2));
-    const spdSc=Math.min(99,Math.round(spdN*1.5));
-    const relSc=Math.min(99,Math.max(10,Math.round(100-relN*4)));
-    // derive agility from speed & weight; firepower from pen; crew from wiki or default
-    const penN=numOf(pen)||80;
-    const fireSc=Math.min(99,Math.round(40+penN/8));
-
+    const armorSc=Math.min(99,Math.round((parseFloat(frontal)||50)/3.2));
+    const spdSc=Math.min(99,Math.round((parseFloat(spd)||40)*1.5));
+    const relSc=Math.min(99,Math.round(100-(parseFloat(rel)||10)*4));
     return{fl,br,nation:natName,type:'tank',_wiki:true,
-      scores:{armor:armorSc||50,firepower:fireSc||55,speed:spdSc||50,agility:Math.min(99,Math.round(spdSc*0.8))||45,reload:relSc||50,crew:60},
-      specs:{
-        frontal:frontalRaw?(frontalRaw+(/мм|mm/i.test(frontalRaw)?'':' мм')):'—',
-        gun:gun||'—',pen:pen||'—',
-        speed:spdRaw?(spdRaw+(/км|kph|km/i.test(spdRaw)?'':' км/г')):'—',
-        reload:relRaw?(relRaw+(/с|s$/i.test(relRaw)?'':'с')):'—',weight:wgt},
-      desc:`Дані з War Thunder Wiki · BR ${br}`};
+      scores:{armor:armorSc||50,firepower:65,speed:spdSc||50,agility:50,reload:relSc||50,crew:60},
+      specs:{frontal:frontal+(frontal!=='?'&&!/мм|mm/.test(frontal)?'мм':''),gun,pen,speed:spd+(spd!=='?'&&!/км|kph/.test(spd)?' км/г':''),reload:rel+(rel!=='?'&&!/с|s/.test(rel)?'с':''),weight:wgt},
+      desc:`Дані з War Thunder Wiki. BR ${br}.`};
   }
   if(isAir){
-    const spdRaw=wikiVal(wt,'max_speed','max_speed_alt','speed_max','top_speed')||null;
-    const clmbRaw=wikiVal(wt,'climb_rate','climbrate','climb')||null;
-    const turnRaw=wikiVal(wt,'turn_time','turn')||null;
-    const ceilRaw=wikiVal(wt,'service_ceiling','ceiling','max_altitude','combat_flap_speed')||null;
-    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1','main_armament')||null;
-    const eng=wikiVal(wt,'engine','powerplant','engine_name','engines')||null;
-
-    const spdN=numOf(spdRaw)||500;
-    const clmbN=numOf(clmbRaw)||15;
-    const turnN=numOf(turnRaw)||25;
-
+    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max')||'?';
+    const clmb=wikiVal(wt,'climb_rate','climbrate')||'?';
+    const turn=wikiVal(wt,'turn_time','turn')||'?';
+    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude')||'?';
+    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1')||'?';
+    const eng=wikiVal(wt,'engine','powerplant','engine_name')||'?';
+    const spdN=parseFloat(spd)||500;const clmbN=parseFloat(clmb)||15;const turnN=parseFloat(turn)||20;
     return{fl,br,nation:natName,type:'aircraft',_wiki:true,
-      scores:{
-        speed:Math.min(99,Math.round(spdN/25)),
-        climb:Math.min(99,Math.round(clmbN*2.5)),
-        turn:Math.min(99,Math.max(10,Math.round(110-turnN*2.5))),
-        firepower:65,altitude:65,durability:55},
-      specs:{
-        topSpeed:spdRaw?(spdRaw+(/км|kph|km/i.test(spdRaw)?'':' км/г')):'—',
-        climbRate:clmbRaw?(clmbRaw+(/м|m\/s/i.test(clmbRaw)?'':' м/с')):'—',
-        turnTime:turnRaw?(turnRaw+(/с|s$/i.test(turnRaw)?'':'с')):'—',
-        ceiling:ceilRaw?(ceilRaw+(/м|m$/i.test(ceilRaw)?'':'м')):'—',
-        armament:arm||'—',engine:eng||'—'},
-      desc:`Дані з War Thunder Wiki · BR ${br}`};
+      scores:{speed:Math.min(99,Math.round(spdN/25)),climb:Math.min(99,Math.round(clmbN*2.5)),turn:Math.min(99,Math.max(10,Math.round(110-turnN*2.5))),firepower:65,altitude:65,durability:55},
+      specs:{topSpeed:spd+(spd!=='?'&&!/км|kph/.test(spd)?' км/г':''),climbRate:clmb+(clmb!=='?'&&!/м|m/.test(clmb)?' м/с':''),turnTime:turn+(turn!=='?'&&!/с|s/.test(turn)?'с':''),ceiling:ceil+(ceil!=='?'&&!/м|m/.test(ceil)?'м':''),armament:arm,engine:eng},
+      desc:`Дані з War Thunder Wiki. BR ${br}.`};
   }
-  // fallback — unknown type but we have BR
-  const isT=cat==='tanks';
-  return{fl,br,nation:natName,type:isT?'tank':'aircraft',_wiki:true,
-    scores:isT?{armor:50,firepower:50,speed:50,agility:50,reload:50,crew:50}:{speed:50,climb:50,turn:50,firepower:50,altitude:50,durability:50},
-    specs:isT?{frontal:'—',gun:'—',pen:'—',speed:'—',reload:'—',weight:'—'}:{topSpeed:'—',climbRate:'—',turnTime:'—',ceiling:'—',armament:'—',engine:'—'},
-    desc:`War Thunder Wiki · BR ${br}`};
+  return{fl,br,nation:natName,type:cat,_wiki:true,
+    scores:cat==='tanks'?{armor:50,firepower:50,speed:50,agility:50,reload:50,crew:50}:{speed:50,climb:50,turn:50,firepower:50,altitude:50,durability:50},
+    specs:cat==='tanks'?{frontal:'—',gun:'—',pen:'—',speed:'—',reload:'—',weight:'—'}:{topSpeed:'—',climbRate:'—',turnTime:'—',ceiling:'—',armament:'—',engine:'—'},
+    desc:`Завантажено з War Thunder Wiki. BR ${br}.`};
 }
 
 /* ════════════════════════════════════════
@@ -1687,23 +1588,14 @@ function updateCard(side, v){
   }
   card.className='cmp-card c'+side.toLowerCase();
   const wikiUrl='https://wiki.warthunder.com/'+encodeURIComponent(v.name.replace(/ /g,'_'));
-  const badge=v._loading
-    ?'<span style="color:var(--a);font-size:.5rem;animation:pulse 1s infinite">⟳ вікі…</span>'
-    :v._wikiLoaded
-      ?(v._wikiSrc==='fandom'
-        ?'<span style="color:#9b6dff;font-size:.5rem">✓ fandom</span>'
-        :'<span style="color:var(--g);font-size:.5rem">✓ wt wiki</span>')
-      :v._estimated
-        ?'<span style="color:var(--dim);font-size:.5rem">≈ розрахунково</span>'
-        :'';
   card.innerHTML=`
     <div class="cmp-card-fl">${v.fl}</div>
     <div class="cmp-card-inf">
       <div class="cmp-card-nm">${v.name}</div>
       <div class="cmp-card-sub">
         <span>${v.nation}</span>
-        <a href="${wikiUrl}" target="_blank" rel="noopener" class="cmp-card-wiki">вікі ↗</a>
-        ${badge}
+        <a href="${wikiUrl}" target="_blank" class="cmp-card-wiki">вікі ↗</a>
+        ${v._wikiLoaded?'<span style="color:var(--g);font-size:.5rem">✓ вікі</span>':''}
       </div>
     </div>
     <div class="cmp-card-br">BR ${v.br}</div>
@@ -1789,111 +1681,76 @@ function showInitList(side){}
 function debouncedWikiPick(side,q){ onSearchInput(side,q); }
 function attachPickerClicks(){}
 
-/* ── Estimated stats from BR when wiki unavailable ── */
-function estimateVehicleData(title, vType, fl, nat, br){
-  const brN=parseFloat(br)||5.0;
-  if(vType==='tanks'){
-    const frontalMm=Math.round(20+brN*20);
-    const penMm=Math.round(30+brN*32);
-    const calMm=Math.round(50+brN*10);
-    const spdKph=Math.round(25+brN*4);
-    const relS=Math.max(4,Math.round(14-brN*0.8));
-    const wtT=Math.round(10+brN*5);
-    return{
-      fl,br,nation:nat,type:'tank',_wiki:false,_estimated:true,
-      scores:{
-        armor:Math.min(99,Math.round(15+brN*9)),
-        firepower:Math.min(99,Math.round(20+brN*8)),
-        speed:Math.min(99,Math.round(30+brN*4)),
-        agility:Math.min(99,Math.round(25+brN*3.5)),
-        reload:Math.min(99,Math.round(25+brN*5)),
-        crew:60
-      },
-      specs:{
-        frontal:'~'+frontalMm+' мм',
-        gun:'~'+calMm+' мм',
-        pen:'~'+penMm+' мм',
-        speed:'~'+spdKph+' км/г',
-        reload:'~'+relS+' с',
-        weight:'~'+wtT+' т'
-      },
-      desc:'BR '+br+' · '+nat+' (розрахунково)'
-    };
-  } else {
-    const spdKph=Math.round(200+brN*80);
-    const climbMs=Math.round(4+brN*2.5);
-    const turnS=Math.max(12,Math.round(38-brN*2.2));
-    const ceilM=Math.round(5000+brN*1000);
-    return{
-      fl,br,nation:nat,type:'aircraft',_wiki:false,_estimated:true,
-      scores:{
-        speed:Math.min(99,Math.round(15+brN*7)),
-        climb:Math.min(99,Math.round(10+brN*7)),
-        turn:Math.min(99,Math.max(10,Math.round(15+brN*6))),
-        firepower:Math.min(99,Math.round(30+brN*4)),
-        altitude:Math.min(99,Math.round(30+brN*5)),
-        durability:Math.min(99,Math.round(20+brN*4))
-      },
-      specs:{
-        topSpeed:'~'+spdKph+' км/г',
-        climbRate:'~'+climbMs+' м/с',
-        turnTime:'~'+turnS+' с',
-        ceiling:'~'+ceilM+' м',
-        armament:'—',
-        engine:'—'
-      },
-      desc:'BR '+br+' · '+nat+' (розрахунково)'
-    };
-  }
-}
-
 /* ── select vehicle from dropdown ── */
 const _selLoading=new Set();
+function _estimate(title, vType, fl, nat, br){
+  const b=parseFloat(br)||5;
+  if(vType==='tanks') return {
+    fl,br,nation:nat,type:'tank',_estimated:true,
+    scores:{armor:Math.min(99,Math.round(15+b*9)),firepower:Math.min(99,Math.round(20+b*8)),
+            speed:Math.min(99,Math.round(30+b*4)),agility:Math.min(99,Math.round(25+b*3.5)),
+            reload:Math.min(99,Math.round(25+b*5)),crew:60},
+    specs:{frontal:'~'+Math.round(20+b*20)+' мм',gun:'~'+Math.round(50+b*10)+' мм',
+           pen:'~'+Math.round(30+b*32)+' мм',speed:'~'+Math.round(25+b*4)+' км/г',
+           reload:'~'+Math.max(4,Math.round(14-b*0.8))+'с',weight:'~'+Math.round(10+b*5)+'т'}
+  };
+  return {
+    fl,br,nation:nat,type:'aircraft',_estimated:true,
+    scores:{speed:Math.min(99,Math.round(15+b*7)),climb:Math.min(99,Math.round(10+b*7)),
+            turn:Math.min(99,Math.max(10,Math.round(15+b*6))),firepower:Math.min(99,Math.round(30+b*4)),
+            altitude:Math.min(99,Math.round(30+b*5)),durability:Math.min(99,Math.round(20+b*4))},
+    specs:{topSpeed:'~'+Math.round(200+b*80)+' км/г',climbRate:'~'+Math.round(4+b*2.5)+' м/с',
+           turnTime:'~'+Math.max(12,Math.round(38-b*2.2))+'с',ceiling:'~'+Math.round(5000+b*1000)+'м',
+           armament:'—',engine:'—'}
+  };
+}
+
 async function selectVehicle(title, side, btnEl){
   const lockKey=title+'|'+side;
   if(_selLoading.has(lockKey)) return;
   _selLoading.add(lockKey);
 
-  const entry=VI.find(x=>x[0]===title);
-  const entryFl=NAT_FLAGS_IDX[entry?.[1]]||'🌐';
-  const entryNat=NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
-  const entryBr=BR_MAP[title]||'?';
-  const entryType=entry?.[2]==='t'?'tanks':'aircraft';
+  const entry  = VI.find(x=>x[0]===title);
+  const fl     = NAT_FLAGS_IDX[entry?.[1]]||'🌐';
+  const nat    = NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
+  const br     = BR_MAP[title]||'?';
+  const vType  = entry?.[2]==='t'?'tanks':'aircraft';
+  const baseId = 'vi_'+title.replace(/\W/g,'_');
 
   document.getElementById('search'+side).value=title;
   closeDrop(side);
 
-  // ── 1. Local VSPECS database — instant, no network ──
-  const localSpec=VSPECS[title];
-  if(localSpec){
-    const v={id:'vi_'+title.replace(/\W/g,'_'),fl:entryFl,name:title,br:entryBr,
-      nation:entryNat,scores:localSpec.scores,specs:localSpec.specs,
-      desc:'BR '+entryBr+' · '+entryNat+' · ✓',_wiki:true,_wikiLoaded:true,_loading:false};
-    pickObj(v,side);
+  /* 1 — VSPECS: миттєво, без мережі */
+  const local=VSPECS[title];
+  if(local){
+    pickObj({id:baseId,fl,name:title,br,nation:nat,
+      scores:local.scores,specs:local.specs,
+      _wiki:true,_wikiLoaded:true,_loading:false,_src:'db'}, side);
     _selLoading.delete(lockKey);
     return;
   }
 
-  // ── 2. Estimated data from BR — shows immediately ──
-  const est=estimateVehicleData(title,entryType,entryFl,entryNat,entryBr);
-  const v={...est,id:'vi_'+title.replace(/\W/g,'_'),name:title,_loading:true};
-  pickObj(v,side);
+  /* 2 — Estimate: показуємо одразу, wiki в фоні */
+  const est=_estimate(title,vType,fl,nat,br);
+  const v={...est,id:baseId,name:title,_loading:true};
+  pickObj(v, side);
   _selLoading.delete(lockKey);
 
-  // ── 3. Try wiki in background (WT wiki → Fandom wiki) ──
+  /* 3 — Wiki (фон): WT wiki → Fandom */
   try{
     const wt=await wikiGetPage(title);
     if(wt){
       const parsed=parseWikiVehicle(wt,title);
       if(parsed){
-        parsed.id=v.id; parsed.name=title; parsed._wikiLoaded=true; parsed._loading=false;
-        parsed._wikiSrc=wt.includes('warthunder.fandom')?'fandom':'wt';
-        pickObj(parsed,side); return;
+        parsed.id=baseId; parsed.name=title;
+        parsed._wikiLoaded=true; parsed._loading=false; parsed._src='wiki';
+        pickObj(parsed, side); return;
       }
     }
   }catch(e){}
-  // Wiki failed — keep estimated data, remove loading state
-  pickObj({...v,_loading:false,desc:'BR '+entryBr+' · '+entryNat+' (розрахунково)'},side);
+
+  /* 4 — Wiki failed, keep estimate */
+  pickObj({...v,_loading:false}, side);
 }
 
 document.getElementById('cmpCount').textContent='700+ техніки · введи назву для пошуку';
@@ -2117,390 +1974,245 @@ const AI_SYS=`Ти — експертний тактичний радник з W
 - Помилки новачків, стратегії карт
 Будь коротким (до 250 слів), практичним, прямим. Використовуй переноси рядка.`;
 
-// OpenRouter free models
-// OpenRouter free — перевірені моделі 2025
+/* ── Актуальні моделі 2025 ── */
 const OR_MODELS=[
   'meta-llama/llama-3.3-70b-instruct:free',
   'mistralai/mistral-small-3.1-24b-instruct:free',
-  'google/gemma-3-12b-it:free',
+  'google/gemma-3-27b-it:free',
+  'qwen/qwen3-8b:free',
   'meta-llama/llama-3.1-8b-instruct:free',
-  'deepseek/deepseek-r1-distill-llama-70b:free',
-  'tngtech/deepseek-r1t-chimera:free',
-  'moonshotai/kimi-k2:free',
+  'google/gemma-3-12b-it:free',
+  'deepseek/deepseek-r1-distill-qwen-32b:free',
+  'nousresearch/deephermes-3-llama-3-8b:free',
 ];
-// Gemini — лише підтверджені робочі моделі v1beta
 const GEMINI_MODELS=[
   'gemini-2.0-flash',
   'gemini-2.0-flash-lite',
 ];
 
-function safeAbort(ms){
-  try{ return AbortSignal.timeout(ms); }catch(e){ const c=new AbortController(); setTimeout(()=>c.abort(),ms); return c.signal; }
-}
+/* keys already loaded above */
 
-// ── Rate limit cooldown tracker ──
-const _rl={or:0,gemini:0}; // timestamp until cooldown expires
-const RL_WAIT=65000; // 65 seconds
-let _rlTimer=null;
+/* ════════════════════════════════════════════════════
+   PER-MODEL COOLDOWN
+   Кожна модель отримує незалежний таймер після 429.
+   Це запобігає повторному спаму запитів.
+════════════════════════════════════════════════════ */
+const _cd={};            // 'or:model' | 'g:model' → expires_timestamp
+const CD_MS=63000;       // 63 секунди
+function _cdSet(k){ _cd[k]=Date.now()+CD_MS; _cdUI(); }
+function _cdOk(k){ return Date.now()>=(_cd[k]||0); }
+function _cdAnyOr(){ return OR_MODELS.some(m=>_cdOk('or:'+m)); }
+function _cdAnyG(){ return GEMINI_MODELS.some(m=>_cdOk('g:'+m)); }
 
-function _setRLCooldown(prov){
-  _rl[prov]=Date.now()+RL_WAIT;
-  _startRLCountdown();
-}
-function _isRLCooling(prov){ return Date.now()<_rl[prov]; }
-function _startRLCountdown(){
-  if(_rlTimer) return;
-  const statusEl=document.getElementById('aiStatusTxt');
-  _rlTimer=setInterval(()=>{
-    const orLeft=Math.max(0,Math.ceil((_rl.or-Date.now())/1000));
-    const gLeft=Math.max(0,Math.ceil((_rl.gemini-Date.now())/1000));
-    const left=Math.max(orLeft,gLeft);
-    if(left<=0){
-      clearInterval(_rlTimer); _rlTimer=null;
-      updateKeyUI();
-      return;
-    }
-    if(statusEl) statusEl.textContent='⏱ Rate limit — повтор через '+left+'с';
-  },1000);
-}
-function _anyRLActive(){ return _isRLCooling('or')||_isRLCooling('gemini'); }
-
-// Claude через CORS-проксі (api.anthropic.com блокує file:// та cross-origin)
-const CLAUDE_PROXIES=[
-  url=>`https://corsproxy.io/?${encodeURIComponent(url)}`,
-  url=>`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-];
-async function callClaude(messages){
-  if(!CLAUDE_KEY) return {error:'auth',msg:'Claude ключ не введено'};
-  const body=JSON.stringify({
-    model:'claude-haiku-4-5-20251001',
-    max_tokens:800,
-    system:AI_SYS,
-    messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))
-  });
-  for(const mkUrl of CLAUDE_PROXIES){
-    const proxyUrl=mkUrl('https://api.anthropic.com/v1/messages');
-    try{
-      const resp=await fetch(proxyUrl,{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01'},
-        signal:safeAbort(28000),
-        body
-      });
-      if(resp.status===401||resp.status===403){ return {error:'auth',msg:'Невірний Claude ключ. Перевір на console.anthropic.com/settings/keys'}; }
-      if(resp.status===429){ return {error:'net',msg:'Claude: ліміт запитів. Зачекай хвилину або поповни баланс.'}; }
-      if(resp.status===400){ const e=await resp.json().catch(()=>({})); return {error:'api',msg:'Claude 400: '+(e?.error?.message||'невірний запит').slice(0,120)}; }
-      if(!resp.ok){ continue; } // спробуй наступний проксі
-      const d=await resp.json();
-      const text=d.content?.map(b=>b.text||'').join('').trim()||null;
-      if(!text) continue;
-      return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
-    }catch(e){ console.warn('[Claude proxy]',proxyUrl,'→',e.message); }
-  }
-  return {error:'net',msg:'Claude недоступний через CORS. Спробуй OpenRouter або Gemini.'};
-}
-
-async function callOpenRouter(messages, modelIdx=0){
-  if(modelIdx>=OR_MODELS.length){ _setRLCooldown('or'); return {error:'net',msg:'Всі OpenRouter моделі — rate limit (429). Чекай ~60с або перейди на Gemini.'}; }
-  const model=OR_MODELS[modelIdx];
-  try{
-    const resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
-      signal:safeAbort(28000),
-      body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...messages],max_tokens:800,temperature:0.7})
-    });
-    if(resp.status===429||resp.status===503){ console.warn('[OR]',model,'→',resp.status); return callOpenRouter(messages,modelIdx+1); }
-    if(resp.status===401||resp.status===403){ return {error:'auth',msg:'Невірний OpenRouter ключ. Перевір на openrouter.ai/keys'}; }
-    if(resp.status===402){ return {error:'auth',msg:'OpenRouter: ключ не активований або немає кредитів.'}; }
-    if(resp.status===404||resp.status===400){ return callOpenRouter(messages,modelIdx+1); }
-    if(!resp.ok){ const e=await resp.json().catch(()=>({})); return {error:'api',msg:'OR HTTP '+resp.status+': '+(e.error?.message||'').slice(0,120)}; }
-    const d=await resp.json();
-    const text=(d.choices?.[0]?.message?.content||'').trim()||null;
-    if(!text) return callOpenRouter(messages,modelIdx+1);
-    return {ok:true,text,model,provider:'openrouter'};
-  }catch(e){
-    console.warn('[OR]',model,'catch:',e.message);
-    if(e.name==='AbortError') return {error:'net',msg:'OpenRouter: таймаут. Перевір з\'єднання або спробуй Gemini.'};
-    if(modelIdx+1<OR_MODELS.length) return callOpenRouter(messages,modelIdx+1);
-    return {error:'net',msg:'OpenRouter недоступний: '+e.message};
-  }
-}
-
-async function callGemini(contents, modelIdx=0){
-  if(modelIdx>=GEMINI_MODELS.length){ _setRLCooldown('gemini'); return {error:'net',msg:'Gemini rate limit (429). Чекай ~60с або перейди на OpenRouter.'}; }
-  const model=GEMINI_MODELS[modelIdx];
-  try{
-    const resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+GEMINI_KEY,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      signal:safeAbort(28000),
-      body:JSON.stringify({
-        system_instruction:{parts:[{text:AI_SYS}]},
-        contents,
-        generationConfig:{maxOutputTokens:800,temperature:0.7}
-      })
-    });
-    if(resp.status===429||resp.status===503||resp.status===500){ console.warn('[G]',model,'→',resp.status); return callGemini(contents,modelIdx+1); }
-    if(resp.status===404||resp.status===400){
-      const e=await resp.json().catch(()=>({})); console.warn('[G]',model,'→',resp.status,e?.error?.message);
-      return callGemini(contents,modelIdx+1);
-    }
-    if(resp.status===401||resp.status===403){
-      const e=await resp.json().catch(()=>({}));
-      return {error:'auth',msg:'Невірний Gemini ключ: '+(e?.error?.message||'перевір на aistudio.google.com')};
-    }
-    if(!resp.ok){ const e=await resp.json().catch(()=>({})); return {error:'api',msg:'Gemini '+resp.status+': '+(e?.error?.message||'').slice(0,120)}; }
-    const d=await resp.json();
-    if(d.candidates?.[0]?.finishReason==='SAFETY'){ return callGemini(contents,modelIdx+1); }
-    const text=d.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('').trim()||null;
-    if(!text){ console.warn('[G]',model,'→ empty'); return callGemini(contents,modelIdx+1); }
-    return {ok:true,text,model,provider:'gemini'};
-  }catch(e){
-    console.warn('[G]',model,'catch:',e.message);
-    if(e.name==='AbortError') return {error:'net',msg:'Gemini: таймаут. Перевір з\'єднання.'};
-    if(modelIdx+1<GEMINI_MODELS.length) return callGemini(contents,modelIdx+1);
-    return {error:'net',msg:'Gemini помилка: '+e.message};
-  }
-}
-
-OR_KEY=localStorage.getItem('wt_or_key')||'';
-GEMINI_KEY=localStorage.getItem('wt_gemini_key')||'';
-CLAUDE_KEY=localStorage.getItem('wt_claude_key')||'';
-AI_PROVIDER=localStorage.getItem('wt_ai_provider')||'openrouter';
-API_KEY=GEMINI_KEY||OR_KEY;
-
-let aiHistory=[];
-
-/* ═══ REQUEST QUEUE — один запит за раз, решта чекає ═══ */
-let _qRunning=false;
-const _queue=[];
-
-function _enqueue(fn){ return new Promise(res=>{ _queue.push(()=>fn().then(res)); _drain(); }); }
-function _drain(){
-  if(_qRunning||!_queue.length) return;
-  _qRunning=true;
-  (_queue.shift())().finally(()=>{ _qRunning=false; _drain(); });
-}
-
-/* ═══ PER-MODEL COOLDOWN (окремо для кожної моделі) ═══ */
-const _modelCooldown={};   // model → timestamp
-const _providerCooldown={}; // 'or'|'gemini' → timestamp
-const RL_MODEL_MS=62000;    // 62с per model
-const RL_PROV_MS=65000;     // 65с per provider
-
-function _setCooldown(key){ _modelCooldown[key]=Date.now()+RL_MODEL_MS; }
-function _setProvCool(p){ _providerCooldown[p]=Date.now()+RL_PROV_MS; _refreshCountdown(); }
-function _isModelCooling(m){ return (Date.now()<(_modelCooldown[m]||0)); }
-function _isProvCooling(p){ return (Date.now()<(_providerCooldown[p]||0)); }
-function _provCoolLeft(p){ return Math.max(0,Math.ceil(((_providerCooldown[p]||0)-Date.now())/1000)); }
-function _allCooling(){ return _isProvCooling('or')&&_isProvCooling('gemini'); }
-function _minCoolLeft(){ return Math.min(_provCoolLeft('or'),_provCoolLeft('gemini')||999); }
-
-let _cdTimer=null;
-function _refreshCountdown(){
-  if(_cdTimer) return;
+let _cdTick=null;
+function _cdUI(){
+  if(_cdTick) return;
   const el=document.getElementById('aiStatusTxt');
-  _cdTimer=setInterval(()=>{
-    const left=_minCoolLeft();
-    if(left<=0&&!_isProvCooling('or')&&!_isProvCooling('gemini')){
-      clearInterval(_cdTimer); _cdTimer=null;
-      updateKeyUI(); return;
-    }
-    if(el) el.textContent='⏱ Cooldown '+left+'с…';
-  },1000);
+  _cdTick=setInterval(()=>{
+    const vals=Object.values(_cd);
+    const maxExp=vals.length?Math.max(...vals):0;
+    const left=Math.max(0,Math.ceil((maxExp-Date.now())/1000));
+    if(left<=0){ clearInterval(_cdTick); _cdTick=null; updateKeyUI(); return; }
+    if(el) el.textContent='⏱ '+left+'с…';
+  },500);
 }
 
-/* ─── sleep helper ─── */
-const _sleep=ms=>new Promise(r=>setTimeout(r,ms));
+/* ════════════════════════════════════════════════════
+   callOR — один запит за раз, перебирає моделі,
+   пропускає ті що на cooldown
+════════════════════════════════════════════════════ */
+/* callClaude через OpenRouter (OR підтримує Claude як провайдер) */
+async function callClaude(msgs){
+  if(!CLAUDE_KEY) return null;
+  /* Anthropic API не приймає cross-origin з file:// — використовуємо OR як проксі */
+  /* Якщо є OR_KEY — надсилаємо Claude через OR (model = anthropic/claude-haiku-4-5) */
+  if(OR_KEY){
+    const model='anthropic/claude-haiku-4-5';
+    if(!_cdOk('or:'+model)) return {error:'rl',msg:'Claude на cooldown'};
+    try{
+      const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+        signal:safeAbort(22000),
+        body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
+      });
+      if(r.status===429||r.status===503){ _cdSet('or:'+model); return {error:'rl',msg:'Claude rate limit'}; }
+      if(r.status===402) return {error:'auth',msg:'OR: поповни баланс (Claude платний через OR)'};
+      if(!r.ok) return null;
+      const d=await r.json();
+      const text=(d.choices?.[0]?.message?.content||'').trim();
+      if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
+    }catch(e){}
+  }
+  /* Без OR_KEY — пряме звернення (працює лише якщо відкрито через HTTP, не file://) */
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01'},
+      signal:safeAbort(22000),
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:700,system:AI_SYS,
+        messages:msgs.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))})
+    });
+    if(r.status===401||r.status===403) return {error:'auth',msg:'Невірний Claude ключ → console.anthropic.com'};
+    if(!r.ok) return null;
+    const d=await r.json();
+    const text=d.content?.map(b=>b.text||'').join('').trim()||'';
+    if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
+  }catch(e){}
+  return {error:'net',msg:'Claude: CORS блокує file:// → потрібен OR ключ для роботи'};
+}
 
-/* ═══ callOpenRouter — з auto-retry після cooldown ═══ */
-async function callOpenRouter(messages, attempt=0){
+async function callOR(msgs){
   if(!OR_KEY) return null;
-  if(_isProvCooling('or')){
-    const left=_provCoolLeft('or');
-    return {error:'net',msg:'OpenRouter rate limit. Ще '+left+'с'};
-  }
-  // Знайди першу модель без cooldown
-  const available=OR_MODELS.filter(m=>!_isModelCooling(m));
-  if(!available.length){
-    _setProvCool('or');
-    return {error:'net',msg:'Всі OR моделі на cooldown. Чекай ~60с.'};
-  }
-  const model=available[0];
-  try{
-    const resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
-      signal:safeAbort(25000),
-      body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...messages],max_tokens:700,temperature:0.7})
-    });
-    if(resp.status===429){
-      console.warn('[OR]',model,'→ 429, cooldown');
-      _setCooldown(model);
-      return callOpenRouter(messages, attempt+1);
+  for(const model of OR_MODELS){
+    if(!_cdOk('or:'+model)){ continue; }   // на cooldown — пропуск
+    try{
+      const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+        signal:safeAbort(22000),
+        body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
+      });
+      if(r.status===429||r.status===503){ _cdSet('or:'+model); continue; }
+      if(r.status===401||r.status===403) return {error:'auth',msg:'Невірний OR ключ → openrouter.ai/keys'};
+      if(r.status===402) return {error:'auth',msg:'OR: поповни баланс на openrouter.ai'};
+      if(r.status===404||r.status===400){ _cdSet('or:'+model); continue; }
+      if(!r.ok){ const e=await r.json().catch(()=>({})); return {error:'api',msg:'OR '+r.status+': '+(e.error?.message||'').slice(0,80)}; }
+      const d=await r.json();
+      const text=(d.choices?.[0]?.message?.content||'').trim();
+      if(!text){ _cdSet('or:'+model); continue; }
+      return {ok:true,text,model,provider:'openrouter'};
+    }catch(e){
+      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут. Перевір інтернет.'};
+      _cdSet('or:'+model);
     }
-    if(resp.status===401||resp.status===403) return {error:'auth',msg:'Невірний OR ключ → openrouter.ai/keys'};
-    if(resp.status===402) return {error:'auth',msg:'OR: поповни баланс або активуй ключ'};
-    if(resp.status===503){ await _sleep(3000); return callOpenRouter(messages, attempt+1); }
-    if(resp.status===404||resp.status===400){ _setCooldown(model); return callOpenRouter(messages, attempt+1); }
-    if(!resp.ok){ const e=await resp.json().catch(()=>({})); return {error:'api',msg:'OR '+resp.status+': '+(e.error?.message||'').slice(0,80)}; }
-    const d=await resp.json();
-    const text=(d.choices?.[0]?.message?.content||'').trim();
-    if(!text){ _setCooldown(model); return callOpenRouter(messages, attempt+1); }
-    return {ok:true,text,model,provider:'openrouter'};
-  }catch(e){
-    console.warn('[OR]',model,e.message);
-    if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут. Перевір інтернет.'};
-    _setCooldown(model);
-    return callOpenRouter(messages, attempt+1);
   }
+  _cdUI();
+  return {error:'rl',msg:'OR: всі моделі на cooldown (~60с). Gemini спробує автоматично.'};
 }
 
-/* ═══ callGemini — з auto-retry після cooldown ═══ */
-async function callGemini(contents, attempt=0){
+/* ════════════════════════════════════════════════════
+   callGemini — аналогічно, незалежні cooldown
+════════════════════════════════════════════════════ */
+async function callGemini(msgs){
   if(!GEMINI_KEY) return null;
-  if(_isProvCooling('gemini')){
-    const left=_provCoolLeft('gemini');
-    return {error:'net',msg:'Gemini rate limit. Ще '+left+'с'};
-  }
-  const available=GEMINI_MODELS.filter(m=>!_isModelCooling('g:'+m));
-  if(!available.length){
-    _setProvCool('gemini');
-    return {error:'net',msg:'Всі Gemini моделі на cooldown. Чекай ~60с.'};
-  }
-  const model=available[0];
-  try{
-    const resp=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      signal:safeAbort(25000),
-      body:JSON.stringify({system_instruction:{parts:[{text:AI_SYS}]},contents,generationConfig:{maxOutputTokens:700,temperature:0.7}})
-    });
-    if(resp.status===429){
-      console.warn('[G]',model,'→ 429, cooldown');
-      _setCooldown('g:'+model);
-      return callGemini(contents, attempt+1);
+  const contents=msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
+  for(const model of GEMINI_MODELS){
+    if(!_cdOk('g:'+model)){ continue; }
+    try{
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        signal:safeAbort(22000),
+        body:JSON.stringify({system_instruction:{parts:[{text:AI_SYS}]},contents,generationConfig:{maxOutputTokens:700,temperature:0.7}})
+      });
+      if(r.status===429||r.status===503){ _cdSet('g:'+model); continue; }
+      if(r.status===401||r.status===403){
+        const e=await r.json().catch(()=>({}));
+        return {error:'auth',msg:'Невірний Gemini ключ: '+(e?.error?.message||'перевір на aistudio.google.com')};
+      }
+      if(r.status===404||r.status===400){ _cdSet('g:'+model); continue; }
+      if(!r.ok) continue;
+      const d=await r.json();
+      if(d.candidates?.[0]?.finishReason==='SAFETY'){ _cdSet('g:'+model); continue; }
+      const text=d.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('').trim()||'';
+      if(!text){ _cdSet('g:'+model); continue; }
+      return {ok:true,text,model,provider:'gemini'};
+    }catch(e){
+      if(e.name==='AbortError') return {error:'net',msg:'Gemini: таймаут. Перевір інтернет.'};
+      _cdSet('g:'+model);
     }
-    if(resp.status===401||resp.status===403){
-      const e=await resp.json().catch(()=>({}));
-      return {error:'auth',msg:'Невірний Gemini ключ: '+(e?.error?.message||'aistudio.google.com')};
-    }
-    if(resp.status===404||resp.status===400){
-      const e=await resp.json().catch(()=>({}));
-      console.warn('[G]',model,resp.status,e?.error?.message);
-      _setCooldown('g:'+model);
-      return callGemini(contents, attempt+1);
-    }
-    if(resp.status===503){ await _sleep(3000); return callGemini(contents, attempt+1); }
-    if(!resp.ok){ const e=await resp.json().catch(()=>({})); return {error:'api',msg:'Gemini '+resp.status+': '+(e?.error?.message||'').slice(0,80)}; }
-    const d=await resp.json();
-    if(d.candidates?.[0]?.finishReason==='SAFETY'){ _setCooldown('g:'+model); return callGemini(contents, attempt+1); }
-    const text=d.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('').trim()||'';
-    if(!text){ _setCooldown('g:'+model); return callGemini(contents, attempt+1); }
-    return {ok:true,text,model,provider:'gemini'};
-  }catch(e){
-    console.warn('[G]',model,e.message);
-    if(e.name==='AbortError') return {error:'net',msg:'Gemini: таймаут. Перевір інтернет.'};
-    _setCooldown('g:'+model);
-    return callGemini(contents, attempt+1);
   }
+  _cdUI();
+  return {error:'rl',msg:'Gemini: всі моделі на cooldown (~60с).'};
 }
 
-/* ═══ _doRequest — вибирає провайдер + fallback ═══ */
-async function _doRequest(msgs, contents){
-  // Якщо обидва провайдери на cooldown — показуємо таймер і чекаємо
-  if(_allCooling()){
-    const left=_minCoolLeft();
-    return {error:'net',msg:'Обидва провайдери на rate limit. Ще '+left+'с — або натисни ще раз після таймера.'};
-  }
-  let result=null;
-  if(AI_PROVIDER==='openrouter'||AI_PROVIDER==='claude'){
-    if(OR_KEY&&!_isProvCooling('or')){
-      result=await callOpenRouter(msgs);
-      if(result?.ok) return result;
-    }
-    if(GEMINI_KEY&&!_isProvCooling('gemini')){
-      result=await callGemini(contents);
-      if(result?.ok) return result;
-    }
-  } else {
-    if(GEMINI_KEY&&!_isProvCooling('gemini')){
-      result=await callGemini(contents);
-      if(result?.ok) return result;
-    }
-    if(OR_KEY&&!_isProvCooling('or')){
-      result=await callOpenRouter(msgs);
-      if(result?.ok) return result;
-    }
-  }
-  return result||{error:'net',msg:'Немає доступних провайдерів. Перевір ключі у "ШІ Ключ".'};
+/* ════════════════════════════════════════════════════
+   sendMsg — черга, щоб запити йшли послідовно
+════════════════════════════════════════════════════ */
+const _aiQ=[];
+let _aiQBusy=false;
+function _aiQPush(fn){ _aiQ.push(fn); _aiQRun(); }
+function _aiQRun(){
+  if(_aiQBusy||!_aiQ.length) return;
+  _aiQBusy=true;
+  Promise.resolve(_aiQ.shift()()).finally(()=>{ _aiQBusy=false; _aiQRun(); });
 }
 
-/* ═══ sendMsg — точка входу ═══ */
+const _aiHistory=[];
+let _aiRunning=false;  // для відображення черги в UI
+
 function sendMsg(){
-  const activeKey=AI_PROVIDER==='openrouter'?OR_KEY:GEMINI_KEY||OR_KEY;
-  if(!activeKey){ openKeyModal(); return; }
+  const key=OR_KEY||GEMINI_KEY||CLAUDE_KEY;
+  if(!key){ openKeyModal(); return; }
   const inp=document.getElementById('aiinp');
   const q=inp.value.trim(); if(!q) return;
   inp.value='';
+
+  _aiHistory.push({role:'user',content:q});
+  appendMsg('user',q);
+
   const sndBtn=document.getElementById('aisnd');
+  const qLen=_aiQ.length;
+  if(_aiQBusy&&qLen>0) appendMsg('sys','⏳ Черга: '+(qLen+1)+'…');
 
-  // Показуємо чергу якщо запит вже виконується
-  if(_qRunning){
-    const qLen=_queue.length;
-    const notice=appendMsg('sys', qLen===0?'⏳ Запит у черзі…':'⏳ Вже '+(_queue.length+1)+' в черзі…');
-    setTimeout(()=>notice?.parentNode?.removeChild(notice), 2000);
-  }
-
-  aiHistory.push({role:'user',content:q});
-  const userEl=appendMsg('user',q);
-
-  _enqueue(async()=>{
+  _aiQPush(async()=>{
     sndBtn.disabled=true;
     const typer=appendTyping();
-    const msgs=aiHistory.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}));
-    const contents=aiHistory.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-    let result=null;
-    try{ result=await _doRequest(msgs,contents); }
-    catch(e){ result={error:'net',msg:e.message}; }
-    removeNode(typer);
-    if(!result?.ok){
-      const msg=result?.msg||'Невідома помилка';
-      const isRL=msg.includes('rate limit')||msg.includes('cooldown')||msg.includes('Cooldown')||msg.includes('429');
-      appendMsg('err','⚠ '+msg+(isRL?'\n\n→ Просто натисни надіслати ще раз після таймера':''));
-      // Remove the user message from history on failure
-      const idx=aiHistory.lastIndexOf(aiHistory.find(m=>m.role==='user'&&m.content===q));
-      if(idx>-1) aiHistory.splice(idx,1);
+
+    /* Вибір провайдера + fallback */
+    const msgs=_aiHistory.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}));
+    let res=null;
+    if(AI_PROVIDER==='claude'){
+      res=await callClaude(msgs);
+      if(!res?.ok&&OR_KEY) res=await callOR(msgs);
+      if(!res?.ok&&GEMINI_KEY) res=await callGemini(msgs);
+    } else if(AI_PROVIDER==='gemini'){
+      res=await callGemini(msgs);
+      if(!res?.ok&&OR_KEY) res=await callOR(msgs);
+      if(!res?.ok&&CLAUDE_KEY) res=await callClaude(msgs);
     } else {
-      appendMsg('ai',result.text);
-      aiHistory.push({role:'assistant',content:result.text});
-      const pIcon=result.provider==='openrouter'?'⚡ OR':'🔷 Gemini';
-      document.getElementById('aiStatusTxt').textContent=pIcon+' · '+result.model.split('/').pop().replace(':free','');
+      res=await callOR(msgs);
+      if(!res?.ok&&GEMINI_KEY) res=await callGemini(msgs);
+      if(!res?.ok&&CLAUDE_KEY) res=await callClaude(msgs);
+    }
+
+    removeNode(typer);
+
+    if(res?.ok){
+      appendMsg('ai',res.text);
+      _aiHistory.push({role:'assistant',content:res.text});
+      const icon=res.provider==='gemini'?'🔷 Gemini':res.provider==='claude'?'🟠 Claude':'⚡ OR';
+      document.getElementById('aiStatusTxt').textContent=icon+' · '+res.model.split('/').pop().replace(':free','');
+    } else {
+      _aiHistory.pop();
+      const msg=res?.msg||'Невідома помилка';
+      const isRL=res?.error==='rl';
+      appendMsg('err','⚠ '+msg+(isRL?'\n→ Просто надішли ще раз після таймера':'\n→ Перевір ключ у "ШІ Ключ"'));
+      if(res?.error==='auth') setTimeout(openKeyModal,500);
     }
     sndBtn.disabled=false;
   });
 }
 
 function appendMsg(role,text){
-  const msgs=document.getElementById('aimsgs');
+  const box=document.getElementById('aimsgs');
   const d=document.createElement('div');
-  d.className='msg '+(role==='err'?'err':role==='sys'?'err':role);
+  d.className='msg '+(role==='err'||role==='sys'?'err':role);
   const safe=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
   const label=role==='user'?'Командир':role==='ai'?'Радник':'Система';
   d.innerHTML=`<div class="mrole">${label}</div><div class="mb">${safe}</div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return d;
+  box.appendChild(d); box.scrollTop=box.scrollHeight; return d;
 }
 function appendTyping(){
-  const msgs=document.getElementById('aimsgs');
+  const box=document.getElementById('aimsgs');
   const d=document.createElement('div'); d.className='msg ai';
   d.innerHTML=`<div class="mrole">Радник</div><div class="mb"><div class="tdots"><span></span><span></span><span></span></div></div>`;
-  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; return d;
+  box.appendChild(d); box.scrollTop=box.scrollHeight; return d;
 }
 function removeNode(el){ el?.parentNode?.removeChild(el); }
 function askT(btn){
-  const activeKey=OR_KEY||GEMINI_KEY;
-  if(!activeKey){ openKeyModal(); return; }
+  if(!(OR_KEY||GEMINI_KEY||CLAUDE_KEY)){ openKeyModal(); return; }
   document.getElementById('aiinp').value=btn.textContent.trim();
   sendMsg();
 }
