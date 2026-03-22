@@ -1626,6 +1626,18 @@ function updateCard(side, v){
   }
   card.className='cmp-card c'+side.toLowerCase();
   const wikiUrl='https://wiki.warthunder.com/'+encodeURIComponent(v.name.replace(/ /g,'_'));
+
+  let badge='';
+  if(v._loading){
+    badge='<span style="color:var(--a);font-size:.5rem;animation:pulse 1s infinite">⟳ вікі…</span>';
+  } else if(v._src==='wiki'){
+    badge='<span style="color:var(--g);font-size:.5rem" title="Дані з War Thunder Wiki">✓ вікі</span>';
+  } else if(v._src==='db'){
+    badge='<span style="color:var(--c);font-size:.5rem" title="Дані з вбудованої бази">⬡ база даних</span>';
+  } else if(v._estimated){
+    badge='<span style="color:var(--mute);font-size:.5rem" title="Розраховано з BR рейтингу">≈ розрахунково</span>';
+  }
+
   card.innerHTML=`
     <div class="cmp-card-fl">${v.fl}</div>
     <div class="cmp-card-inf">
@@ -1633,7 +1645,7 @@ function updateCard(side, v){
       <div class="cmp-card-sub">
         <span>${v.nation}</span>
         <a href="${wikiUrl}" target="_blank" class="cmp-card-wiki">вікі ↗</a>
-        ${v._wikiLoaded?'<span style="color:var(--g);font-size:.5rem">✓ вікі</span>':''}
+        ${badge}
       </div>
     </div>
     <div class="cmp-card-br">BR ${v.br}</div>
