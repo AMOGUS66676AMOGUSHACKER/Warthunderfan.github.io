@@ -2092,28 +2092,24 @@ async function _wikiFetch(apiBase, title){
   const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=main`;
   const direct=`${apiBase}?${q}`;
 
-  // Прямий fetch заблокований CORS (github.io не в whitelist wiki)
-  // Використовуємо тільки проксі
   const attempts=[
-    // allorigins — найнадійніший
-    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:12000},
-    // corsproxy.io
-    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:12000},
+    // corsproxy.io — найбільш надійний для вікі
+    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:14000},
+    // allorigins
+    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:14000},
     // codetabs
-    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:12000},
-    // cors.sh
-    {url:`https://proxy.cors.sh/${direct}`, timeout:12000, headers:{'x-cors-api-key':'temp_...'}},
-    // Спробуємо Fandom якщо WT Wiki не відповідає — тільки для WT_WIKI_URL
-    ...(apiBase===WT_WIKI_URL ? [
-      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:12000},
-      {url:`https://corsproxy.io/?${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:12000},
-    ] : []),
+    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:14000},
+    // Якщо WT wiki блокує — пробуємо Fandom напряму
+    ...(apiBase===WT_WIKI_URL?[
+      {url:`https://corsproxy.io/?${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:14000},
+      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:14000},
+    ]:[]),
   ];
 
-  for(const {url, timeout, headers={}} of attempts){
+  for(const {url, timeout} of attempts){
     try{
-      const r=await fetch(url,{signal:safeAbort(timeout), headers});
-      if(!r.ok) continue;
+      const r=await fetch(url,{signal:safeAbort(timeout)});
+      if(!r.ok){ continue; }
       const text=await r.text();
       const wt=_parseWikiJson(text);
       if(wt){
@@ -2121,7 +2117,7 @@ async function _wikiFetch(apiBase, title){
         return wt;
       }
     }catch(e){
-      console.warn('[wiki]',url.split('/')[2],'→',e.message?.slice(0,60));
+      console.warn('[wiki]',url.split('/')[2],'→',e.message?.slice(0,50));
     }
   }
   return null;
@@ -2860,41 +2856,60 @@ function applyCustomVehicle(){
 
 
 /* ════════ PROXIES for Thunderskill ════════ */
-const PROXIES=[
+const TS_PROXIES=[
   u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
   u=>`https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-  u=>`https://proxy.cors.sh/${u}`,
-  u=>`https://crossorigin.me/${u}`,
 ];
 function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); if(el){el.textContent=msg; el.className='proxy-status '+(cls||'');} }
 
 async function tryFetch(targetUrl){
-  for(let i=0;i<PROXIES.length;i++){
-    const purl=PROXIES[i](targetUrl);
-    setProxyStatus(`Спроба ${i+1}/${PROXIES.length}…`,'trying');
+  for(let i=0;i<TS_PROXIES.length;i++){
+    const purl=TS_PROXIES[i](targetUrl);
+    setProxyStatus(`Спроба ${i+1}/${TS_PROXIES.length}…`,'trying');
     try{
       const ctrl=new AbortController();
-      const tid=setTimeout(()=>ctrl.abort(),9000);
+      const tid=setTimeout(()=>ctrl.abort(),12000);
       const res=await fetch(purl,{signal:ctrl.signal});
       clearTimeout(tid);
-      if(!res.ok) continue;
-      const raw=await res.text();
+      if(!res.ok){ console.warn(`[TS] Проксі ${i+1} HTTP ${res.status}`); continue; }
+      const rawText=await res.text();
+
+      // Unwrap allorigins wrapper
       let parsed;
       try{
-        const outer=JSON.parse(raw);
-        if(typeof outer.contents==='string') parsed=JSON.parse(outer.contents);
-        else if(outer.status&&outer.status.http_code&&outer.status.http_code!==200) continue;
-        else parsed=outer;
-      }catch{ try{ parsed=JSON.parse(raw); }catch{ continue; } }
-      if(parsed&&!parsed.error&&parsed.detail!=='Not found'&&parsed.message!=='Not found'){
-        setProxyStatus(`✓ Проксі ${i+1}`,'ok');
-        return parsed;
+        const outer=JSON.parse(rawText);
+        if(typeof outer.contents==='string'){
+          // allorigins wraps response in {contents, status}
+          const inner=outer.contents;
+          // If inner is HTML — player not found
+          if(inner.trim().startsWith('<')){ console.warn('[TS] Got HTML, player not found'); return {_notFound:true}; }
+          parsed=JSON.parse(inner);
+        } else {
+          parsed=outer;
+        }
+      }catch{
+        // Maybe raw is already JSON or HTML
+        if(rawText.trim().startsWith('<')){ console.warn('[TS] Got HTML from proxy'); continue; }
+        try{ parsed=JSON.parse(rawText); }catch{ console.warn('[TS] Not JSON'); continue; }
       }
-      // Thunderskill returns {error: ...} when player not found
-      if(parsed&&(parsed.error||parsed.detail==='Not found')) return {_notFound:true};
-    }catch(e){ if(e.name!=='AbortError') console.warn(`Проксі ${i+1}:`,e.message); }
+
+      console.log('[TS] Raw parsed keys:', Object.keys(parsed||{}).slice(0,20));
+
+      // Thunderskill "not found" responses
+      if(parsed?._notFound) return {_notFound:true};
+      if(parsed?.error) return {_notFound:true};
+      if(parsed?.detail==='Not found') return {_notFound:true};
+      if(parsed?.message==='Not found') return {_notFound:true};
+      if(!parsed||typeof parsed!=='object') continue;
+
+      setProxyStatus(`✓ Проксі ${i+1}`,'ok');
+      return parsed;
+    }catch(e){
+      if(e.name==='AbortError'){ console.warn(`[TS] Проксі ${i+1} таймаут`); }
+      else{ console.warn(`[TS] Проксі ${i+1}:`,e.message); }
+    }
   }
   setProxyStatus('Всі проксі недоступні','fail');
   return null;
@@ -2903,41 +2918,60 @@ async function tryFetch(targetUrl){
 /* ════════ PLAYER STATS ════════ */
 function parseTS(raw, nick){
   try{
-    // Thunderskill export JSON structure
-    const info=raw.info||raw;
-    const st=raw.stats||raw.stat||{};
-    const name=info.nick||info.name||info.nickname||nick;
-    const clan=info.clan||info.clan_tag||null;
-    const lv=parseInt(info.level||info.rank||info.prestige||0)||null;
+    console.log('[TS] Parsing structure, top-level keys:', Object.keys(raw).slice(0,30));
+
+    // Thunderskill can return different structures depending on version
+    // Try to find the player info and stats in various locations
+    const info = raw.info || raw.player || raw.profile || raw;
+    const st   = raw.stats || raw.stat || raw.statistics || raw.data || raw;
+
+    const name = info.nick || info.nickname || info.name || info.username ||
+                 raw.nick  || raw.nickname  || raw.name  || nick;
+    const clan = info.clan || info.clan_tag || info.clanTag || raw.clan || null;
+    const lv   = parseInt(info.level||info.rank||info.prestige||raw.level||raw.rank||0)||null;
+
+    console.log('[TS] name:', name, 'clan:', clan, 'level:', lv);
+    console.log('[TS] stat keys:', Object.keys(st).slice(0,20));
 
     function parseMode(m){
       if(!m||typeof m!=='object') return null;
-      const battles=parseInt(m.battles||m.total_battles||m.games||0);
-      if(!battles) return null;
-      const wins=parseInt(m.victories||m.wins||m.win||0);
-      const wr=battles>0?Math.round(wins/battles*100):parseInt(m.win_rate||m.winrate||0);
-      const ka=parseInt(m.air_kills||m.aircraft_kills||m.kills_air||m.plane_kills||0);
-      const kg=parseInt(m.ground_kills||m.vehicle_kills||m.tank_kills||m.kills_ground||0);
-      const deaths=Math.max(1,parseInt(m.deaths||m.losses||m.death||1));
-      const kd=((ka+kg)/deaths).toFixed(2);
+      const battles=parseInt(m.battles||m.total_battles||m.games||m.matches||0);
+      if(!battles){ console.log('[TS] mode skip — battles=0'); return null; }
+      const wins=parseInt(m.victories||m.wins||m.win||m.victories_count||0);
+      const wr=battles>0?Math.round(wins/battles*100):parseInt(m.win_rate||m.winrate||m.wr||0);
+      const ka=parseInt(m.air_kills||m.aircraft_kills||m.kills_air||m.plane_kills||m.air_frags||0);
+      const kg=parseInt(m.ground_kills||m.vehicle_kills||m.tank_kills||m.kills_ground||m.ground_frags||m.frags||0);
+      const deaths=Math.max(1,parseInt(m.deaths||m.losses||m.death||m.death_count||1));
+      const kd=deaths>0?((ka+kg)/deaths).toFixed(2):'0.00';
+      console.log('[TS] mode ok — battles:',battles,'wins:',wins,'kg:',kg,'ka:',ka,'deaths:',deaths);
       return{battles,wins,wr,kills_air:ka,kills_ground:kg,deaths,kd};
     }
 
-    const rb=parseMode(st.rb||st.realistic||st.ground_rb||st.ground)||parseMode(st);
-    if(!rb) return null;
+    // Try all known mode key patterns
+    const rb = parseMode(st.rb || st.realistic || st.ground_rb || st.ground || st.RB) ||
+               parseMode(raw.rb || raw.realistic) ||
+               parseMode(st); // last resort: treat whole stats object as RB
 
-    // Only use modes we actually have data for — no derivation
-    const ab=parseMode(st.ab||st.arcade||st.ground_ab)||null;
-    const sb=parseMode(st.sb||st.simulator||st.ground_sb)||null;
+    if(!rb){ console.warn('[TS] Could not find RB stats'); return null; }
 
-    const hrs=parseInt(st.hours_played||st.play_time||info.hours||info.hours_played||info.time_played||0)||null;
-    const topVehicle=info.top_vehicle||info.favorite_vehicle||info.most_played||null;
-    const prefNations=info.nations||info.preferred_nations||null;
+    const ab = parseMode(st.ab || st.arcade || st.ground_ab || st.AB) ||
+               parseMode(raw.ab || raw.arcade) || null;
+    const sb = parseMode(st.sb || st.simulator || st.ground_sb || st.SB) ||
+               parseMode(raw.sb || raw.simulator) || null;
+
+    const hrs = parseInt(st.hours_played||st.play_time||st.time||
+                         info.hours||info.hours_played||info.time_played||
+                         raw.hours||raw.play_time||0)||null;
+    const topVehicle = info.top_vehicle||info.favorite_vehicle||info.most_played||
+                       raw.top_vehicle||raw.vehicle||null;
+    const prefNations = info.nations||info.preferred_nations||raw.nations||null;
 
     return{name,lv,hrs,clan,topVehicle,prefNations,
-      modes:{rb, ab, sb},
-      source:'real'};
-  }catch(e){ console.warn('parseTS error:',e); return null; }
+      modes:{rb,ab,sb}, source:'real'};
+  }catch(e){
+    console.error('[TS] parseTS crash:', e);
+    return null;
+  }
 }
 
 let currentPlayer=null;
@@ -3108,9 +3142,9 @@ const OR_MODELS=[
   'deepseek/deepseek-r1-distill-qwen-32b:free',
 ];
 const GEMINI_MODELS=[
-  'gemini-1.5-flash',
-  'gemini-2.0-flash-lite',
-  'gemini-2.0-flash',
+  'gemini-1.5-flash-latest',
+  'gemini-1.5-pro-latest',
+  'gemini-pro',
 ];
 
 /* keys already loaded above */
@@ -3204,30 +3238,29 @@ async function callOR(msgs){
     'X-Title':'War Thunder Command Center'
   };
   for(const model of OR_MODELS){
-    if(!_cdOk('or:'+model)){ continue; }
+    if(!_cdOk('or:'+model)) continue;
     try{
       const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-        method:'POST',
-        headers:OR_HEADERS,
-        signal:safeAbort(22000),
+        method:'POST', headers:OR_HEADERS, signal:safeAbort(20000),
         body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
       });
       if(r.status===429||r.status===503){ _cdSet('or:'+model); continue; }
-      if(r.status===401||r.status===403) return {error:'auth',msg:'Невірний OR ключ → openrouter.ai/keys'};
-      if(r.status===402) return {error:'auth',msg:'OR: поповни баланс на openrouter.ai'};
+      if(r.status===401){ console.warn('[OR] 401 — ключ відхилено'); return {error:'auth',msg:'OR: 401 Unauthorized'}; }
+      if(r.status===403){ console.warn('[OR] 403 — forbidden'); return {error:'auth',msg:'OR: 403 Forbidden'}; }
+      if(r.status===402) return {error:'auth',msg:'OR: потрібен баланс'};
       if(r.status===404||r.status===400){ _cdSet('or:'+model); continue; }
-      if(!r.ok){ const e=await r.json().catch(()=>({})); return {error:'api',msg:'OR '+r.status+': '+(e.error?.message||'').slice(0,80)}; }
+      if(!r.ok){ _cdSet('or:'+model); continue; }
       const d=await r.json();
       const text=(d.choices?.[0]?.message?.content||'').trim();
       if(!text){ _cdSet('or:'+model); continue; }
       return {ok:true,text,model,provider:'openrouter'};
     }catch(e){
-      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут.'};
+      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут'};
       _cdSet('or:'+model);
     }
   }
   _cdUI();
-  return {error:'rl',msg:'OR: всі моделі на cooldown. Gemini спробує автоматично.'};
+  return {error:'rl',msg:'OR: недоступний'};
 }
 
 /* ════════════════════════════════════════════════════
@@ -3238,11 +3271,11 @@ async function callGemini(msgs){
   for(const model of GEMINI_MODELS){
     if(!_cdOk('g:'+model)){ continue; }
     try{
-      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${GEMINI_KEY}`,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         signal:safeAbort(22000),
-        body:JSON.stringify({system_instruction:{parts:[{text:AI_SYS}]},contents,generationConfig:{maxOutputTokens:700,temperature:0.7}})
+        body:JSON.stringify({contents:[{role:'user',parts:[{text:AI_SYS+'\n\n'+msgs.map(m=>m.content).join('\n')}]}],generationConfig:{maxOutputTokens:700,temperature:0.7}})
       });
       if(r.status===429||r.status===503){ _cdSet('g:'+model); continue; }
       if(r.status===401||r.status===403){
@@ -3299,9 +3332,10 @@ function sendMsg(){
     const msgs=_aiHistory.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}));
     let res=null;
 
-    // Завжди пробуємо OR спершу (безкоштовні моделі), потім Gemini, потім Claude
+    // Завжди пробуємо OR → Gemini → Claude (пропускаємо auth помилки)
     res=await callOR(msgs);
-    if(!res?.ok) res=await callGemini(msgs);
+    if(!res?.ok && res?.error!=='rl') res=await callGemini(msgs);
+    else if(!res?.ok) res=await callGemini(msgs);
     if(!res?.ok) res=await callClaude(msgs);
 
     removeNode(typer);
