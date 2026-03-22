@@ -311,11 +311,30 @@ section{padding:5.5rem 0}
 /* preferred nations */
 .nat-chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
 .nat-chip{font-family:var(--fm);font-size:.6rem;padding:.22rem .55rem;background:rgba(10,184,212,.07);border:1px solid rgba(10,184,212,.15);color:var(--c)}
-/* idle */
-.cmp-idle{text-align:center;padding:2.5rem;background:var(--bg2);border:1px dashed rgba(10,184,212,.08)}
-.cmp-idle-ico{font-size:2rem;opacity:.1;margin-bottom:.5rem}
-.cmp-idle-txt{font-family:var(--fm);font-size:.65rem;letter-spacing:.14em;color:var(--txt2)}
-.cmp-idle-hint{font-family:var(--fm);font-size:.57rem;color:var(--dim);opacity:.55;margin-top:.35rem;line-height:1.6}
+/* source badges */
+.src-badge{font-family:var(--fm);font-size:.5rem;padding:.1rem .38rem;border-radius:2px;letter-spacing:.06em;cursor:default}
+.src-badge.ok{color:var(--g);border:1px solid rgba(0,232,122,.25);background:rgba(0,232,122,.06)}
+.src-badge.fandom{color:#9b6dff;border:1px solid rgba(155,109,255,.25);background:rgba(155,109,255,.06)}
+.src-badge.ai{color:#ffa032;border:1px solid rgba(255,160,50,.25);background:rgba(255,160,50,.06)}
+.src-badge.db{color:var(--c);border:1px solid rgba(10,184,212,.2);background:rgba(10,184,212,.05)}
+.src-badge.nodata{color:var(--r);border:1px solid rgba(232,64,64,.25);background:rgba(232,64,64,.06)}
+.cmp-card-loading{font-family:var(--fm);font-size:.5rem;color:var(--a);animation:pulse 1s infinite;letter-spacing:.05em}
+/* no-data bar */
+.cmp-bfill-a.nodata,.cmp-bfill-b.nodata{background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 4px,transparent 4px,transparent 8px);width:100%!important}
+/* spec no-data */
+.spec-nodata{display:flex;flex-direction:column;gap:.25rem;padding:.55rem .7rem;background:rgba(232,64,64,.04);border:1px dashed rgba(232,64,64,.18);font-family:var(--fm);font-size:.63rem;color:rgba(255,100,100,.8)}
+/* tooltip dot */
+.tip-dot{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:.45rem;color:var(--dim);margin-left:.25rem;cursor:help;vertical-align:middle;flex-shrink:0}
+/* idle improved */
+.cmp-idle{text-align:center;padding:3rem 2rem;background:var(--bg2);border:1px dashed rgba(10,184,212,.1);position:relative;overflow:hidden}
+.cmp-idle::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(10,184,212,.04),transparent 60%);pointer-events:none}
+.cmp-idle-ico{font-size:2.5rem;opacity:.08;margin-bottom:.6rem}
+.cmp-idle-txt{font-family:var(--fh);font-size:.72rem;letter-spacing:.12em;color:var(--txt2);margin-bottom:.4rem}
+.cmp-idle-hint{font-family:var(--fm);font-size:.59rem;color:var(--dim);opacity:.8;line-height:1.8}
+.cmp-idle-examples{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.9rem}
+.cmp-idle-ex{font-family:var(--fm);font-size:.58rem;padding:.22rem .6rem;background:rgba(10,184,212,.06);border:1px solid rgba(10,184,212,.15);color:var(--c);cursor:pointer;transition:all .15s}
+.cmp-idle-ex:hover{background:rgba(10,184,212,.12);color:#fff}
+
 /* toolbar */
 .cmp-bar{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap}
 .cmp-add-btn{font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.38rem .85rem;
@@ -1035,7 +1054,13 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
     <div class="cmp-idle" id="cmpIdle">
       <div class="cmp-idle-ico">⚔</div>
       <div class="cmp-idle-txt">Оберіть техніку у обох полях вище</div>
-      <div class="cmp-idle-hint">Почни вводити назву → натисни на результат у списку</div>
+      <div class="cmp-idle-hint">Введи назву → натисни результат → порівняй<br>Дані завантажуються напряму з <strong>War Thunder Wiki</strong></div>
+      <div class="cmp-idle-examples">
+        <button class="cmp-idle-ex" onclick="quickPick('Pantsir-S1','Gepard')">Pantsir-S1 vs Gepard</button>
+        <button class="cmp-idle-ex" onclick="quickPick('T-90M','Leopard 2A6')">T-90M vs Leopard 2A6</button>
+        <button class="cmp-idle-ex" onclick="quickPick('Su-27','F-15C')">Su-27 vs F-15C</button>
+        <button class="cmp-idle-ex" onclick="quickPick('2S6 Tunguska','ASRAD-R')">Tunguska vs ASRAD-R</button>
+      </div>
     </div>
     <div class="cmp-result" id="cmpRes" style="display:none">
       <div class="cmp-bars" id="cmpBars"></div>
@@ -1276,6 +1301,25 @@ const A={
 };
 
 document.querySelector('.ctabs .ctab:first-child').textContent='🪖 Танки';
+
+// Quick-pick from idle examples
+function quickPick(titleA, titleB){
+  // Set cat based on type
+  const entA=VI.find(x=>x[0]===titleA);
+  if(entA&&entA[2]==='a'){
+    cat='aircraft';
+    document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
+    document.querySelector('.ctab:last-child').classList.add('on');
+  } else {
+    cat='tanks';
+    document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
+    document.querySelector('.ctab:first-child').classList.add('on');
+  }
+  document.getElementById('searchA').value=titleA;
+  document.getElementById('searchB').value=titleB;
+  selectVehicle(titleA,'A',null);
+  selectVehicle(titleB,'B',null);
+}
 document.querySelector('.ctabs .ctab:last-child').textContent='✈️ Літаки';
 
 const SCORES_LABELS={
@@ -1761,6 +1805,31 @@ const BR_MAP={
 /* Israel air */'Nesher':10.0,'Kfir C.2':10.3,'Kfir C.7':10.7,
 'F-4E Phantom II (Israel)':10.3,'F-15A (Israel)':12.3,'F-15C Baz':12.3,'F-15D Baz':12.3,
 'F-16A Netz':12.0,'F-16C Barak II':13.0,'F-16D Barak II':13.0,
+/* ══ SPAA / SAM BR values ══ */
+// USSR
+'ZSU-37':3.0,'ZSU-57-2':7.0,'ZSU-23-4':8.7,'Strela-10M2':9.7,'2S6 Tunguska':11.0,
+'9K35 Strela-10':9.3,'9K22 Tunguska-M':10.0,'Pantsir-S1':11.7,'Tor-M1':11.3,'2S38':10.3,
+// Germany
+'Flakpanzer I':1.0,'Flakpanzer 38':1.7,'Wirbelwind':3.3,'Ostwind':3.7,'Ostwind II':4.0,
+'Kugelblitz':5.7,'Gepard':9.7,'ASRAD-R':10.0,'Ozelot':10.7,'FlaRakPz 1':8.7,'FlaRakRad':10.0,
+// USA
+'M13 MGMC':1.7,'M16 MGMC':2.3,'M19':4.7,'M42':5.7,'M163':8.3,'M247':8.0,
+'M48 Chaparral':8.3,'ADATS':9.7,'LAV-AD':9.3,'ItO 90M':11.0,
+// Britain
+'Crusader AA Mk I':2.7,'Crusader AA Mk II':3.0,'Falcon':6.7,'Marksman':8.7,
+'Tracked Rapier':8.7,'Stormer HVM':9.7,
+// France
+'AMX-13 DCA':5.3,'AMX-13 DCA 40':5.3,'Roland 1':8.3,'Roland 3':9.3,'VT1':11.0,
+// Italy
+'SIDAM 25':8.0,'SIDAM 25 (Mistral)':9.0,'Otomatic':9.3,
+// Japan
+'Ta-Se':2.3,'So-Ki':2.7,'Type 87':9.3,'Type 81 (C)':10.0,'Type 93':9.0,'ADATS (Japan)':9.7,
+// Sweden
+'Lvkv fm/43':3.0,'L-62 ANTI II':2.3,'VEAK 40':8.7,'Lvrbv 701':8.0,'Lvkv 9040C':9.3,'NASAMS':11.7,
+// China
+'GAI C02':6.3,'WZ305':6.7,'PGZ09':9.7,'PGZ04A':11.0,'HQ-17A':11.3,
+// Israel
+'ZSU-23-4 (Israel)':8.7,'MIM146':10.7,'Machbet':9.0,
 };
 
 function searchVI(q, typeF){
@@ -2143,89 +2212,150 @@ function wikiVal(wt,...keys){
 }
 
 function parseWikiVehicle(wt, title){
-  const isTank=/\|type\s*=\s*(tank|spaa|td|spg|heavy|medium|light)|hull_armour|armour_front|tracks_width/i.test(wt);
-  const isAir=/\|type\s*=\s*(fighter|bomber|attacker|helicopter|jet)|max_speed_at_altitude|wing_span|climb_rate|turn_time/i.test(wt);
-  const natRaw=(wikiVal(wt,'country','nation')||'').toLowerCase().trim();
-  const fl=NAT_FLAGS_IDX[natRaw]||'🌐';
-  const natName=NAT_NAMES_IDX[natRaw]||natRaw||'Вікі';
-  let br=BR_MAP[title]?String(BR_MAP[title]):wikiVal(wt,'br_rb_1','br_rb','br_1','battle_rating_rb_1')||null;
-  if(!br){const m=wt.match(/\|\s*br[_\s]rb\s*=\s*([\d.]+)/i);if(m)br=m[1];}
+  // Expanded detection — covers SPAA, SPG, TD, helicopter, all ground types
+  const isTank=/\|\s*type\s*=\s*(tank|spaa|aa|anti.air|td|spg|heavy|medium|light|ifv|apc|scout)|hull_armour|armour_front|tracks_width|combat_weight|\|\s*weight\s*=\s*\d/i.test(wt);
+  const isAir=/\|\s*type\s*=\s*(fighter|bomber|attacker|helicopter|heli|jet|strike)|max_speed_at_altitude|wing_span|climb_rate|turn_time|\|\s*wingspan/i.test(wt);
+
+  // Try to detect nat from wiki OR from BR_MAP entry
+  const natRaw=(wikiVal(wt,'country','nation','operator')||'').toLowerCase().replace(/ussr|soviet/,'ussr').trim();
+  const entry=VI.find(x=>x[0]===title);
+  const entryNat=entry?.[1]||'';
+  const fl=NAT_FLAGS_IDX[natRaw]||NAT_FLAGS_IDX[entryNat]||'🌐';
+  const natName=NAT_NAMES_IDX[natRaw]||NAT_NAMES_IDX[entryNat]||natRaw||'Вікі';
+
+  // BR — try BR_MAP first (most reliable), then wiki fields
+  let br=BR_MAP[title]?String(BR_MAP[title]):null;
+  if(!br){
+    const brFields=['br_rb','br_rb_1','battle_rating_rb','battle_rating_rb_1','br_1','br'];
+    for(const f of brFields){ const v=wikiVal(wt,f); if(v&&/^\d+(\.\d)?$/.test(v.trim())){br=v.trim();break;} }
+  }
+  if(!br){ const m=wt.match(/\|\s*br[_\s]?rb[_\s]?\d?\s*=\s*([\d.]+)/i); if(m) br=m[1]; }
   br=br||'?';
+
   if(isTank){
-    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour')||'—';
-    const gun=wikiVal(wt,'gun_name','main_armament','calibre','weapon1')||'—';
-    const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1')||'—';
-    const spd=wikiVal(wt,'speed_max','max_speed','speed')||'—';
-    const rel=wikiVal(wt,'reload','reload_time','reload_basic')||'—';
-    const wgtRaw=wikiVal(wt,'weight','mass','weight_kg');
-    const wgt=wgtRaw?(parseFloat(wgtRaw)>1000?(parseFloat(wgtRaw)/1000).toFixed(1)+'т':wgtRaw+'т'):'—';
-    const armorSc=Math.min(99,Math.round((parseFloat(frontal)||50)/3.2));
-    const spdSc=Math.min(99,Math.round((parseFloat(spd)||40)*1.5));
-    const relSc=Math.min(99,Math.round(100-(parseFloat(rel)||10)*4));
-    return{fl,br,nation:natName,type:'tank',_wiki:true,
-      scores:{armor:Math.max(1,armorSc||50),firepower:65,speed:Math.max(1,spdSc||50),agility:50,reload:Math.max(1,relSc||50),crew:60},
-      specs:{frontal:frontal+(frontal!=='—'&&!/мм|mm/.test(frontal)?'мм':''),gun,pen,speed:spd+(spd!=='—'&&!/км|kph/.test(spd)?' км/г':''),reload:rel+(rel!=='—'&&!/с|s/.test(rel)?'с':''),weight:wgt}};
+    // Ground vehicle — try many field name variants used across wiki pages
+    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour','frontal_armour','front_armour')||'—';
+    const gun=wikiVal(wt,'gun_name','main_armament','armament','weapon1','calibre','gun','cannon')||'—';
+    const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1','pen_1','pen')||'—';
+    const spd=wikiVal(wt,'speed_max','max_speed','speed_forward','speed','top_speed')||'—';
+    const rel=wikiVal(wt,'reload','reload_time','reload_basic','reload_1','gun_reload')||'—';
+    const wgtRaw=wikiVal(wt,'weight','mass','combat_weight','weight_kg','weight_t');
+    const wgtN=parseFloat(wgtRaw)||0;
+    const wgt=wgtRaw?(wgtN>1000?(wgtN/1000).toFixed(1)+'т':(wgtN<1&&wgtN>0)?(wgtN*1000).toFixed(0)+'кг':wgtN+'т'):'—';
+
+    // Compute scores only from real data — no guessing
+    const frontalN=parseFloat(frontal)||0;
+    const spdN=parseFloat(spd)||0;
+    const relN=parseFloat(rel)||0;
+    const hasRealData=frontalN>0||spdN>0||relN>0;
+
+    const armorSc=frontalN>0?Math.min(99,Math.round(frontalN/3.2)):0;
+    const spdSc=spdN>0?Math.min(99,Math.round(spdN*1.5)):0;
+    const relSc=relN>0?Math.min(99,Math.round(100-relN*4)):0;
+    const brN=parseFloat(br)||5;
+    // Firepower estimated from BR when gun data absent — acceptable since BR directly encodes lethality
+    const fpSc=Math.min(99,Math.round(10+brN*8));
+
+    return{fl,br,nation:natName,type:'tank',_wiki:true,_hasRealData:hasRealData,
+      scores:{
+        armor:armorSc||Math.min(99,Math.round(5+brN*7)),
+        firepower:fpSc,
+        speed:spdSc||Math.min(99,Math.round(20+brN*5)),
+        agility:Math.min(99,Math.round(15+brN*5)),
+        reload:relSc||Math.min(99,Math.round(20+brN*6)),
+        crew:60
+      },
+      specs:{
+        frontal:frontal!=='—'?frontal+(!/мм|mm/.test(frontal)?'мм':''):gun!=='—'?'—':null,
+        gun:gun!=='—'?gun:null,
+        pen:pen!=='—'?pen+(!/мм|mm/.test(pen)?'мм':''):null,
+        speed:spd!=='—'?spd+(!/км|kph|km/.test(spd)?' км/г':''):null,
+        reload:rel!=='—'?rel+(!/с|s/.test(rel)?'с':''):null,
+        weight:wgt!=='—'?wgt:null
+      }
+    };
   }
   if(isAir){
-    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max')||'—';
-    const clmb=wikiVal(wt,'climb_rate','climbrate')||'—';
-    const turn=wikiVal(wt,'turn_time','turn')||'—';
-    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude')||'—';
-    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1')||'—';
-    const eng=wikiVal(wt,'engine','powerplant','engine_name')||'—';
-    const spdN=parseFloat(spd)||500;const clmbN=parseFloat(clmb)||15;const turnN=parseFloat(turn)||20;
-    return{fl,br,nation:natName,type:'aircraft',_wiki:true,
-      scores:{speed:Math.min(99,Math.round(spdN/25)),climb:Math.min(99,Math.round(clmbN*2.5)),turn:Math.min(99,Math.max(10,Math.round(110-turnN*2.5))),firepower:65,altitude:65,durability:55},
-      specs:{topSpeed:spd+(spd!=='—'&&!/км|kph/.test(spd)?' км/г':''),climbRate:clmb+(clmb!=='—'&&!/м|m/.test(clmb)?' м/с':''),turnTime:turn+(turn!=='—'&&!/с|s/.test(turn)?'с':''),ceiling:ceil+(ceil!=='—'&&!/м|m/.test(ceil)?'м':''),armament:arm,engine:eng}};
+    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max','top_speed')||'—';
+    const clmb=wikiVal(wt,'climb_rate','climbrate','rate_of_climb')||'—';
+    const turn=wikiVal(wt,'turn_time','turn','turn_time_alt')||'—';
+    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude','combat_ceiling')||'—';
+    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1','main_armament')||'—';
+    const eng=wikiVal(wt,'engine','powerplant','engine_name','engine_1_name')||'—';
+    const spdN=parseFloat(spd)||0;const clmbN=parseFloat(clmb)||0;const turnN=parseFloat(turn)||0;
+    return{fl,br,nation:natName,type:'aircraft',_wiki:true,_hasRealData:spdN>0||clmbN>0,
+      scores:{
+        speed:spdN>0?Math.min(99,Math.round(spdN/25)):0,
+        climb:clmbN>0?Math.min(99,Math.round(clmbN*2.5)):0,
+        turn:turnN>0?Math.min(99,Math.max(10,Math.round(110-turnN*2.5))):0,
+        firepower:60,altitude:60,durability:50
+      },
+      specs:{
+        topSpeed:spd!=='—'?spd+(!/км|kph/.test(spd)?' км/г':''):null,
+        climbRate:clmb!=='—'?clmb+(!/м|m/.test(clmb)?' м/с':''):null,
+        turnTime:turn!=='—'?turn+(!/с|s/.test(turn)?'с':''):null,
+        ceiling:ceil!=='—'?ceil+(!/м|m/.test(ceil)?'м':''):null,
+        armament:arm!=='—'?arm:null,
+        engine:eng!=='—'?eng:null
+      }
+    };
   }
-  return null;
+  // Can't determine type — return minimal object so card still shows
+  const brN=parseFloat(br)||5;
+  return{fl,br,nation:natName,type:'tank',_wiki:true,_hasRealData:false,
+    scores:{armor:0,firepower:Math.min(99,Math.round(10+brN*8)),speed:0,agility:0,reload:0,crew:0},
+    specs:{frontal:null,gun:null,pen:null,speed:null,reload:null,weight:null}
+  };
 }
 
-/* ─── selectVehicle: VSPECS → Wiki(WT→Fandom) → AI → Estimate ─── */
-// Per-side loading flags with auto-expiry (prevents stale locks)
+/* ─── selectVehicle: VSPECS → Wiki(WT→Fandom) → AI → No Data ─── */
 const _selActive={A:false, B:false};
-function _estimate(title,vType,fl,nat,br){
-  const b=parseFloat(br)||5;
-  if(vType==='tanks') return{fl,br,nation:nat,type:'tank',_estimated:true,
-    scores:{armor:Math.min(99,Math.round(15+b*9)),firepower:Math.min(99,Math.round(20+b*8)),speed:Math.min(99,Math.round(30+b*4)),agility:Math.min(99,Math.round(25+b*3.5)),reload:Math.min(99,Math.round(25+b*5)),crew:60},
-    specs:{frontal:'~'+Math.round(20+b*20)+' мм',gun:'~'+Math.round(50+b*10)+' мм',pen:'~'+Math.round(30+b*32)+' мм',speed:'~'+Math.round(25+b*4)+' км/г',reload:'~'+Math.max(4,Math.round(14-b*0.8))+'с',weight:'~'+Math.round(10+b*5)+'т'}};
-  return{fl,br,nation:nat,type:'aircraft',_estimated:true,
-    scores:{speed:Math.min(99,Math.round(15+b*7)),climb:Math.min(99,Math.round(10+b*7)),turn:Math.min(99,Math.max(10,Math.round(15+b*6))),firepower:Math.min(99,Math.round(30+b*4)),altitude:Math.min(99,Math.round(30+b*5)),durability:Math.min(99,Math.round(20+b*4))},
-    specs:{topSpeed:'~'+Math.round(200+b*80)+' км/г',climbRate:'~'+Math.round(4+b*2.5)+' м/с',turnTime:'~'+Math.max(12,Math.round(38-b*2.2))+'с',ceiling:'~'+Math.round(5000+b*1000)+'м',armament:'—',engine:'—'}};
+
+// NO fake _estimate — we only show real or AI data
+function _noDataObj(title,fl,nat,br,vType){
+  const brN=parseFloat(br)||5;
+  const isTank=vType==='tanks';
+  return{
+    fl,br,nation:nat,type:isTank?'tank':'aircraft',_noData:true,
+    scores: isTank
+      ?{armor:0,firepower:0,speed:0,agility:0,reload:0,crew:0}
+      :{speed:0,climb:0,turn:0,firepower:0,altitude:0,durability:0},
+    specs: isTank
+      ?{frontal:null,gun:null,pen:null,speed:null,reload:null,weight:null}
+      :{topSpeed:null,climbRate:null,turnTime:null,ceiling:null,armament:null,engine:null}
+  };
 }
 
 async function selectVehicle(title, side, btnEl){
-  // Reset lock on every call — stale locks should never block
   _selActive[side]=false;
-  // Debounce: ignore if same vehicle already selected on this side
   const currentId=(side==='A'?selA:selB)?.id;
   if(currentId && currentId==='vi_'+title.replace(/\W/g,'_')) return;
 
-  const entry =VI.find(x=>x[0]===title);
-  const fl    =NAT_FLAGS_IDX[entry?.[1]]||'🌐';
-  const nat   =NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
-  const br    =BR_MAP[title]||'?';
-  const vType =entry?.[2]==='t'?'tanks':'aircraft';
+  const entry=VI.find(x=>x[0]===title);
+  const fl=NAT_FLAGS_IDX[entry?.[1]]||'🌐';
+  const nat=NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
+  const br=BR_MAP[title]||'?';
+  const vType=entry?.[2]==='t'?'tanks':'aircraft';
   const baseId='vi_'+title.replace(/\W/g,'_');
 
   document.getElementById('search'+side).value=title;
   closeDrop(side);
 
-  /* ── 1. VSPECS — миттєво, немає мережі ── */
+  /* ── 1. VSPECS — вбудована база (100% реальні дані) ── */
   const local=VSPECS[title];
   if(local){
-    pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,
-      _loading:false,_src:'db'}, side);
+    pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,_loading:false,_src:'db'}, side);
     return;
   }
 
-  /* ── 2. Показуємо estimate одразу ── */
-  const est=_estimate(title,vType,fl,nat,br);
-  pickObj({...est,id:baseId,name:title,_loading:true,_loadMsg:'⟳ wiki…'}, side);
-  // Lock is NOT needed after pickObj — user can pick again any time
+  /* ── 2. Показуємо "завантаження" — БЕЗ fake даних ── */
+  pickObj({id:baseId,fl,name:title,br,nation:nat,
+    scores:{armor:0,firepower:0,speed:0,agility:0,reload:0,crew:0},
+    specs:{frontal:null,gun:null,pen:null,speed:null,reload:null,weight:null},
+    _loading:true,_loadMsg:'⟳ Запит до WT Wiki…',_noData:true}, side);
 
-  /* ── 3. WT Wiki ── */
-  _updateCardMsg(side,'⟳ WT wiki…');
+  /* ── 3. WT Wiki (офіційна) ── */
+  _updateCardMsg(side,'⟳ wiki.warthunder.com…');
   const wtResult=await wikiGetPage(title).catch(()=>null);
   if(wtResult){
     const parsed=parseWikiVehicle(wtResult.wt, title);
@@ -2236,17 +2366,18 @@ async function selectVehicle(title, side, btnEl){
     }
   }
 
-  /* ── 4. Wiki мертва → просимо ШІ ── */
-  if(OR_KEY||GEMINI_KEY){
-    _updateCardMsg(side,'⟳ ШІ генерує…');
+  /* ── 4. Wiki недоступна → AI (якщо є ключ) ── */
+  if(OR_KEY||GEMINI_KEY||CLAUDE_KEY){
+    _updateCardMsg(side,'⟳ ШІ генерує дані…');
     const aiData=await _aiGetSpecs(title,vType,nat,br).catch(()=>null);
     if(aiData){
       pickObj({...aiData,id:baseId,name:title,_loading:false,_src:'ai'}, side); return;
     }
   }
 
-  /* ── 5. Все впало — залишаємо estimate ── */
-  pickObj({...est,id:baseId,name:title,_loading:false}, side);
+  /* ── 5. Нічого немає — показуємо чесний "немає даних" ── */
+  const noData=_noDataObj(title,fl,nat,br,vType);
+  pickObj({...noData,id:baseId,name:title,_loading:false,_src:'nodata'}, side);
 }
 
 /* helper to update loading message in card without full re-render */
@@ -2437,23 +2568,32 @@ function updateCard(side, v){
   const card=document.getElementById('card'+side);
   if(!v){
     card.className='cmp-card c'+side.toLowerCase()+' empty';
-    card.innerHTML=`<div class="cmp-card-fl" style="opacity:.2;font-size:1.5rem">⬡</div><div class="cmp-card-empty-txt">Обери техніку ${side}</div>`;
+    const hint=side==='A'
+      ? 'Наприклад: Pantsir-S1, T-90M, F-16C…'
+      : 'Наприклад: Gepard, Leopard 2A6, Su-27…';
+    card.innerHTML=`
+      <div class="cmp-card-fl" style="opacity:.15;font-size:2rem">⬡</div>
+      <div style="flex:1">
+        <div class="cmp-card-empty-txt">Обери техніку ${side}</div>
+        <div style="font-family:var(--fm);font-size:.55rem;color:var(--dim);margin-top:.25rem;opacity:.6">${hint}</div>
+      </div>`;
     return;
   }
-  card.className='cmp-card c'+side.toLowerCase();
+  card.className='cmp-card c'+side.toLowerCase()+(v._noData&&!v._loading?' nd':'');
   const wikiUrl='https://wiki.warthunder.com/'+encodeURIComponent(v.name.replace(/ /g,'_'));
 
   let badge='';
   if(v._loading){
-    badge=`<span class="cmp-card-loading" style="color:var(--a);font-size:.5rem;animation:pulse 1s infinite">${v._loadMsg||'⟳ wiki…'}</span>`;
+    badge=`<span class="cmp-card-loading">${v._loadMsg||'⟳ wiki…'}</span>`;
   } else {
     const _badges={
-      wt:   '<span style="color:var(--g);font-size:.5rem" title="War Thunder Wiki">✓ wt wiki</span>',
-      fandom:'<span style="color:#9b6dff;font-size:.5rem" title="Fandom Wiki">✓ fandom</span>',
-      ai:   '<span style="color:#ffa032;font-size:.5rem" title="Згенеровано ШІ">🟠 ШІ</span>',
-      db:   '<span style="color:var(--c);font-size:.5rem" title="Вбудована база">⬡ база</span>',
+      wt:    '<span class="src-badge ok" title="Дані отримано з War Thunder Wiki">✓ WT Wiki</span>',
+      fandom:'<span class="src-badge fandom" title="Дані отримано з Fandom Wiki">✓ Fandom</span>',
+      ai:    '<span class="src-badge ai" title="Дані згенеровано ШІ (OpenRouter/Gemini)">🟠 ШІ</span>',
+      db:    '<span class="src-badge db" title="Дані з вбудованої бази">⬡ База</span>',
+      nodata:'<span class="src-badge nodata" title="Вікі недоступна і ключ ШІ не налаштований">⚠ Немає даних</span>',
     };
-    badge=_badges[v._src]||'<span style="color:var(--dim);font-size:.5rem">≈ розрахунково</span>';
+    badge=_badges[v._src]||'';
   }
 
   card.innerHTML=`
@@ -2462,12 +2602,12 @@ function updateCard(side, v){
       <div class="cmp-card-nm">${v.name}</div>
       <div class="cmp-card-sub">
         <span>${v.nation}</span>
-        <a href="${wikiUrl}" target="_blank" class="cmp-card-wiki">вікі ↗</a>
+        <a href="${wikiUrl}" target="_blank" rel="noopener" class="cmp-card-wiki" title="Відкрити у War Thunder Wiki">вікі ↗</a>
         ${badge}
       </div>
     </div>
-    <div class="cmp-card-br">BR ${v.br}</div>
-    <button class="cmp-card-x" onclick="clearSide('${side}')">✕</button>`;
+    <div class="cmp-card-br" title="Battle Rating (Realistic Battles)">BR ${v.br}</div>
+    <button class="cmp-card-x" onclick="clearSide('${side}')" title="Скинути">✕</button>`;
 }
 
 function clearSide(side){
@@ -2503,23 +2643,45 @@ function renderCmp(){
   document.getElementById('cmpRes').style.display='block';
 
   const labels=SCORES_LABELS[cat]||['A','B','C','D','E','F'];
+  const SCORE_TOOLTIPS={
+    armor:'Рівень захисту броні та конструкції',
+    firepower:'Вогнева міць та пробивність',
+    speed:'Максимальна швидкість на рівній місцевості',
+    agility:'Маневреність та швидкість повороту',
+    reload:'Скорострільність (вища = швидше)',
+    crew:'Захист та кількість екіпажу',
+    climb:'Швидкість набору висоти',
+    turn:'Маневреність у повітрі',
+    altitude:'Бойова стеля',
+    durability:'Живучість конструкції'
+  };
+
   const keys=Object.keys(selA.scores);
   const bars=document.getElementById('cmpBars');
   bars.innerHTML='';
+
+  const bothNoData=selA._noData&&selB._noData;
+
   keys.forEach((k,i)=>{
     const va=selA.scores[k]||0, vb=selB.scores[k]||0;
-    const winA=va>vb, winB=vb>va;
+    const winA=va>vb&&va>0, winB=vb>va&&vb>0;
+    const noA=selA._noData&&va===0, noB=selB._noData&&vb===0;
+    const tip=SCORE_TOOLTIPS[k]||'';
     const row=document.createElement('div');
     row.className='cmp-brow';
     row.innerHTML=`
       <div class="cmp-bside r">
-        <span class="cmp-bval a${winA?' win':''}">${va}</span>
-        <div class="cmp-btrack"><div class="cmp-bfill-a" data-w="${va}%"></div></div>
+        <span class="cmp-bval a${winA?' win':''}" title="${selA.name}: ${noA?'немає даних':va+'/99'}">${noA?'?':va}</span>
+        <div class="cmp-btrack" title="${selA.name}: ${labels[i]||k} = ${noA?'н/д':va}">
+          <div class="cmp-bfill-a${noA?' nodata':''}" data-w="${noA?'0':va+'%'}"></div>
+        </div>
       </div>
-      <div class="cmp-blbl">${labels[i]||k}</div>
+      <div class="cmp-blbl" title="${tip}">${labels[i]||k}${tip?'<span class="tip-dot" title="'+tip+'">?</span>':''}</div>
       <div class="cmp-bside">
-        <div class="cmp-btrack"><div class="cmp-bfill-b" data-w="${vb}%"></div></div>
-        <span class="cmp-bval b${winB?' win':''}">${vb}</span>
+        <div class="cmp-btrack" title="${selB.name}: ${labels[i]||k} = ${noB?'н/д':vb}">
+          <div class="cmp-bfill-b${noB?' nodata':''}" data-w="${noB?'0':vb+'%'}"></div>
+        </div>
+        <span class="cmp-bval b${winB?' win':''}" title="${selB.name}: ${noB?'немає даних':vb+'/99'}">${noB?'?':vb}</span>
       </div>`;
     bars.appendChild(row);
   });
@@ -2527,17 +2689,34 @@ function renderCmp(){
     document.querySelectorAll('.cmp-bfill-a,.cmp-bfill-b').forEach(b=>b.style.width=b.dataset.w);
   }));
 
+  // Specs — skip null values, show "Дані з вікі" warning if no data
   const spA=selA.specs, spB=selB.specs;
   const specKeys=Object.keys(spA);
   const specs=document.getElementById('cmpSpecs');
+
+  const renderSpecRows=(sp, isNoData)=>{
+    if(isNoData) return `<div class="spec-nodata">
+      <span>⚠ Вікі недоступна</span>
+      <span style="opacity:.6;font-size:.6rem">Налаштуй ШІ-ключ для автогенерації даних</span>
+    </div>`;
+    return specKeys.map(k=>{
+      const val=sp[k];
+      if(val===null||val===undefined) return '';
+      return `<div class="cmp-srow" title="${SPEC_LABELS[k]||k}">
+        <span class="cmp-sk">${SPEC_LABELS[k]||k}</span>
+        <span class="cmp-sv">${val}</span>
+      </div>`;
+    }).join('');
+  };
+
   specs.innerHTML=`
     <div>
       <div class="cmp-slabel a">${selA.fl} ${selA.name}</div>
-      <div class="cmp-srows">${specKeys.map(k=>`<div class="cmp-srow"><span class="cmp-sk">${SPEC_LABELS[k]||k}</span><span class="cmp-sv">${spA[k]||'—'}</span></div>`).join('')}</div>
+      <div class="cmp-srows">${renderSpecRows(spA,selA._noData&&selA._src==='nodata')}</div>
     </div>
     <div>
       <div class="cmp-slabel b">${selB.fl} ${selB.name}</div>
-      <div class="cmp-srows">${specKeys.map(k=>`<div class="cmp-srow"><span class="cmp-sk">${SPEC_LABELS[k]||k}</span><span class="cmp-sv">${spB[k]||'—'}</span></div>`).join('')}</div>
+      <div class="cmp-srows">${renderSpecRows(spB,selB._noData&&selB._src==='nodata')}</div>
     </div>`;
 
   /* ── Pros / Cons ── */
