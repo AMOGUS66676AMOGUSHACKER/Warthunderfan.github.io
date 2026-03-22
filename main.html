@@ -1118,9 +1118,9 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
         </div>
         <div id="srcBadge"></div>
         <div class="stabs" id="modeTabs">
-          <button class="stab on" onclick="showMode('rb',this)">Реалістичний</button>
-          <button class="stab" onclick="showMode('ab',this)">Аркадний</button>
-          <button class="stab" onclick="showMode('sb',this)">Симулятор</button>
+          <button class="stab on" data-mode="rb" onclick="showMode('rb',this)">Реалістичний</button>
+          <button class="stab" data-mode="ab" onclick="showMode('ab',this)">Аркадний</button>
+          <button class="stab" data-mode="sb" onclick="showMode('sb',this)">Симулятор</button>
         </div>
         <div id="modeStats"></div>
         <div style="margin-top:.85rem">
@@ -2092,17 +2092,13 @@ async function _wikiFetch(apiBase, title){
   const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=main`;
   const direct=`${apiBase}?${q}`;
 
+  // corsproxy.io returns 404 for wiki.warthunder.com — skip it, use allorigins
   const attempts=[
-    // corsproxy.io — найбільш надійний для вікі
-    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:14000},
-    // allorigins
-    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:14000},
-    // codetabs
-    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:14000},
-    // Якщо WT wiki блокує — пробуємо Fandom напряму
+    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:15000},
+    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:15000},
     ...(apiBase===WT_WIKI_URL?[
-      {url:`https://corsproxy.io/?${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:14000},
-      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:14000},
+      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:15000},
+      {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:15000},
     ]:[]),
   ];
 
@@ -2379,13 +2375,12 @@ async function _wikiSearch(q, typeF){
   if(_wikiSearchCache[cacheKey]) return _wikiSearchCache[cacheKey];
 
   const enc=encodeURIComponent(q);
-  const apiQ=`action=opensearch&search=${enc}&limit=15&namespace=0&format=json&origin=*`;
+  const apiQ=`action=opensearch&search=${enc}&limit=15&namespace=0&format=json`;
   const src=`${WT_WIKI_URL}?${apiQ}`;
+  // corsproxy returns 404 for wiki — use only allorigins + codetabs
   const proxies=[
-    src,
     `https://api.allorigins.win/get?url=${encodeURIComponent(src)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src)}`,
-    `https://corsproxy.io/?${encodeURIComponent(src)}`,
   ];
 
   for(const url of proxies){
@@ -2856,11 +2851,11 @@ function applyCustomVehicle(){
 
 
 /* ════════ PROXIES for Thunderskill ════════ */
+// corsproxy.io returns 404 for thunderskill.com — don't use it
 const TS_PROXIES=[
-  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  u=>`https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
 function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); if(el){el.textContent=msg; el.className='proxy-status '+(cls||'');} }
 
@@ -2870,45 +2865,42 @@ async function tryFetch(targetUrl){
     setProxyStatus(`Спроба ${i+1}/${TS_PROXIES.length}…`,'trying');
     try{
       const ctrl=new AbortController();
-      const tid=setTimeout(()=>ctrl.abort(),12000);
+      const tid=setTimeout(()=>ctrl.abort(),14000);
       const res=await fetch(purl,{signal:ctrl.signal});
       clearTimeout(tid);
       if(!res.ok){ console.warn(`[TS] Проксі ${i+1} HTTP ${res.status}`); continue; }
       const rawText=await res.text();
+      let jsonStr=rawText;
 
-      // Unwrap allorigins wrapper
-      let parsed;
+      // allorigins /get wraps: {"contents":"...","status":{"http_code":...}}
       try{
         const outer=JSON.parse(rawText);
-        if(typeof outer.contents==='string'){
-          // allorigins wraps response in {contents, status}
-          const inner=outer.contents;
-          // If inner is HTML — player not found
-          if(inner.trim().startsWith('<')){ console.warn('[TS] Got HTML, player not found'); return {_notFound:true}; }
-          parsed=JSON.parse(inner);
-        } else {
-          parsed=outer;
+        if(outer && 'contents' in outer){
+          const code=outer.status?.http_code;
+          const c=outer.contents;
+          if(code===404 || c==='not found' || c==='' ||
+             (typeof c==='string' && (c.trim().startsWith('<') || c.trim()===''))){
+            console.warn(`[TS] Not found (http_code=${code}, contents="${String(c).slice(0,30)}")`);
+            return {_notFound:true};
+          }
+          jsonStr=c;
         }
-      }catch{
-        // Maybe raw is already JSON or HTML
-        if(rawText.trim().startsWith('<')){ console.warn('[TS] Got HTML from proxy'); continue; }
-        try{ parsed=JSON.parse(rawText); }catch{ console.warn('[TS] Not JSON'); continue; }
+      }catch{/* not allorigins wrapper */}
+
+      if(typeof jsonStr==='string' && jsonStr.trim().startsWith('<')){
+        console.warn('[TS] Got HTML'); continue;
       }
-
-      console.log('[TS] Raw parsed keys:', Object.keys(parsed||{}).slice(0,20));
-
-      // Thunderskill "not found" responses
-      if(parsed?._notFound) return {_notFound:true};
-      if(parsed?.error) return {_notFound:true};
-      if(parsed?.detail==='Not found') return {_notFound:true};
-      if(parsed?.message==='Not found') return {_notFound:true};
+      let parsed;
+      try{ parsed=JSON.parse(jsonStr); }catch{ console.warn('[TS] Not JSON'); continue; }
       if(!parsed||typeof parsed!=='object') continue;
+      if(parsed.error||parsed.detail==='Not found'||parsed.message==='Not found') return {_notFound:true};
 
+      console.log('[TS] Got data, keys:', Object.keys(parsed).slice(0,15));
       setProxyStatus(`✓ Проксі ${i+1}`,'ok');
       return parsed;
     }catch(e){
-      if(e.name==='AbortError'){ console.warn(`[TS] Проксі ${i+1} таймаут`); }
-      else{ console.warn(`[TS] Проксі ${i+1}:`,e.message); }
+      if(e.name==='AbortError') console.warn(`[TS] Проксі ${i+1} таймаут`);
+      else console.warn(`[TS] Проксі ${i+1}:`,e.message);
     }
   }
   setProxyStatus('Всі проксі недоступні','fail');
@@ -2919,56 +2911,50 @@ async function tryFetch(targetUrl){
 function parseTS(raw, nick){
   try{
     console.log('[TS] Parsing structure, top-level keys:', Object.keys(raw).slice(0,30));
-    console.log('[TS] Full raw sample:', JSON.stringify(raw).slice(0,500));
+    console.log('[TS] Full raw sample:', JSON.stringify(raw).slice(0,600));
 
-    // Thunderskill can return different structures depending on version
-    // Try to find the player info and stats in various locations
-    const info = raw.info || raw.player || raw.profile || raw;
-    const st   = raw.stats || raw.stat || raw.statistics || raw.data || raw;
+    // Thunderskill export JSON: {"stats": {"nick":..., "rank":..., "a":{arcade}, "r":{realistic}, "s":{simulator}}}
+    const st = raw.stats || raw;
 
-    const name = info.nick || info.nickname || info.name || info.username ||
-                 raw.nick  || raw.nickname  || raw.name  || nick;
-    const clan = info.clan || info.clan_tag || info.clanTag || raw.clan || null;
-    const lv   = parseInt(info.level||info.rank||info.prestige||raw.level||raw.rank||0)||null;
+    const name = st.nick || st.name || nick;
+    const rank = st.rank || null;
+    const clan = st.clan || st.squad || null;
+    const lv   = null; // Thunderskill doesn't expose level in export
 
-    console.log('[TS] name:', name, 'clan:', clan, 'level:', lv);
+    console.log('[TS] name:', name, 'rank:', rank, 'clan:', clan);
     console.log('[TS] stat keys:', Object.keys(st).slice(0,20));
 
     function parseMode(m){
-      if(!m||typeof m!=='object') return null;
-      const battles=parseInt(m.battles||m.total_battles||m.games||m.matches||0);
+      if(!m || typeof m!=='object') return null;
+      const battles = parseInt(m.mission || m.battles || m.total || 0);
       if(!battles){ console.log('[TS] mode skip — battles=0'); return null; }
-      const wins=parseInt(m.victories||m.wins||m.win||m.victories_count||0);
-      const wr=battles>0?Math.round(wins/battles*100):parseInt(m.win_rate||m.winrate||m.wr||0);
-      const ka=parseInt(m.air_kills||m.aircraft_kills||m.kills_air||m.plane_kills||m.air_frags||0);
-      const kg=parseInt(m.ground_kills||m.vehicle_kills||m.tank_kills||m.kills_ground||m.ground_frags||m.frags||0);
-      const deaths=Math.max(1,parseInt(m.deaths||m.losses||m.death||m.death_count||1));
-      const kd=deaths>0?((ka+kg)/deaths).toFixed(2):'0.00';
-      console.log('[TS] mode ok — battles:',battles,'wins:',wins,'kg:',kg,'ka:',ka,'deaths:',deaths);
-      return{battles,wins,wr,kills_air:ka,kills_ground:kg,deaths,kd};
+      const wins    = parseInt(m.win || m.wins || 0);
+      const wr      = parseFloat(m.winrate || m.win_rate || (battles>0?wins/battles*100:0)) || 0;
+      // kb = kills per battle (ground+air combined)
+      const kpb     = parseFloat(m.kb || m.kills_per_battle || 0);
+      const ka      = parseInt(m.kd_air!=null ? Math.round(parseFloat(m.kb_air||0)*battles) : (m.kills_air||0));
+      const kg      = parseInt(m.kd_ground!=null ? Math.round(parseFloat(m.kb_ground||0)*battles) : (m.kills_ground||0));
+      const deaths  = Math.max(1, parseInt(m.death || m.deaths || 1));
+      const kd      = parseFloat(m.kd || ((ka+kg)/deaths)) || 0;
+      console.log('[TS] mode ok — battles:',battles,'wins:',wins,'wr:',wr.toFixed(1),'kd:',kd.toFixed(2));
+      return{ battles, wins, wr: Math.round(wr), kills_air:ka, kills_ground:kg, deaths, kd:kd.toFixed(2) };
     }
 
-    // Try all known mode key patterns
-    const rb = parseMode(st.rb || st.realistic || st.ground_rb || st.ground || st.RB) ||
-               parseMode(raw.rb || raw.realistic) ||
-               parseMode(st); // last resort: treat whole stats object as RB
+    // Thunderskill uses "a"=arcade, "r"=realistic, "s"=simulator
+    const ab = parseMode(st.a || st.arcade || st.ab) || null;
+    const rb = parseMode(st.r || st.realistic || st.rb) || null;
+    const sb = parseMode(st.s || st.simulator || st.sb) || null;
 
-    if(!rb){ console.warn('[TS] Could not find RB stats'); return null; }
+    if(!rb && !ab){
+      console.warn('[TS] Could not find any mode stats');
+      return null;
+    }
 
-    const ab = parseMode(st.ab || st.arcade || st.ground_ab || st.AB) ||
-               parseMode(raw.ab || raw.arcade) || null;
-    const sb = parseMode(st.sb || st.simulator || st.ground_sb || st.SB) ||
-               parseMode(raw.sb || raw.simulator) || null;
+    const hrs = parseInt(st.lifetime || st.hours || 0) || null;
+    const topVehicle = st.top_vehicle || st.favorite_vehicle || null;
 
-    const hrs = parseInt(st.hours_played||st.play_time||st.time||
-                         info.hours||info.hours_played||info.time_played||
-                         raw.hours||raw.play_time||0)||null;
-    const topVehicle = info.top_vehicle||info.favorite_vehicle||info.most_played||
-                       raw.top_vehicle||raw.vehicle||null;
-    const prefNations = info.nations||info.preferred_nations||raw.nations||null;
-
-    return{name,lv,hrs,clan,topVehicle,prefNations,
-      modes:{rb,ab,sb}, source:'real'};
+    return{ name, lv, hrs, clan, rank, topVehicle, prefNations:null,
+      modes:{ rb: rb||ab, ab, sb }, source:'real' };
   }catch(e){
     console.error('[TS] parseTS crash:', e);
     return null;
@@ -3016,40 +3002,50 @@ async function doSearch(){
 function renderPlayer(p){
   document.getElementById('pav').textContent='🎯';
   document.getElementById('pnm').textContent=p.name.toUpperCase();
-  document.getElementById('prk').textContent=p.clan?'['+p.clan+']':'';
+  // Show clan if available, else rank from Thunderskill
+  document.getElementById('prk').textContent=p.rank?'⬡ '+p.rank:'';
   const lvEl=document.getElementById('plv'); lvEl.textContent=p.lv||'—';
-  const cl=document.getElementById('pcln'); cl.style.display='none';
+  const cl=document.getElementById('pcln');
+  if(p.clan){ cl.textContent='['+p.clan+']'; cl.style.display='block'; }
+  else cl.style.display='none';
   document.getElementById('srcBadge').innerHTML='<span class="srcb real">✓ РЕАЛЬНІ ДАНІ — THUNDERSKILL.COM</span>';
   const tsl=document.getElementById('tslink');
   tsl.href='https://thunderskill.com/en/stat/'+encodeURIComponent(p.name);
   tsl.style.display='flex';
 
-  // Show tabs only for available modes
+  // Enable/disable tabs based on available data
+  const modeMap={'rb':'Реалістичний','ab':'Аркадний','sb':'Симулятор'};
   document.querySelectorAll('#modeTabs .stab').forEach(btn=>{
-    const modeKey=btn.dataset.mode||btn.textContent.trim().toLowerCase().slice(0,2);
-    const map={ре:'rb',ар:'ab',си:'sb','rb':'rb','ab':'ab','sb':'sb'};
-    const k=map[modeKey]||'rb';
-    // disable tab if no data
-    const hasData=!!(k==='rb'?p.modes.rb:k==='ab'?p.modes.ab:p.modes.sb);
+    const txt=btn.textContent.trim();
+    const key=Object.keys(modeMap).find(k=>modeMap[k]===txt)||'rb';
+    btn.dataset.mode=key;
+    const hasData=!!(p.modes[key]);
     btn.disabled=!hasData;
     btn.style.opacity=hasData?'1':'.3';
-    btn.title=hasData?'':'Дані недоступні для цього режиму';
+    btn.title=hasData?'':'Немає даних для цього режиму';
+    btn.classList.toggle('on',false);
   });
 
-  document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.toggle('on',false));
-  const firstActive=document.querySelector('#modeTabs .stab:not([disabled])');
-  if(firstActive) firstActive.classList.add('on');
-  renderMode('rb',p);
-  // Hide fake "recent battles" section
+  // Show best available mode first: rb → ab → sb
+  const bestMode = p.modes.rb?'rb':p.modes.ab?'ab':'sb';
+  const activeBtn=document.querySelector(`#modeTabs .stab[data-mode="${bestMode}"]`);
+  if(activeBtn) activeBtn.classList.add('on');
+  renderMode(bestMode, p);
+
+  // Hide fake recent battles
   const blSection=document.getElementById('blrows');
-  if(blSection) blSection.closest('div[style]').style.display='none';
+  if(blSection){
+    const parent=blSection.closest('div[style*="margin-top"]');
+    if(parent) parent.style.display='none';
+  }
   setRes('resData');
 }
 
 function showMode(mode,btn){
   document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.remove('on'));
   btn.classList.add('on');
-  if(currentPlayer) renderMode(mode,currentPlayer);
+  const key=btn.dataset.mode||mode;
+  if(currentPlayer) renderMode(key,currentPlayer);
 }
 
 function renderMode(mode,p){
@@ -3075,7 +3071,8 @@ function renderMode(mode,p){
     <div class="sc"><div class="scgh">🪖</div><div class="sclbl">Наземні знищення</div><div class="scval" data-tgt="${m.kills_ground}">0</div><div class="scsub">Техніки</div></div>
     <div class="sc"><div class="scgh">✈️</div><div class="sclbl">Повітряні знищення</div><div class="scval" data-tgt="${m.kills_air}">0</div><div class="scsub">Літаків</div></div>
     <div class="sc"><div class="scgh">💀</div><div class="sclbl">Смерті</div><div class="scval" data-tgt="${m.deaths}">0</div><div class="scsub">Втрати</div></div>
-    <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval${p.hrs?' data-tgt="'+p.hrs+'"':''}">${p.hrs||'—'}</div><div class="scsub">${p.hrs?'Годин':'Немає даних'}</div></div>
+    const hrsDisplay=p.hrs?(p.hrs<100?Math.round(p.hrs*8760)+' год':p.hrs+' год'):null;
+    <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval">${hrsDisplay||'—'}</div><div class="scsub">${hrsDisplay?'Активний час':'Немає даних'}</div></div>
   </div>`;
   requestAnimationFrame(()=>{
     w.querySelectorAll('[data-tgt]').forEach(el=>{
@@ -3143,10 +3140,10 @@ const OR_MODELS=[
   'deepseek/deepseek-r1-distill-qwen-32b:free',
 ];
 const GEMINI_MODELS=[
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-latest',
-  'gemini-1.5-pro',
-  'gemini-pro',
+  {m:'gemini-2.0-flash-exp',  v:'v1beta'},
+  {m:'gemini-1.5-flash',      v:'v1beta'},
+  {m:'gemini-1.5-flash-8b',   v:'v1beta'},
+  {m:'gemini-1.5-pro',        v:'v1beta'},
 ];
 
 /* keys already loaded above */
@@ -3161,7 +3158,7 @@ const CD_MS=63000;       // 63 секунди
 function _cdSet(k){ _cd[k]=Date.now()+CD_MS; _cdUI(); }
 function _cdOk(k){ return Date.now()>=(_cd[k]||0); }
 function _cdAnyOr(){ return OR_MODELS.some(m=>_cdOk('or:'+m)); }
-function _cdAnyG(){ return GEMINI_MODELS.some(m=>_cdOk('g:'+m)); }
+function _cdAnyG(){ return GEMINI_MODELS.some(({m})=>_cdOk('g:'+m)); }
 
 let _cdTick=null;
 function _cdUI(){
@@ -3269,11 +3266,10 @@ async function callOR(msgs){
    callGemini — аналогічно, незалежні cooldown
 ════════════════════════════════════════════════════ */
 async function callGemini(msgs){
-  const contents=msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
-  for(const model of GEMINI_MODELS){
-    if(!_cdOk('g:'+model)){ continue; }
+  for(const {m:model, v:ver} of GEMINI_MODELS){
+    if(!_cdOk('g:'+model)) continue;
     try{
-      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,{
+      const r=await fetch(`https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${GEMINI_KEY}`,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         signal:safeAbort(22000),
