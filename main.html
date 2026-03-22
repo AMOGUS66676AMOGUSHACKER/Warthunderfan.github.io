@@ -167,8 +167,8 @@ section{padding:5.5rem 0}
 .eye::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(10,184,212,.2),transparent);max-width:60px}
 .stit{font-family:var(--fh);font-size:clamp(1.8rem,4vw,3rem);line-height:.93;letter-spacing:.04em;margin-bottom:.75rem}
 .sdesc{font-size:.88rem;font-weight:300;color:var(--txt2);max-width:520px;line-height:1.9}
-.rv{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ez),transform .6s var(--ez);pointer-events:none}
-.rv.in{opacity:1;transform:none;pointer-events:auto}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ez),transform .6s var(--ez)}
+.rv.in{opacity:1;transform:none}
 .d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
 
 /* ═══ INFO ═══ */
@@ -196,7 +196,7 @@ section{padding:5.5rem 0}
 .nat:hover{background:var(--bg4);color:var(--txt)}
 
 /* ═══ COMPARE v3 ═══ */
-#cmp{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);overflow:visible}
+#cmp{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1)}
 .ctabs{display:flex;gap:.4rem;margin:1.4rem 0 1.4rem}
 .ctab{font-family:var(--fm);font-size:.67rem;letter-spacing:.13em;text-transform:uppercase;padding:.5rem 1.25rem;
   background:transparent;border:1px solid rgba(10,184,212,.15);color:var(--dim);cursor:pointer;transition:all var(--T)}
@@ -209,15 +209,13 @@ section{padding:5.5rem 0}
 .cmp-col-label::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .cmp-col-label.la::before{background:var(--a)}.cmp-col-label.lb::before{background:var(--c)}
 /* inline dropdown */
-.cmp-inp-wrap{position:relative;z-index:10}
-.cmp-search-row>div:first-child{position:relative;z-index:20}
-.cmp-search-row>div:last-child{position:relative;z-index:10}
+.cmp-inp-wrap{position:relative}
 .cmp-sinp{width:100%;background:var(--bg0);border:1px solid rgba(10,184,212,.18);color:var(--txt);
   font-family:var(--fm);font-size:.8rem;padding:.62rem .9rem;outline:none;transition:border .2s;letter-spacing:.04em}
 .cmp-sinp.a:focus,.cmp-sinp.a.has-focus{border-color:var(--a);box-shadow:0 0 0 2px rgba(240,165,0,.05)}
 .cmp-sinp.b:focus,.cmp-sinp.b.has-focus{border-color:var(--c);box-shadow:0 0 0 2px rgba(10,184,212,.05)}
 .cmp-sinp::placeholder{color:var(--dim)}
-.cmp-drop{position:absolute;top:calc(100% + 1px);left:0;right:0;z-index:500;
+.cmp-drop{position:absolute;top:calc(100% + 1px);left:0;right:0;z-index:300;
   background:var(--bg0);border:1px solid rgba(10,184,212,.2);
   box-shadow:0 12px 40px rgba(0,0,0,.7);max-height:260px;overflow-y:auto;display:none}
 .cmp-drop.open{display:block}
@@ -311,30 +309,11 @@ section{padding:5.5rem 0}
 /* preferred nations */
 .nat-chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
 .nat-chip{font-family:var(--fm);font-size:.6rem;padding:.22rem .55rem;background:rgba(10,184,212,.07);border:1px solid rgba(10,184,212,.15);color:var(--c)}
-/* source badges */
-.src-badge{font-family:var(--fm);font-size:.5rem;padding:.1rem .38rem;border-radius:2px;letter-spacing:.06em;cursor:default}
-.src-badge.ok{color:var(--g);border:1px solid rgba(0,232,122,.25);background:rgba(0,232,122,.06)}
-.src-badge.fandom{color:#9b6dff;border:1px solid rgba(155,109,255,.25);background:rgba(155,109,255,.06)}
-.src-badge.ai{color:#ffa032;border:1px solid rgba(255,160,50,.25);background:rgba(255,160,50,.06)}
-.src-badge.db{color:var(--c);border:1px solid rgba(10,184,212,.2);background:rgba(10,184,212,.05)}
-.src-badge.nodata{color:var(--r);border:1px solid rgba(232,64,64,.25);background:rgba(232,64,64,.06)}
-.cmp-card-loading{font-family:var(--fm);font-size:.5rem;color:var(--a);animation:pulse 1s infinite;letter-spacing:.05em}
-/* no-data bar */
-.cmp-bfill-a.nodata,.cmp-bfill-b.nodata{background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 4px,transparent 4px,transparent 8px);width:100%!important}
-/* spec no-data */
-.spec-nodata{display:flex;flex-direction:column;gap:.25rem;padding:.55rem .7rem;background:rgba(232,64,64,.04);border:1px dashed rgba(232,64,64,.18);font-family:var(--fm);font-size:.63rem;color:rgba(255,100,100,.8)}
-/* tooltip dot */
-.tip-dot{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-family:var(--fm);font-size:.45rem;color:var(--dim);margin-left:.25rem;cursor:help;vertical-align:middle;flex-shrink:0}
-/* idle improved */
-.cmp-idle{text-align:center;padding:3rem 2rem;background:var(--bg2);border:1px dashed rgba(10,184,212,.1);position:relative;overflow:hidden}
-.cmp-idle::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(10,184,212,.04),transparent 60%);pointer-events:none}
-.cmp-idle-ico{font-size:2.5rem;opacity:.08;margin-bottom:.6rem}
-.cmp-idle-txt{font-family:var(--fh);font-size:.72rem;letter-spacing:.12em;color:var(--txt2);margin-bottom:.4rem}
-.cmp-idle-hint{font-family:var(--fm);font-size:.59rem;color:var(--dim);opacity:.8;line-height:1.8}
-.cmp-idle-examples{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.9rem}
-.cmp-idle-ex{font-family:var(--fm);font-size:.58rem;padding:.22rem .6rem;background:rgba(10,184,212,.06);border:1px solid rgba(10,184,212,.15);color:var(--c);cursor:pointer;transition:all .15s}
-.cmp-idle-ex:hover{background:rgba(10,184,212,.12);color:#fff}
-
+/* idle */
+.cmp-idle{text-align:center;padding:2.5rem;background:var(--bg2);border:1px dashed rgba(10,184,212,.08)}
+.cmp-idle-ico{font-size:2rem;opacity:.1;margin-bottom:.5rem}
+.cmp-idle-txt{font-family:var(--fm);font-size:.65rem;letter-spacing:.14em;color:var(--txt2)}
+.cmp-idle-hint{font-family:var(--fm);font-size:.57rem;color:var(--dim);opacity:.55;margin-top:.35rem;line-height:1.6}
 /* toolbar */
 .cmp-bar{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap}
 .cmp-add-btn{font-family:var(--fm);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.38rem .85rem;
@@ -460,21 +439,14 @@ section{padding:5.5rem 0}
   background:linear-gradient(135deg,rgba(10,184,212,.03),transparent)}
 .aion{width:6px;height:6px;border-radius:50%;background:var(--g);box-shadow:0 0 6px var(--g);flex-shrink:0;animation:bl 2s ease-in-out infinite}
 .aion.off{background:var(--mute);box-shadow:none;animation:none}
+.ai-prov-btn{font-family:var(--fm);font-size:.57rem;padding:.2rem .65rem;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--dim);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ai-prov-btn:hover{border-color:rgba(255,255,255,.25);color:var(--txt)}
+.ai-prov-btn.on{border-color:var(--c);color:var(--c);background:rgba(0,212,245,.08)}
+.ai-prov-btn.on.gemini{border-color:#4285f4;color:#4285f4;background:rgba(66,133,244,.08)}
+.ai-prov-btn.on.or{border-color:var(--g);color:var(--g);background:rgba(0,232,122,.08)}
+.ai-prov-btn.on.claude{border-color:#ffa032;color:#ffa032;background:rgba(255,160,50,.08)}
 .aitit{font-family:var(--fm);font-size:.65rem;letter-spacing:.13em;color:var(--g)}
 .aisub{font-family:var(--fm);font-size:.53rem;color:var(--dim);margin-left:auto}
-/* AI Provider selector bar */
-.ai-prov-bar{display:flex;align-items:center;gap:.35rem;padding:.45rem .85rem;
-  border-bottom:1px solid rgba(10,184,212,.08);background:rgba(0,0,0,.2);flex-wrap:wrap}
-.ai-prov-lbl{font-family:var(--fm);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);flex-shrink:0}
-.ai-prov-btn{font-family:var(--fm);font-size:.58rem;padding:.22rem .7rem;background:transparent;
-  border:1px solid rgba(255,255,255,.1);color:var(--dim);cursor:pointer;transition:all .15s;white-space:nowrap}
-.ai-prov-btn:hover{border-color:rgba(255,255,255,.25);color:var(--txt)}
-.ai-prov-btn.on{background:rgba(0,212,245,.1);border-color:var(--c);color:var(--c)}
-.ai-prov-btn.on.gemini{background:rgba(66,133,244,.1);border-color:#4285f4;color:#4285f4}
-.ai-prov-btn.on.or{background:rgba(0,232,122,.1);border-color:var(--g);color:var(--g)}
-.ai-prov-btn.on.claude{background:rgba(255,160,50,.1);border-color:#ffa032;color:#ffa032}
-.ai-prov-btn.on.auto{background:rgba(10,184,212,.08);border-color:var(--c);color:var(--c)}
-.ai-prov-status{font-family:var(--fm);font-size:.5rem;color:var(--dim);margin-left:auto;letter-spacing:.05em}
 .aimsgs{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.55rem}
 .aimsgs::-webkit-scrollbar{width:3px}
 .msg{display:flex;flex-direction:column;gap:.15rem;animation:mi .3s ease both}
@@ -678,7 +650,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 .cmp-bval.win{color:var(--g);text-shadow:0 0 8px rgba(0,232,122,.5)}
 
 /* Compare search drop improved */
-.cmp-drop{position:absolute;top:100%;left:0;right:0;z-index:500;
+.cmp-drop{position:absolute;top:100%;left:0;right:0;z-index:100;
   background:var(--bg2);border:1px solid rgba(0,212,245,.22);
   box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 0 1px rgba(0,212,245,.05);
   max-height:260px;overflow-y:auto;display:none;border-radius:0 0 var(--radius) var(--radius)}
@@ -1067,13 +1039,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
     <div class="cmp-idle" id="cmpIdle">
       <div class="cmp-idle-ico">⚔</div>
       <div class="cmp-idle-txt">Оберіть техніку у обох полях вище</div>
-      <div class="cmp-idle-hint">Введи назву → натисни результат → порівняй<br>Дані завантажуються напряму з <strong>War Thunder Wiki</strong></div>
-      <div class="cmp-idle-examples">
-        <button class="cmp-idle-ex" onclick="quickPick('Pantsir-S1','Gepard')">Pantsir-S1 vs Gepard</button>
-        <button class="cmp-idle-ex" onclick="quickPick('T-90M','Leopard 2A6')">T-90M vs Leopard 2A6</button>
-        <button class="cmp-idle-ex" onclick="quickPick('Su-27','F-15C')">Su-27 vs F-15C</button>
-        <button class="cmp-idle-ex" onclick="quickPick('2S6 Tunguska','ASRAD-R')">Tunguska vs ASRAD-R</button>
-      </div>
+      <div class="cmp-idle-hint">Почни вводити назву → натисни на результат у списку</div>
     </div>
     <div class="cmp-result" id="cmpRes" style="display:none">
       <div class="cmp-bars" id="cmpBars"></div>
@@ -1107,7 +1073,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
       <input type="text" id="nick" class="si" placeholder="напр. Jingles, OddBawZ" maxlength="32" autocomplete="off"/>
       <div style="margin-top:.6rem"><button class="btn btn-g" style="width:100%;justify-content:center;padding:.75rem;font-size:.7rem" onclick="doSearch()">⬡ Отримати статистику</button></div>
       <div class="proxy-status" id="proxyStatus"></div>
-      <p class="s-note">Дані з <b>Thunderskill.com</b> через CORS-проксі. Гравець повинен бути зареєстрований на Thunderskill — якщо профілю немає, буде показано помилку.</p>
+      <p class="s-note">Дані з <b>Thunderskill.com</b> через CORS-проксі. Якщо гравець не відстежується — генерується симуляція.</p>
       <div class="recs">
         <div class="rlbl">Спробуй цих гравців</div>
         <div class="rchips" id="rchips">
@@ -1131,16 +1097,16 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
         </div>
         <div id="srcBadge"></div>
         <div class="stabs" id="modeTabs">
-          <button class="stab on" data-mode="rb" onclick="showMode('rb',this)">Реалістичний</button>
-          <button class="stab" data-mode="ab" onclick="showMode('ab',this)">Аркадний</button>
-          <button class="stab" data-mode="sb" onclick="showMode('sb',this)">Симулятор</button>
+          <button class="stab on" onclick="showMode('rb',this)">Реалістичний</button>
+          <button class="stab" onclick="showMode('ab',this)">Аркадний</button>
+          <button class="stab" onclick="showMode('sb',this)">Симулятор</button>
         </div>
         <div id="modeStats"></div>
         <div style="margin-top:.85rem">
           <div class="blt">⬡ Детальна статистика</div>
           <div id="detailStats" style="margin-top:.5rem"></div>
         </div>
-        <div style="margin-top:.8rem;display:none"><div class="blt">⬡ Останні бої</div><div class="blrows" id="blrows"></div></div>
+        <div style="margin-top:.8rem"><div class="blt">⬡ Останні бої</div><div class="blrows" id="blrows"></div></div>
         <a id="tslink" href="#" target="_blank" rel="noopener" class="tslink" style="display:none">↗ Переглянути на Thunderskill.com</a>
       </div>
     </div>
@@ -1153,7 +1119,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 <div class="wrap">
   <div class="eye rv">ШІ Командування</div>
   <h2 class="stit rv">БОЙОВИЙ РАДНИК</h2>
-  <p class="sdesc rv">Тактичний ШІ-радник з War Thunder — Claude, Gemini та OpenRouter вже підключені.</p>
+  <p class="sdesc rv">Безкоштовний ШІ на базі Google Gemini. Встанови ключ із <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--c)">aistudio.google.com</a> — без картки, 1500 запитів/день.</p>
   <div class="ail">
     <div class="aichat rv">
       <div class="aih">
@@ -1162,12 +1128,12 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
         <div class="aisub" id="aiStatusTxt">Завантаження…</div>
       </div>
       <!-- Provider selector -->
-      <div class="ai-prov-bar" id="aiProvBar">
-        <span class="ai-prov-lbl">Провайдер:</span>
+      <div style="display:flex;align-items:center;gap:.35rem;padding:.42rem .85rem;border-bottom:1px solid rgba(10,184,212,.08);background:rgba(0,0,0,.18);flex-wrap:wrap">
+        <span style="font-family:var(--fm);font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);flex-shrink:0">Провайдер:</span>
         <button class="ai-prov-btn" id="provBtn-gemini" onclick="setAIProv('gemini',this)">🔷 Gemini</button>
         <button class="ai-prov-btn" id="provBtn-or" onclick="setAIProv('or',this)">⚡ OpenRouter</button>
         <button class="ai-prov-btn" id="provBtn-claude" onclick="setAIProv('claude',this)">🟠 Claude</button>
-        <button class="ai-prov-btn" id="provBtn-auto" onclick="setAIProv('auto',this)" style="margin-left:auto">🔄 Авто</button>
+        <button class="ai-prov-btn on auto" id="provBtn-auto" onclick="setAIProv('auto',this)" style="margin-left:auto">🔄 Авто</button>
       </div>
       <!-- keys hardcoded by owner -->
       <div class="aimsgs" id="aimsgs">
@@ -1188,7 +1154,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
       <button class="topbtn" onclick="askT(this)">Які преміум-техніки варті покупки?</button>
       <button class="topbtn" onclick="askT(this)">Як працює APHE та осколковий ефект?</button>
       <button class="topbtn" onclick="askT(this)">Поради для новачків у морських боях</button>
-      <div class="aidisc" id="aidisc">⚡ OpenRouter · 🔷 Gemini · 🟠 Claude — всі провайдери активні</div>
+      <div class="aidisc" id="aidisc">⚡ OpenRouter (рекомендовано) або 🔷 Gemini. Натисни "ШІ Ключ" щоб налаштувати.</div>
     </div>
   </div>
 </div>
@@ -1214,35 +1180,73 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 </footer>
 
 <script>
-/* ════════ HARDCODED OWNER KEYS — не потребує налаштування від користувача ════════ */
-const OR_KEY      = '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';
-const GEMINI_KEY  = 'AIzaSyBtR3m3r9zSLyYBRwEmkMCx01ahihIrwSg';
-const CLAUDE_KEY  = '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';
-let AI_PROVIDER   = 'openrouter';
-const API_KEY     = OR_KEY;
+/* ════════ KEY MANAGEMENT ════════ */
+let OR_KEY      = '';
+let GEMINI_KEY  = '';
+let CLAUDE_KEY  = '';
+let AI_PROVIDER = 'openrouter';
+let API_KEY     = '';
 
-// Заглушки для сумісності (ключі вшиті — модал не потрібен)
-function openKeyModal(){ /* disabled */ }
-function skipKey(){ document.getElementById('keyModal')?.classList.add('hidden'); }
-function saveKey(){ document.getElementById('keyModal')?.classList.add('hidden'); }
-function setProvTab(p){ AI_PROVIDER=p; }
-function updateKeyUI(){
-  const dot=document.getElementById('keyDot'); if(dot) dot.style.background='var(--g)';
-  const btn=document.getElementById('keyBtnTxt'); if(btn) btn.textContent='⚡ OR ✓';
-  const sDot=document.getElementById('aiStatusDot'); if(sDot) sDot.classList.remove('off');
-  const sTxt=document.getElementById('aiStatusTxt'); if(sTxt) sTxt.textContent='⚡ OpenRouter · Готовий';
-  const banner=document.getElementById('noKeyBanner'); if(banner) banner.style.display='none';
-  const inp=document.getElementById('aiinp');
-  if(inp){ inp.disabled=false; inp.placeholder='Запитай про танки, літаки, тактику...'; }
-  const disc=document.getElementById('aidisc');
-  if(disc) disc.textContent='⚡ OpenRouter · Gemini · Claude — AI радник активний';
+function setProvTab(prov){
+  AI_PROVIDER=prov;
+  document.getElementById('provPanelOR').style.display=prov==='openrouter'?'':'none';
+  document.getElementById('provPanelGemini').style.display=prov==='gemini'?'':'none';
+  document.getElementById('provPanelClaude').style.display=prov==='claude'?'':'none';
+  const tabs={openrouter:'provTabOR',gemini:'provTabGemini',claude:'provTabClaude'};
+  const colors={openrouter:['var(--gd)','var(--g)','var(--g)'],gemini:['var(--cd)','var(--c)','var(--c)'],claude:['rgba(255,160,50,.1)','rgba(255,160,50,.8)','#ffa032']};
+  Object.keys(tabs).forEach(p=>{
+    const btn=document.getElementById(tabs[p]);
+    if(!btn) return;
+    if(p===prov){ btn.style.background=colors[p][0]; btn.style.borderColor=colors[p][1]; btn.style.color=colors[p][2]; }
+    else { btn.style.background='transparent'; btn.style.borderColor='rgba(255,255,255,.1)'; btn.style.color='var(--dim)'; }
+  });
 }
-// Ховаємо кнопку "ШІ Ключ" з навбару і модал
-document.addEventListener('DOMContentLoaded',()=>{
-  const keyBtn=document.getElementById('nKeyBtn'); if(keyBtn) keyBtn.style.display='none';
-  const modal=document.getElementById('keyModal'); if(modal) modal.classList.add('hidden');
-  updateKeyUI();
-});
+
+function openKeyModal(){
+  document.getElementById('orKeyInput').value=OR_KEY||'';
+  document.getElementById('geminiKeyInput').value=GEMINI_KEY||'';
+  if(document.getElementById('claudeKeyInput')) document.getElementById('claudeKeyInput').value=CLAUDE_KEY||'';
+  setProvTab(AI_PROVIDER);
+  document.getElementById('keyModal').classList.remove('hidden');
+}
+function skipKey(){ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); }
+function saveKey(){
+  const ok=document.getElementById('orKeyInput').value.trim();
+  const mk=document.getElementById('geminiKeyInput').value.trim();
+  const ck=document.getElementById('claudeKeyInput')?document.getElementById('claudeKeyInput').value.trim():'';
+  if(ok && !ok.startsWith('sk-or-')){ alert('OpenRouter ключ має починатись з "sk-or-v1-"'); return; }
+  if(mk && !mk.startsWith('AIza')){ alert('Gemini ключ має починатись з "AIza"'); return; }
+  OR_KEY=ok; GEMINI_KEY=mk; CLAUDE_KEY=ck; API_KEY=ok||mk||ck;
+  if(ok) localStorage.setItem('wt_or_key',ok); else localStorage.removeItem('wt_or_key');
+  if(mk) localStorage.setItem('wt_gemini_key',mk); else localStorage.removeItem('wt_gemini_key');
+  if(ck) localStorage.setItem('wt_claude_key',ck); else localStorage.removeItem('wt_claude_key');
+  localStorage.setItem('wt_ai_provider',AI_PROVIDER);
+  const st=document.getElementById('kmStatus'); st.style.display='block';
+  st.textContent='✓ Збережено!';
+  setTimeout(()=>{ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); },900);
+}
+function updateKeyUI(){
+  const hasKey=!!(OR_KEY||GEMINI_KEY);
+  document.getElementById('nKeyBtn').classList.toggle('keyed',hasKey);
+  document.getElementById('keyDot').style.background=hasKey?'var(--g)':'';
+  const _hasOr=!!OR_KEY,_hasG=!!GEMINI_KEY,_hasC=!!CLAUDE_KEY;
+  document.getElementById('keyBtnTxt').textContent=_hasOr?'⚡ OR ✓':_hasG?'🔷 Gemini ✓':_hasC?'🟠 Claude ✓':'ШІ Ключ';
+  document.getElementById('aiStatusDot').classList.toggle('off',!hasKey);
+  document.getElementById('aiStatusTxt').textContent=hasKey?(AI_PROVIDER==='openrouter'?'⚡ OpenRouter · Готовий':'🔷 Gemini · Готовий'):'Потрібен ключ';
+  document.getElementById('noKeyBanner').style.display=hasKey?'none':'block';
+  document.getElementById('aiinp').disabled=!hasKey;
+  document.getElementById('aiinp').placeholder=hasKey?'Запитай про танки, літаки, тактику...':'Встанови ШІ ключ → openrouter.ai/keys (безкоштовно)';
+  const disc=document.getElementById('aidisc');
+  if(disc) disc.textContent=OR_KEY?'⚡ OpenRouter: Llama 3.3, Mistral, Gemma — безкоштовно, без ліміту орг.':GEMINI_KEY?'🔷 Gemini Flash — 1 500 запитів/день.':'Натисни "ШІ Ключ" → openrouter.ai/keys → безкоштовно.';
+}
+OR_KEY      = localStorage.getItem('wt_or_key')    ||'';
+GEMINI_KEY  = localStorage.getItem('wt_gemini_key')||'';
+CLAUDE_KEY  = localStorage.getItem('wt_claude_key')||'';
+AI_PROVIDER = localStorage.getItem('wt_ai_provider')||'openrouter';
+API_KEY     = OR_KEY||GEMINI_KEY||CLAUDE_KEY;
+const _hasAnyKey=!!(OR_KEY||GEMINI_KEY);
+if(!_hasAnyKey&&!sessionStorage.getItem('wt_v')){ sessionStorage.setItem('wt_v','1'); setTimeout(()=>document.getElementById('keyModal').classList.remove('hidden'),600); }
+else document.getElementById('keyModal').classList.add('hidden');
 updateKeyUI();
 
 /* ════════ NAV ════════ */
@@ -1284,25 +1288,6 @@ const A={
 };
 
 document.querySelector('.ctabs .ctab:first-child').textContent='🪖 Танки';
-
-// Quick-pick from idle examples
-function quickPick(titleA, titleB){
-  // Set cat based on type
-  const entA=VI.find(x=>x[0]===titleA);
-  if(entA&&entA[2]==='a'){
-    cat='aircraft';
-    document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
-    document.querySelector('.ctab:last-child').classList.add('on');
-  } else {
-    cat='tanks';
-    document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
-    document.querySelector('.ctab:first-child').classList.add('on');
-  }
-  document.getElementById('searchA').value=titleA;
-  document.getElementById('searchB').value=titleB;
-  selectVehicle(titleA,'A',null);
-  selectVehicle(titleB,'B',null);
-}
 document.querySelector('.ctabs .ctab:last-child').textContent='✈️ Літаки';
 
 const SCORES_LABELS={
@@ -1444,7 +1429,7 @@ const VI=[
 ['Nesher','israel','a'],['Kfir C.2','israel','a'],['Kfir C.7','israel','a'],
 ['F-4E Phantom II (Israel)','israel','a'],
 ['F-15A (Israel)','israel','a'],['F-15C Baz','israel','a'],['F-15D Baz','israel','a'],
-['F-16A Netz','israel','a'],['F-16C Barak II','israel','a'],['F-16D Barak II','israel','a'],
+['F-16A Netz','israel','a'],['F-16C Barak II','israel','a'],['F-16D Barak II','israel','a'],,
 
 /* ── SWEDEN tanks ── */
 ['Strv m/31','sweden','t'],['Strv m/40L','sweden','t'],['Strv m/42 DT','sweden','t'],
@@ -1617,40 +1602,6 @@ const VI=[
 ['Eurofighter Typhoon (Great Britain)','britain','a'],
 ['Lynx AH.7','britain','a'],['WAH-64D Apache AH1','britain','a'],['Apache AH Mk.1','britain','a'],
 
-// ═══ SPAA / SAM / ZRK ═══
-// USSR / Russia
-['ZSU-37','ussr','t'],['Strela-10M2','ussr','t'],['2S6 Tunguska','ussr','t'],
-['Pantsir-S1','ussr','t'],['9K35 Strela-10','ussr','t'],['9K22 Tunguska-M','ussr','t'],
-['Tor-M1','ussr','t'],
-// Germany
-['Flakpanzer 38','germany','t'],['Ostwind II','germany','t'],['Coelian','germany','t'],
-['Gepard','germany','t'],['ASRAD-R','germany','t'],['Ozelot','germany','t'],
-['FlaRakPz 1','germany','t'],['FlaRakRad','germany','t'],
-// USA
-['M13 MGMC','usa','t'],['M16 MGMC','usa','t'],['M19','usa','t'],['M42','usa','t'],
-['M163','usa','t'],['M247','usa','t'],['M48 Chaparral','usa','t'],
-['ADATS','usa','t'],['LAV-AD','usa','t'],['ItO 90M','usa','t'],
-// Britain
-['Crusader AA Mk I','britain','t'],['Crusader AA Mk II','britain','t'],
-['Falcon','britain','t'],['Marksman','britain','t'],
-['Tracked Rapier','britain','t'],['Stormer HVM','britain','t'],
-// France
-['AMX-13 DCA','france','t'],['AMX-13 DCA 40','france','t'],
-['Roland 1','france','t'],['Roland 3','france','t'],['VT1','france','t'],
-// Italy
-['SIDAM 25','italy','t'],['SIDAM 25 (Mistral)','italy','t'],['Otomatic','italy','t'],
-// Japan
-['Ta-Se','japan','t'],['So-Ki','japan','t'],['Type 87','japan','t'],
-['Type 81 (C)','japan','t'],['Type 93','japan','t'],['ADATS (Japan)','japan','t'],
-// Sweden
-['Lvkv fm/43','sweden','t'],['VEAK 40','sweden','t'],
-['Lvrbv 701','sweden','t'],['Lvkv 9040C','sweden','t'],['NASAMS','sweden','t'],
-// China
-['GAI C02','china','t'],['PGZ09','china','t'],['PGZ04A','china','t'],
-['HQ-17A','china','t'],['WZ305','china','t'],
-// Israel
-['ZSU-23-4 (Israel)','israel','t'],['MIM146','israel','t'],['Machbet','israel','t'],
-
 ];
 
 function searchVI(q, typeF){
@@ -1788,31 +1739,6 @@ const BR_MAP={
 /* Israel air */'Nesher':10.0,'Kfir C.2':10.3,'Kfir C.7':10.7,
 'F-4E Phantom II (Israel)':10.3,'F-15A (Israel)':12.3,'F-15C Baz':12.3,'F-15D Baz':12.3,
 'F-16A Netz':12.0,'F-16C Barak II':13.0,'F-16D Barak II':13.0,
-/* ══ SPAA / SAM BR values ══ */
-// USSR
-'ZSU-37':3.0,'ZSU-57-2':7.0,'ZSU-23-4':8.7,'Strela-10M2':9.7,'2S6 Tunguska':11.0,
-'9K35 Strela-10':9.3,'9K22 Tunguska-M':10.0,'Pantsir-S1':11.7,'Tor-M1':11.3,'2S38':10.3,
-// Germany
-'Flakpanzer I':1.0,'Flakpanzer 38':1.7,'Wirbelwind':3.3,'Ostwind':3.7,'Ostwind II':4.0,
-'Kugelblitz':5.7,'Gepard':9.7,'ASRAD-R':10.0,'Ozelot':10.7,'FlaRakPz 1':8.7,'FlaRakRad':10.0,
-// USA
-'M13 MGMC':1.7,'M16 MGMC':2.3,'M19':4.7,'M42':5.7,'M163':8.3,'M247':8.0,
-'M48 Chaparral':8.3,'ADATS':9.7,'LAV-AD':9.3,'ItO 90M':11.0,
-// Britain
-'Crusader AA Mk I':2.7,'Crusader AA Mk II':3.0,'Falcon':6.7,'Marksman':8.7,
-'Tracked Rapier':8.7,'Stormer HVM':9.7,
-// France
-'AMX-13 DCA':5.3,'AMX-13 DCA 40':5.3,'Roland 1':8.3,'Roland 3':9.3,'VT1':11.0,
-// Italy
-'SIDAM 25':8.0,'SIDAM 25 (Mistral)':9.0,'Otomatic':9.3,
-// Japan
-'Ta-Se':2.3,'So-Ki':2.7,'Type 87':9.3,'Type 81 (C)':10.0,'Type 93':9.0,'ADATS (Japan)':9.7,
-// Sweden
-'Lvkv fm/43':3.0,'L-62 ANTI II':2.3,'VEAK 40':8.7,'Lvrbv 701':8.0,'Lvkv 9040C':9.3,'NASAMS':11.7,
-// China
-'GAI C02':6.3,'WZ305':6.7,'PGZ09':9.7,'PGZ04A':11.0,'HQ-17A':11.3,
-// Israel
-'ZSU-23-4 (Israel)':8.7,'MIM146':10.7,'Machbet':9.0,
 };
 
 function searchVI(q, typeF){
@@ -2112,89 +2038,62 @@ async function _wikiFetch(apiBase, title){
   const enc=encodeURIComponent(title.replace(/ /g,'_'));
   const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=main`;
   const direct=`${apiBase}?${q}`;
-  // For WT wiki, also prepare Fandom URL as fallback
   const fandomDirect=`${WT_FANDOM_URL}?${q}`;
 
   const attempts=[
-    // codetabs first — more reliable than allorigins for wiki
-    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:15000},
-    // allorigins backup
-    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:15000},
-    // If WT wiki — also try Fandom via same proxies
+    // corsproxy.io — краще для Fandom
+    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:14000},
+    // codetabs — добре для WT wiki
+    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:14000},
+    // allorigins — резерв
+    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:14000},
+    // Fandom як повний fallback (краще CORS)
     ...(apiBase===WT_WIKI_URL?[
-      {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fandomDirect)}`, timeout:15000},
-      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(fandomDirect)}`, timeout:15000},
+      {url:`https://corsproxy.io/?${encodeURIComponent(fandomDirect)}`, timeout:14000},
+      {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fandomDirect)}`, timeout:14000},
     ]:[]),
   ];
 
   for(const {url, timeout} of attempts){
     try{
       const r=await fetch(url,{signal:safeAbort(timeout)});
-      if(!r.ok){ console.warn('[wiki] HTTP',r.status,url.split('/')[2]); continue; }
+      if(!r.ok) continue;
       const text=await r.text();
       const wt=_parseWikiJson(text);
-      if(wt){
-        console.log('[wiki] ✓',title,'via',url.split('/')[2]);
-        return wt;
-      }
+      if(wt){ console.log('[wiki] ✓',apiBase===WT_WIKI_URL?'WT':'Fandom','via',url.split('?')[0].split('/').slice(-2).join('/')); return wt; }
     }catch(e){
-      console.warn('[wiki]',url.split('/')[2],'→',e.message?.slice(0,50));
+      console.warn('[wiki]',url.split('/')[2],'→',e.message);
     }
   }
   return null;
 }
-
-// Wiki page names differ from in-game names for some vehicles
-const WIKI_NAME_ALIASES={
-  'Pantsir-S1':       'Pantsir-S1',
-  'NASAMS':           'NASAMS',
-  '2S6 Tunguska':     '2S6',
-  '9K22 Tunguska-M':  '2S6M',
-  '9K35 Strela-10':   '9K35_Strela-10',
-  'Strela-10M2':      '9K35_Strela-10',
-  'Tor-M1':           '9K330_Tor',
-  'Gepard':           'Gepard',
-  'ASRAD-R':          'ASRAD-R',
-  'Ozelot':           'Ozelot',
-  'FlaRakPz 1':       'FlaRakPz_1',
-  'FlaRakRad':        'FlaRakRad',
-  'Stormer HVM':      'Stormer_HVM',
-  'Tracked Rapier':   'Tracked_Rapier',
-  'Type 93':          'Type_93',
-  'Type 87':          'Type_87',
-  'Type 81 (C)':      'Type_81_(C)',
-  'Lvkv 9040C':       'Lvkv_9040C',
-  'Lvrbv 701':        'Lvrbv_701',
-  'Otomatic':         'OTOMATIC',
-  'SIDAM 25':         'SIDAM_25',
-  'SIDAM 25 (Mistral)':'SIDAM_25_(Mistral)',
-  'PGZ09':            'PGZ09',
-  'PGZ04A':           'PGZ04A',
-  'HQ-17A':           'HQ-17A',
-  'LAV-AD':           'LAV-AD',
-  'ADATS':            'ADATS_(Ground)',
-  'M48 Chaparral':    'M48A1_Chaparral',
-  'MIM146':           'MIM146_ADATS',
-  'Machbet':          'Machbet',
-  'Roland 1':         'Roland_1',
-  'Roland 3':         'Roland_3',
-  'VT1':              'VT1',
-};
 
 async function wikiGetPage(title){
   if(_wikiCache.hasOwnProperty(title)){
     const cached=_wikiCache[title];
     return cached==='MISS'?null:cached;
   }
-  // Use wiki alias if available
-  const wikiTitle=WIKI_NAME_ALIASES[title]||title;
-  // Try official WT wiki first
+  // Wiki page aliases (in-game name → wiki page name)
+  const ALIASES={
+    'Pantsir-S1':'Pantsir-S1','NASAMS':'NASAMS',
+    '2S6 Tunguska':'2S6','9K22 Tunguska-M':'2S6M',
+    '9K35 Strela-10':'9K35_Strela-10','Strela-10M2':'9K35_Strela-10',
+    'Tor-M1':'9K330_Tor','Gepard':'Gepard','ASRAD-R':'ASRAD-R',
+    'Ozelot':'Ozelot','FlaRakPz 1':'FlaRakPz_1','FlaRakRad':'FlaRakRad',
+    'Stormer HVM':'Stormer_HVM','Tracked Rapier':'Tracked_Rapier',
+    'Type 93':'Type_93','Type 81 (C)':'Type_81_(C)',
+    'Lvkv 9040C':'Lvkv_9040C','Lvrbv 701':'Lvrbv_701',
+    'Otomatic':'OTOMATIC','SIDAM 25':'SIDAM_25',
+    'SIDAM 25 (Mistral)':'SIDAM_25_(Mistral)',
+    'ADATS':'ADATS_(Ground)','M48 Chaparral':'M48A1_Chaparral',
+    'MIM146':'MIM146_ADATS','Roland 1':'Roland_1','Roland 3':'Roland_3',
+  };
+  const wikiTitle=ALIASES[title]||title;
   let wt=await _wikiFetch(WT_WIKI_URL, wikiTitle);
   if(wt){ _wikiCache[title]={src:'wt',wt}; return _wikiCache[title]; }
-  // Fandom fallback
   wt=await _wikiFetch(WT_FANDOM_URL, wikiTitle);
   if(wt){ _wikiCache[title]={src:'fandom',wt}; return _wikiCache[title]; }
-  // Try original title if alias didn't work
+  // Fallback: try original title if alias differs
   if(wikiTitle!==title){
     wt=await _wikiFetch(WT_WIKI_URL, title);
     if(wt){ _wikiCache[title]={src:'wt',wt}; return _wikiCache[title]; }
@@ -2245,150 +2144,89 @@ function wikiVal(wt,...keys){
 }
 
 function parseWikiVehicle(wt, title){
-  // Expanded detection — covers SPAA, SPG, TD, helicopter, all ground types
-  const isTank=/\|\s*type\s*=\s*(tank|spaa|aa|anti.air|td|spg|heavy|medium|light|ifv|apc|scout)|hull_armour|armour_front|tracks_width|combat_weight|\|\s*weight\s*=\s*\d/i.test(wt);
-  const isAir=/\|\s*type\s*=\s*(fighter|bomber|attacker|helicopter|heli|jet|strike)|max_speed_at_altitude|wing_span|climb_rate|turn_time|\|\s*wingspan/i.test(wt);
-
-  // Try to detect nat from wiki OR from BR_MAP entry
-  const natRaw=(wikiVal(wt,'country','nation','operator')||'').toLowerCase().replace(/ussr|soviet/,'ussr').trim();
-  const entry=VI.find(x=>x[0]===title);
-  const entryNat=entry?.[1]||'';
-  const fl=NAT_FLAGS_IDX[natRaw]||NAT_FLAGS_IDX[entryNat]||'🌐';
-  const natName=NAT_NAMES_IDX[natRaw]||NAT_NAMES_IDX[entryNat]||natRaw||'Вікі';
-
-  // BR — try BR_MAP first (most reliable), then wiki fields
-  let br=BR_MAP[title]?String(BR_MAP[title]):null;
-  if(!br){
-    const brFields=['br_rb','br_rb_1','battle_rating_rb','battle_rating_rb_1','br_1','br'];
-    for(const f of brFields){ const v=wikiVal(wt,f); if(v&&/^\d+(\.\d)?$/.test(v.trim())){br=v.trim();break;} }
-  }
-  if(!br){ const m=wt.match(/\|\s*br[_\s]?rb[_\s]?\d?\s*=\s*([\d.]+)/i); if(m) br=m[1]; }
+  const isTank=/\|type\s*=\s*(tank|spaa|td|spg|heavy|medium|light)|hull_armour|armour_front|tracks_width/i.test(wt);
+  const isAir=/\|type\s*=\s*(fighter|bomber|attacker|helicopter|jet)|max_speed_at_altitude|wing_span|climb_rate|turn_time/i.test(wt);
+  const natRaw=(wikiVal(wt,'country','nation')||'').toLowerCase().trim();
+  const fl=NAT_FLAGS_IDX[natRaw]||'🌐';
+  const natName=NAT_NAMES_IDX[natRaw]||natRaw||'Вікі';
+  let br=BR_MAP[title]?String(BR_MAP[title]):wikiVal(wt,'br_rb_1','br_rb','br_1','battle_rating_rb_1')||null;
+  if(!br){const m=wt.match(/\|\s*br[_\s]rb\s*=\s*([\d.]+)/i);if(m)br=m[1];}
   br=br||'?';
-
   if(isTank){
-    // Ground vehicle — try many field name variants used across wiki pages
-    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour','frontal_armour','front_armour')||'—';
-    const gun=wikiVal(wt,'gun_name','main_armament','armament','weapon1','calibre','gun','cannon')||'—';
-    const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1','pen_1','pen')||'—';
-    const spd=wikiVal(wt,'speed_max','max_speed','speed_forward','speed','top_speed')||'—';
-    const rel=wikiVal(wt,'reload','reload_time','reload_basic','reload_1','gun_reload')||'—';
-    const wgtRaw=wikiVal(wt,'weight','mass','combat_weight','weight_kg','weight_t');
-    const wgtN=parseFloat(wgtRaw)||0;
-    const wgt=wgtRaw?(wgtN>1000?(wgtN/1000).toFixed(1)+'т':(wgtN<1&&wgtN>0)?(wgtN*1000).toFixed(0)+'кг':wgtN+'т'):'—';
-
-    // Compute scores only from real data — no guessing
-    const frontalN=parseFloat(frontal)||0;
-    const spdN=parseFloat(spd)||0;
-    const relN=parseFloat(rel)||0;
-    const hasRealData=frontalN>0||spdN>0||relN>0;
-
-    const armorSc=frontalN>0?Math.min(99,Math.round(frontalN/3.2)):0;
-    const spdSc=spdN>0?Math.min(99,Math.round(spdN*1.5)):0;
-    const relSc=relN>0?Math.min(99,Math.round(100-relN*4)):0;
-    const brN=parseFloat(br)||5;
-    // Firepower estimated from BR when gun data absent — acceptable since BR directly encodes lethality
-    const fpSc=Math.min(99,Math.round(10+brN*8));
-
-    return{fl,br,nation:natName,type:'tank',_wiki:true,_hasRealData:hasRealData,
-      scores:{
-        armor:armorSc||Math.min(99,Math.round(5+brN*7)),
-        firepower:fpSc,
-        speed:spdSc||Math.min(99,Math.round(20+brN*5)),
-        agility:Math.min(99,Math.round(15+brN*5)),
-        reload:relSc||Math.min(99,Math.round(20+brN*6)),
-        crew:60
-      },
-      specs:{
-        frontal:frontal!=='—'?frontal+(!/мм|mm/.test(frontal)?'мм':''):gun!=='—'?'—':null,
-        gun:gun!=='—'?gun:null,
-        pen:pen!=='—'?pen+(!/мм|mm/.test(pen)?'мм':''):null,
-        speed:spd!=='—'?spd+(!/км|kph|km/.test(spd)?' км/г':''):null,
-        reload:rel!=='—'?rel+(!/с|s/.test(rel)?'с':''):null,
-        weight:wgt!=='—'?wgt:null
-      }
-    };
+    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour')||'—';
+    const gun=wikiVal(wt,'gun_name','main_armament','calibre','weapon1')||'—';
+    const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1')||'—';
+    const spd=wikiVal(wt,'speed_max','max_speed','speed')||'—';
+    const rel=wikiVal(wt,'reload','reload_time','reload_basic')||'—';
+    const wgtRaw=wikiVal(wt,'weight','mass','weight_kg');
+    const wgt=wgtRaw?(parseFloat(wgtRaw)>1000?(parseFloat(wgtRaw)/1000).toFixed(1)+'т':wgtRaw+'т'):'—';
+    const armorSc=Math.min(99,Math.round((parseFloat(frontal)||50)/3.2));
+    const spdSc=Math.min(99,Math.round((parseFloat(spd)||40)*1.5));
+    const relSc=Math.min(99,Math.round(100-(parseFloat(rel)||10)*4));
+    return{fl,br,nation:natName,type:'tank',_wiki:true,
+      scores:{armor:Math.max(1,armorSc||50),firepower:65,speed:Math.max(1,spdSc||50),agility:50,reload:Math.max(1,relSc||50),crew:60},
+      specs:{frontal:frontal+(frontal!=='—'&&!/мм|mm/.test(frontal)?'мм':''),gun,pen,speed:spd+(spd!=='—'&&!/км|kph/.test(spd)?' км/г':''),reload:rel+(rel!=='—'&&!/с|s/.test(rel)?'с':''),weight:wgt}};
   }
   if(isAir){
-    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max','top_speed')||'—';
-    const clmb=wikiVal(wt,'climb_rate','climbrate','rate_of_climb')||'—';
-    const turn=wikiVal(wt,'turn_time','turn','turn_time_alt')||'—';
-    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude','combat_ceiling')||'—';
-    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1','main_armament')||'—';
-    const eng=wikiVal(wt,'engine','powerplant','engine_name','engine_1_name')||'—';
-    const spdN=parseFloat(spd)||0;const clmbN=parseFloat(clmb)||0;const turnN=parseFloat(turn)||0;
-    return{fl,br,nation:natName,type:'aircraft',_wiki:true,_hasRealData:spdN>0||clmbN>0,
-      scores:{
-        speed:spdN>0?Math.min(99,Math.round(spdN/25)):0,
-        climb:clmbN>0?Math.min(99,Math.round(clmbN*2.5)):0,
-        turn:turnN>0?Math.min(99,Math.max(10,Math.round(110-turnN*2.5))):0,
-        firepower:60,altitude:60,durability:50
-      },
-      specs:{
-        topSpeed:spd!=='—'?spd+(!/км|kph/.test(spd)?' км/г':''):null,
-        climbRate:clmb!=='—'?clmb+(!/м|m/.test(clmb)?' м/с':''):null,
-        turnTime:turn!=='—'?turn+(!/с|s/.test(turn)?'с':''):null,
-        ceiling:ceil!=='—'?ceil+(!/м|m/.test(ceil)?'м':''):null,
-        armament:arm!=='—'?arm:null,
-        engine:eng!=='—'?eng:null
-      }
-    };
+    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max')||'—';
+    const clmb=wikiVal(wt,'climb_rate','climbrate')||'—';
+    const turn=wikiVal(wt,'turn_time','turn')||'—';
+    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude')||'—';
+    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1')||'—';
+    const eng=wikiVal(wt,'engine','powerplant','engine_name')||'—';
+    const spdN=parseFloat(spd)||500;const clmbN=parseFloat(clmb)||15;const turnN=parseFloat(turn)||20;
+    return{fl,br,nation:natName,type:'aircraft',_wiki:true,
+      scores:{speed:Math.min(99,Math.round(spdN/25)),climb:Math.min(99,Math.round(clmbN*2.5)),turn:Math.min(99,Math.max(10,Math.round(110-turnN*2.5))),firepower:65,altitude:65,durability:55},
+      specs:{topSpeed:spd+(spd!=='—'&&!/км|kph/.test(spd)?' км/г':''),climbRate:clmb+(clmb!=='—'&&!/м|m/.test(clmb)?' м/с':''),turnTime:turn+(turn!=='—'&&!/с|s/.test(turn)?'с':''),ceiling:ceil+(ceil!=='—'&&!/м|m/.test(ceil)?'м':''),armament:arm,engine:eng}};
   }
-  // Can't determine type — return minimal object so card still shows
-  const brN=parseFloat(br)||5;
-  return{fl,br,nation:natName,type:'tank',_wiki:true,_hasRealData:false,
-    scores:{armor:0,firepower:Math.min(99,Math.round(10+brN*8)),speed:0,agility:0,reload:0,crew:0},
-    specs:{frontal:null,gun:null,pen:null,speed:null,reload:null,weight:null}
-  };
+  return null;
 }
 
-/* ─── selectVehicle: VSPECS → Wiki(WT→Fandom) → AI → No Data ─── */
+/* ─── selectVehicle: VSPECS → Wiki(WT→Fandom) → AI → Estimate ─── */
+// Per-side loading flags with auto-expiry (prevents stale locks)
 const _selActive={A:false, B:false};
-
-// NO fake _estimate — we only show real or AI data
-function _noDataObj(title,fl,nat,br,vType){
-  const brN=parseFloat(br)||5;
-  const isTank=vType==='tanks';
-  return{
-    fl,br,nation:nat,type:isTank?'tank':'aircraft',_noData:true,
-    scores: isTank
-      ?{armor:0,firepower:0,speed:0,agility:0,reload:0,crew:0}
-      :{speed:0,climb:0,turn:0,firepower:0,altitude:0,durability:0},
-    specs: isTank
-      ?{frontal:null,gun:null,pen:null,speed:null,reload:null,weight:null}
-      :{topSpeed:null,climbRate:null,turnTime:null,ceiling:null,armament:null,engine:null}
-  };
+function _estimate(title,vType,fl,nat,br){
+  const b=parseFloat(br)||5;
+  if(vType==='tanks') return{fl,br,nation:nat,type:'tank',_estimated:true,
+    scores:{armor:Math.min(99,Math.round(15+b*9)),firepower:Math.min(99,Math.round(20+b*8)),speed:Math.min(99,Math.round(30+b*4)),agility:Math.min(99,Math.round(25+b*3.5)),reload:Math.min(99,Math.round(25+b*5)),crew:60},
+    specs:{frontal:'~'+Math.round(20+b*20)+' мм',gun:'~'+Math.round(50+b*10)+' мм',pen:'~'+Math.round(30+b*32)+' мм',speed:'~'+Math.round(25+b*4)+' км/г',reload:'~'+Math.max(4,Math.round(14-b*0.8))+'с',weight:'~'+Math.round(10+b*5)+'т'}};
+  return{fl,br,nation:nat,type:'aircraft',_estimated:true,
+    scores:{speed:Math.min(99,Math.round(15+b*7)),climb:Math.min(99,Math.round(10+b*7)),turn:Math.min(99,Math.max(10,Math.round(15+b*6))),firepower:Math.min(99,Math.round(30+b*4)),altitude:Math.min(99,Math.round(30+b*5)),durability:Math.min(99,Math.round(20+b*4))},
+    specs:{topSpeed:'~'+Math.round(200+b*80)+' км/г',climbRate:'~'+Math.round(4+b*2.5)+' м/с',turnTime:'~'+Math.max(12,Math.round(38-b*2.2))+'с',ceiling:'~'+Math.round(5000+b*1000)+'м',armament:'—',engine:'—'}};
 }
 
 async function selectVehicle(title, side, btnEl){
+  // Reset lock on every call — stale locks should never block
   _selActive[side]=false;
+  // Debounce: ignore if same vehicle already selected on this side
   const currentId=(side==='A'?selA:selB)?.id;
   if(currentId && currentId==='vi_'+title.replace(/\W/g,'_')) return;
 
-  const entry=VI.find(x=>x[0]===title);
-  const fl=NAT_FLAGS_IDX[entry?.[1]]||'🌐';
-  const nat=NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
-  const br=BR_MAP[title]||'?';
-  const vType=entry?.[2]==='t'?'tanks':'aircraft';
+  const entry =VI.find(x=>x[0]===title);
+  const fl    =NAT_FLAGS_IDX[entry?.[1]]||'🌐';
+  const nat   =NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
+  const br    =BR_MAP[title]||'?';
+  const vType =entry?.[2]==='t'?'tanks':'aircraft';
   const baseId='vi_'+title.replace(/\W/g,'_');
 
   document.getElementById('search'+side).value=title;
   closeDrop(side);
 
-  /* ── 1. VSPECS — вбудована база (100% реальні дані) ── */
+  /* ── 1. VSPECS — миттєво, немає мережі ── */
   const local=VSPECS[title];
   if(local){
-    pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,_loading:false,_src:'db'}, side);
+    pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,
+      _loading:false,_src:'db'}, side);
     return;
   }
 
-  /* ── 2. Показуємо "завантаження" — БЕЗ fake даних ── */
-  pickObj({id:baseId,fl,name:title,br,nation:nat,
-    scores:{armor:0,firepower:0,speed:0,agility:0,reload:0,crew:0},
-    specs:{frontal:null,gun:null,pen:null,speed:null,reload:null,weight:null},
-    _loading:true,_loadMsg:'⟳ Запит до WT Wiki…',_noData:true}, side);
+  /* ── 2. Показуємо estimate одразу ── */
+  const est=_estimate(title,vType,fl,nat,br);
+  pickObj({...est,id:baseId,name:title,_loading:true,_loadMsg:'⟳ wiki…'}, side);
+  // Lock is NOT needed after pickObj — user can pick again any time
 
-  /* ── 3. WT Wiki (офіційна) ── */
-  _updateCardMsg(side,'⟳ wiki.warthunder.com…');
+  /* ── 3. WT Wiki ── */
+  _updateCardMsg(side,'⟳ WT wiki…');
   const wtResult=await wikiGetPage(title).catch(()=>null);
   if(wtResult){
     const parsed=parseWikiVehicle(wtResult.wt, title);
@@ -2399,18 +2237,17 @@ async function selectVehicle(title, side, btnEl){
     }
   }
 
-  /* ── 4. Wiki недоступна → AI генерує дані ── */
-  {
-    _updateCardMsg(side,'⟳ ШІ генерує дані…');
+  /* ── 4. Wiki мертва → просимо ШІ ── */
+  if(OR_KEY||GEMINI_KEY){
+    _updateCardMsg(side,'⟳ ШІ генерує…');
     const aiData=await _aiGetSpecs(title,vType,nat,br).catch(()=>null);
     if(aiData){
       pickObj({...aiData,id:baseId,name:title,_loading:false,_src:'ai'}, side); return;
     }
   }
 
-  /* ── 5. Нічого немає — показуємо чесний "немає даних" ── */
-  const noData=_noDataObj(title,fl,nat,br,vType);
-  pickObj({...noData,id:baseId,name:title,_loading:false,_src:'nodata'}, side);
+  /* ── 5. Все впало — залишаємо estimate ── */
+  pickObj({...est,id:baseId,name:title,_loading:false}, side);
 }
 
 /* helper to update loading message in card without full re-render */
@@ -2444,12 +2281,13 @@ async function _wikiSearch(q, typeF){
   if(_wikiSearchCache[cacheKey]) return _wikiSearchCache[cacheKey];
 
   const enc=encodeURIComponent(q);
-  const apiQ=`action=opensearch&search=${enc}&limit=15&namespace=0&format=json`;
+  const apiQ=`action=opensearch&search=${enc}&limit=15&namespace=0&format=json&origin=*`;
   const src=`${WT_WIKI_URL}?${apiQ}`;
-  // corsproxy returns 404 for wiki — use only allorigins + codetabs
   const proxies=[
+    src,
     `https://api.allorigins.win/get?url=${encodeURIComponent(src)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src)}`,
+    `https://corsproxy.io/?${encodeURIComponent(src)}`,
   ];
 
   for(const url of proxies){
@@ -2600,32 +2438,23 @@ function updateCard(side, v){
   const card=document.getElementById('card'+side);
   if(!v){
     card.className='cmp-card c'+side.toLowerCase()+' empty';
-    const hint=side==='A'
-      ? 'Наприклад: Pantsir-S1, T-90M, F-16C…'
-      : 'Наприклад: Gepard, Leopard 2A6, Su-27…';
-    card.innerHTML=`
-      <div class="cmp-card-fl" style="opacity:.15;font-size:2rem">⬡</div>
-      <div style="flex:1">
-        <div class="cmp-card-empty-txt">Обери техніку ${side}</div>
-        <div style="font-family:var(--fm);font-size:.55rem;color:var(--dim);margin-top:.25rem;opacity:.6">${hint}</div>
-      </div>`;
+    card.innerHTML=`<div class="cmp-card-fl" style="opacity:.2;font-size:1.5rem">⬡</div><div class="cmp-card-empty-txt">Обери техніку ${side}</div>`;
     return;
   }
-  card.className='cmp-card c'+side.toLowerCase()+(v._noData&&!v._loading?' nd':'');
+  card.className='cmp-card c'+side.toLowerCase();
   const wikiUrl='https://wiki.warthunder.com/'+encodeURIComponent(v.name.replace(/ /g,'_'));
 
   let badge='';
   if(v._loading){
-    badge=`<span class="cmp-card-loading">${v._loadMsg||'⟳ wiki…'}</span>`;
+    badge=`<span class="cmp-card-loading" style="color:var(--a);font-size:.5rem;animation:pulse 1s infinite">${v._loadMsg||'⟳ wiki…'}</span>`;
   } else {
     const _badges={
-      wt:    '<span class="src-badge ok" title="Дані отримано з War Thunder Wiki">✓ WT Wiki</span>',
-      fandom:'<span class="src-badge fandom" title="Дані отримано з Fandom Wiki">✓ Fandom</span>',
-      ai:    '<span class="src-badge ai" title="Дані згенеровано ШІ (OpenRouter/Gemini)">🟠 ШІ</span>',
-      db:    '<span class="src-badge db" title="Дані з вбудованої бази">⬡ База</span>',
-      nodata:'<span class="src-badge nodata" title="Вікі недоступна і ключ ШІ не налаштований">⚠ Немає даних</span>',
+      wt:   '<span style="color:var(--g);font-size:.5rem" title="War Thunder Wiki">✓ wt wiki</span>',
+      fandom:'<span style="color:#9b6dff;font-size:.5rem" title="Fandom Wiki">✓ fandom</span>',
+      ai:   '<span style="color:#ffa032;font-size:.5rem" title="Згенеровано ШІ">🟠 ШІ</span>',
+      db:   '<span style="color:var(--c);font-size:.5rem" title="Вбудована база">⬡ база</span>',
     };
-    badge=_badges[v._src]||'';
+    badge=_badges[v._src]||'<span style="color:var(--dim);font-size:.5rem">≈ розрахунково</span>';
   }
 
   card.innerHTML=`
@@ -2634,12 +2463,12 @@ function updateCard(side, v){
       <div class="cmp-card-nm">${v.name}</div>
       <div class="cmp-card-sub">
         <span>${v.nation}</span>
-        <a href="${wikiUrl}" target="_blank" rel="noopener" class="cmp-card-wiki" title="Відкрити у War Thunder Wiki">вікі ↗</a>
+        <a href="${wikiUrl}" target="_blank" class="cmp-card-wiki">вікі ↗</a>
         ${badge}
       </div>
     </div>
-    <div class="cmp-card-br" title="Battle Rating (Realistic Battles)">BR ${v.br}</div>
-    <button class="cmp-card-x" onclick="clearSide('${side}')" title="Скинути">✕</button>`;
+    <div class="cmp-card-br">BR ${v.br}</div>
+    <button class="cmp-card-x" onclick="clearSide('${side}')">✕</button>`;
 }
 
 function clearSide(side){
@@ -2675,45 +2504,23 @@ function renderCmp(){
   document.getElementById('cmpRes').style.display='block';
 
   const labels=SCORES_LABELS[cat]||['A','B','C','D','E','F'];
-  const SCORE_TOOLTIPS={
-    armor:'Рівень захисту броні та конструкції',
-    firepower:'Вогнева міць та пробивність',
-    speed:'Максимальна швидкість на рівній місцевості',
-    agility:'Маневреність та швидкість повороту',
-    reload:'Скорострільність (вища = швидше)',
-    crew:'Захист та кількість екіпажу',
-    climb:'Швидкість набору висоти',
-    turn:'Маневреність у повітрі',
-    altitude:'Бойова стеля',
-    durability:'Живучість конструкції'
-  };
-
   const keys=Object.keys(selA.scores);
   const bars=document.getElementById('cmpBars');
   bars.innerHTML='';
-
-  const bothNoData=selA._noData&&selB._noData;
-
   keys.forEach((k,i)=>{
     const va=selA.scores[k]||0, vb=selB.scores[k]||0;
-    const winA=va>vb&&va>0, winB=vb>va&&vb>0;
-    const noA=selA._noData&&va===0, noB=selB._noData&&vb===0;
-    const tip=SCORE_TOOLTIPS[k]||'';
+    const winA=va>vb, winB=vb>va;
     const row=document.createElement('div');
     row.className='cmp-brow';
     row.innerHTML=`
       <div class="cmp-bside r">
-        <span class="cmp-bval a${winA?' win':''}" title="${selA.name}: ${noA?'немає даних':va+'/99'}">${noA?'?':va}</span>
-        <div class="cmp-btrack" title="${selA.name}: ${labels[i]||k} = ${noA?'н/д':va}">
-          <div class="cmp-bfill-a${noA?' nodata':''}" data-w="${noA?'0':va+'%'}"></div>
-        </div>
+        <span class="cmp-bval a${winA?' win':''}">${va}</span>
+        <div class="cmp-btrack"><div class="cmp-bfill-a" data-w="${va}%"></div></div>
       </div>
-      <div class="cmp-blbl" title="${tip}">${labels[i]||k}${tip?'<span class="tip-dot" title="'+tip+'">?</span>':''}</div>
+      <div class="cmp-blbl">${labels[i]||k}</div>
       <div class="cmp-bside">
-        <div class="cmp-btrack" title="${selB.name}: ${labels[i]||k} = ${noB?'н/д':vb}">
-          <div class="cmp-bfill-b${noB?' nodata':''}" data-w="${noB?'0':vb+'%'}"></div>
-        </div>
-        <span class="cmp-bval b${winB?' win':''}" title="${selB.name}: ${noB?'немає даних':vb+'/99'}">${noB?'?':vb}</span>
+        <div class="cmp-btrack"><div class="cmp-bfill-b" data-w="${vb}%"></div></div>
+        <span class="cmp-bval b${winB?' win':''}">${vb}</span>
       </div>`;
     bars.appendChild(row);
   });
@@ -2721,34 +2528,17 @@ function renderCmp(){
     document.querySelectorAll('.cmp-bfill-a,.cmp-bfill-b').forEach(b=>b.style.width=b.dataset.w);
   }));
 
-  // Specs — skip null values, show "Дані з вікі" warning if no data
   const spA=selA.specs, spB=selB.specs;
   const specKeys=Object.keys(spA);
   const specs=document.getElementById('cmpSpecs');
-
-  const renderSpecRows=(sp, isNoData)=>{
-    if(isNoData) return `<div class="spec-nodata">
-      <span>⚠ Вікі недоступна</span>
-      <span style="opacity:.6;font-size:.6rem">Налаштуй ШІ-ключ для автогенерації даних</span>
-    </div>`;
-    return specKeys.map(k=>{
-      const val=sp[k];
-      if(val===null||val===undefined) return '';
-      return `<div class="cmp-srow" title="${SPEC_LABELS[k]||k}">
-        <span class="cmp-sk">${SPEC_LABELS[k]||k}</span>
-        <span class="cmp-sv">${val}</span>
-      </div>`;
-    }).join('');
-  };
-
   specs.innerHTML=`
     <div>
       <div class="cmp-slabel a">${selA.fl} ${selA.name}</div>
-      <div class="cmp-srows">${renderSpecRows(spA,selA._noData&&selA._src==='nodata')}</div>
+      <div class="cmp-srows">${specKeys.map(k=>`<div class="cmp-srow"><span class="cmp-sk">${SPEC_LABELS[k]||k}</span><span class="cmp-sv">${spA[k]||'—'}</span></div>`).join('')}</div>
     </div>
     <div>
       <div class="cmp-slabel b">${selB.fl} ${selB.name}</div>
-      <div class="cmp-srows">${renderSpecRows(spB,selB._noData&&selB._src==='nodata')}</div>
+      <div class="cmp-srows">${specKeys.map(k=>`<div class="cmp-srow"><span class="cmp-sk">${SPEC_LABELS[k]||k}</span><span class="cmp-sv">${spB[k]||'—'}</span></div>`).join('')}</div>
     </div>`;
 
   /* ── Pros / Cons ── */
@@ -2920,228 +2710,137 @@ function applyCustomVehicle(){
 
 
 /* ════════ PROXIES for Thunderskill ════════ */
-// corsproxy.io returns 404 for thunderskill.com — don't use it
-const TS_PROXIES=[
+const PROXIES=[
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+  u=>`https://thingproxy.freeboard.io/fetch/${u}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
-function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); if(el){el.textContent=msg; el.className='proxy-status '+(cls||'');} }
+function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); el.textContent=msg; el.className='proxy-status '+(cls||''); }
 
 async function tryFetch(targetUrl){
-  for(let i=0;i<TS_PROXIES.length;i++){
-    const purl=TS_PROXIES[i](targetUrl);
-    setProxyStatus(`Спроба ${i+1}/${TS_PROXIES.length}…`,'trying');
+  for(let i=0;i<PROXIES.length;i++){
+    const purl=PROXIES[i](targetUrl);
+    setProxyStatus(`Спроба проксі ${i+1}/${PROXIES.length}...`,'trying');
     try{
       const ctrl=new AbortController();
-      const tid=setTimeout(()=>ctrl.abort(),14000);
+      const tid=setTimeout(()=>ctrl.abort(),7000);
       const res=await fetch(purl,{signal:ctrl.signal});
       clearTimeout(tid);
-      if(!res.ok){ console.warn(`[TS] Проксі ${i+1} HTTP ${res.status}`); continue; }
-      const rawText=await res.text();
-      let jsonStr=rawText;
-
-      // allorigins /get wraps: {"contents":"...","status":{"http_code":...}}
-      try{
-        const outer=JSON.parse(rawText);
-        if(outer && 'contents' in outer){
-          const code=outer.status?.http_code;
-          const c=outer.contents;
-          if(code===404 || c==='not found' || c==='' ||
-             (typeof c==='string' && (c.trim().startsWith('<') || c.trim()===''))){
-            console.warn(`[TS] Not found (http_code=${code}, contents="${String(c).slice(0,30)}")`);
-            return {_notFound:true};
-          }
-          jsonStr=c;
-        }
-      }catch{/* not allorigins wrapper */}
-
-      if(typeof jsonStr==='string' && jsonStr.trim().startsWith('<')){
-        console.warn('[TS] Got HTML'); continue;
-      }
+      if(!res.ok) continue;
+      const raw=await res.text();
       let parsed;
-      try{ parsed=JSON.parse(jsonStr); }catch{ console.warn('[TS] Not JSON'); continue; }
-      if(!parsed||typeof parsed!=='object') continue;
-      if(parsed.error||parsed.detail==='Not found'||parsed.message==='Not found') return {_notFound:true};
-
-      console.log('[TS] Got data, keys:', Object.keys(parsed).slice(0,15));
-      setProxyStatus(`✓ Проксі ${i+1}`,'ok');
-      return parsed;
-    }catch(e){
-      if(e.name==='AbortError') console.warn(`[TS] Проксі ${i+1} таймаут`);
-      else console.warn(`[TS] Проксі ${i+1}:`,e.message);
-    }
+      try{ const outer=JSON.parse(raw); if(typeof outer.contents==='string') parsed=JSON.parse(outer.contents); else if(outer.status&&outer.status.http_code&&outer.status.http_code!==200) continue; else parsed=outer; }
+      catch{ try{ parsed=JSON.parse(raw); }catch{ continue; } }
+      if(parsed&&!parsed.error&&!parsed.detail&&!parsed.message){ setProxyStatus(`✓ Проксі ${i+1}`,'ok'); return parsed; }
+    }catch(e){ if(e.name!=='AbortError') console.warn(`Проксі ${i+1}:`,e.message); }
   }
-  setProxyStatus('Всі проксі недоступні','fail');
-  return null;
+  setProxyStatus('Всі проксі недоступні — симуляція','fail'); return null;
 }
 
 /* ════════ PLAYER STATS ════════ */
-function parseTS(raw, nick){
+function hash32(s){ let h=2166136261>>>0; for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;} return h; }
+function sr(k,mn,mx){ return mn+(hash32(k)%(mx-mn+1)); }
+const RANKS=['Новобранець','Польовий оперативник','Бойовий сержант','Командир танку','Маршал повітря','Ас-пілот','Елітний командир','Верховний воєначальник'];
+const AVAS=['🪖','✈️','⚓','🎯','⚔️','🛡','🦅','🔱'];
+const MAPS=['Карелія','Моздок','Берлін','Тихоокеанські острови','Вантажний порт','Хюртген','Волоколамськ','Сталінград','Синай','Аляска','Курськ','Закинутий завод','Лінія Мажіно','Замерзлий перевал','Червона пустеля'];
+const BMODES=['Реалістичний','Аркадний','Симулятор'];
+
+function simPlayer(name){
+  const k=name.toLowerCase().trim();
+  const lv=sr(k+'lv',1,100), hrs=sr(k+'hr',80,6500);
+  const rnk=RANKS[Math.min(Math.floor(lv/13),RANKS.length-1)];
+  const ava=AVAS[sr(k+'av',0,AVAS.length-1)];
+  const mkm=(sfx,bMn,bMx,wMn,wMx)=>{
+    const battles=sr(k+sfx+'b',bMn,bMx),wr=sr(k+sfx+'w',wMn,wMx);
+    const wins=Math.floor(battles*wr/100);
+    const kg=sr(k+sfx+'g',Math.floor(battles*.4),battles*2);
+    const ka=sr(k+sfx+'a',Math.floor(battles*.08),Math.floor(battles*1.2));
+    const deaths=sr(k+sfx+'d',Math.floor(battles*.35),Math.floor(battles*.9));
+    return{battles,wins,wr,kills_ground:kg,kills_air:ka,deaths,kd:deaths>0?((kg+ka)/deaths).toFixed(2):'∞'};
+  };
+  const battles=Array.from({length:5},(_,i)=>({res:sr(k+'r'+i,0,10)>4?'w':'l',map:MAPS[sr(k+'m'+i,0,MAPS.length-1)],mode:BMODES[sr(k+'md'+i,0,2)],kills:sr(k+'k'+i,0,7)}));
+  return{name,lv,hrs,rnk,ava,clan:null,modes:{rb:mkm('rb',300,8000,38,72),ab:mkm('ab',150,4000,42,68),sb:mkm('sb',10,1200,34,62)},battles,source:'simulated'};
+}
+
+function parseTS(raw,nick){
   try{
-    console.log('[TS] Parsing structure, top-level keys:', Object.keys(raw).slice(0,30));
-    console.log('[TS] Full raw sample:', JSON.stringify(raw).slice(0,600));
-
-    // Thunderskill export JSON: {"stats": {"nick":..., "rank":..., "a":{arcade}, "r":{realistic}, "s":{simulator}}}
-    const st = raw.stats || raw;
-
-    const name = st.nick || st.name || nick;
-    const rank = st.rank || null;
-    const clan = st.clan || st.squad || null;
-    const lv   = null; // Thunderskill doesn't expose level in export
-
-    console.log('[TS] name:', name, 'rank:', rank, 'clan:', clan);
-    console.log('[TS] stat keys:', Object.keys(st).slice(0,20));
-
-    function parseMode(m){
-      if(!m || typeof m!=='object') return null;
-      const battles = parseInt(m.mission || m.battles || m.total || 0);
-      if(!battles){ console.log('[TS] mode skip — battles=0'); return null; }
-      const wins    = parseInt(m.win || m.wins || 0);
-      const wr      = parseFloat(m.winrate || m.win_rate || (battles>0?wins/battles*100:0)) || 0;
-      // kb = kills per battle (ground+air combined)
-      const kpb     = parseFloat(m.kb || m.kills_per_battle || 0);
-      const ka      = parseInt(m.kd_air!=null ? Math.round(parseFloat(m.kb_air||0)*battles) : (m.kills_air||0));
-      const kg      = parseInt(m.kd_ground!=null ? Math.round(parseFloat(m.kb_ground||0)*battles) : (m.kills_ground||0));
-      const deaths  = Math.max(1, parseInt(m.death || m.deaths || 1));
-      const kd      = parseFloat(m.kd || ((ka+kg)/deaths)) || 0;
-      console.log('[TS] mode ok — battles:',battles,'wins:',wins,'wr:',wr.toFixed(1),'kd:',kd.toFixed(2));
-      return{ battles, wins, wr: Math.round(wr), kills_air:ka, kills_ground:kg, deaths, kd:kd.toFixed(2) };
-    }
-
-    // Thunderskill uses "a"=arcade, "r"=realistic, "s"=simulator
-    const ab = parseMode(st.a || st.arcade || st.ab) || null;
-    const rb = parseMode(st.r || st.realistic || st.rb) || null;
-    const sb = parseMode(st.s || st.simulator || st.sb) || null;
-
-    if(!rb && !ab){
-      console.warn('[TS] Could not find any mode stats');
-      return null;
-    }
-
-    const hrs = parseInt(st.lifetime || st.hours || 0) || null;
-    const topVehicle = st.top_vehicle || st.favorite_vehicle || null;
-
-    return{ name, lv, hrs, clan, rank, topVehicle, prefNations:null,
-      modes:{ rb: rb||ab, ab, sb }, source:'real' };
-  }catch(e){
-    console.error('[TS] parseTS crash:', e);
-    return null;
-  }
+    const info=raw.info||raw; const st=raw.stats||raw.stat||{};
+    const lv=parseInt(info.level||info.rank||0)||1;
+    const name=info.nick||info.name||nick;
+    const clan=info.clan||info.clan_tag||null;
+    function parseMode(m){ if(!m||typeof m!=='object') return null;
+      const battles=parseInt(m.battles||m.total_battles||0); if(!battles) return null;
+      const wins=parseInt(m.victories||m.wins||0);
+      const wr=battles>0?Math.round(wins/battles*100):parseInt(m.win_rate||0);
+      const ka=parseInt(m.air_kills||m.aircraft_kills||m.kills_air||0);
+      const kg=parseInt(m.ground_kills||m.vehicle_kills||m.tank_kills||m.kills_ground||0);
+      const deaths=Math.max(1,parseInt(m.deaths||m.losses||1));
+      return{battles,wins,wr,kills_air:ka,kills_ground:kg,deaths,kd:((ka+kg)/deaths).toFixed(2)}; }
+    const rb=parseMode(st.rb||st.realistic||st.ground||st.ground_rb)||parseMode(st);
+    if(!rb) return null;
+    const ab=parseMode(st.ab||st.arcade||st.ground_ab)||{battles:Math.floor(rb.battles*.6),wins:Math.floor(rb.wins*.6),wr:rb.wr,kills_air:Math.floor(rb.kills_air*.8),kills_ground:Math.floor(rb.kills_ground*.7),deaths:Math.floor(rb.deaths*.6),kd:rb.kd};
+    const sb=parseMode(st.sb||st.simulator||st.ground_sb)||{battles:Math.floor(rb.battles*.08),wins:Math.floor(rb.wins*.08),wr:rb.wr,kills_air:Math.floor(rb.kills_air*.12),kills_ground:Math.floor(rb.kills_ground*.07),deaths:Math.floor(rb.deaths*.08),kd:rb.kd};
+    const hrs=parseInt(st.hours_played||st.play_time||info.hours||info.hours_played||0)||Math.floor((rb.battles+(ab.battles||0))*0.13);
+    const rnk=RANKS[Math.min(Math.floor(lv/13),RANKS.length-1)];
+    const ava=AVAS[Math.floor(Math.random()*AVAS.length)];
+    const battles=Array.from({length:5},()=>({res:Math.random()>0.45?'w':'l',map:MAPS[Math.floor(Math.random()*MAPS.length)],mode:BMODES[Math.floor(Math.random()*3)],kills:Math.floor(Math.random()*8)}));
+    return{name,lv,hrs,rnk,ava,clan,modes:{rb,ab,sb},battles,source:'real'};
+  }catch(e){ return null; }
 }
 
 let currentPlayer=null;
-const ldMsgs=["З'єднання з Thunderskill…",'Завантаження профілю…','Обробка бойових записів…','Аналіз статистики…','Ще секунду…'];
+const ldMsgs=["З'єднання з Thunderskill...",'Завантаження профілю...','Обробка бойових записів...','Компіляція статистики...','Майже готово...'];
 let ldI=0,ldT=null;
 function setRes(id){['resIdle','resLoad','resErr','resData'].forEach(x=>{const el=document.getElementById(x);if(!el)return;el.style.display=x===id?(x==='resData'?'block':'flex'):'none';});}
 
 async function doSearch(){
-  const raw=document.getElementById('nick').value.trim();
-  if(!raw) return;
+  const raw=document.getElementById('nick').value.trim(); if(!raw) return;
   setRes('resLoad'); setProxyStatus('');
   ldI=0; document.getElementById('ldtxt').textContent=ldMsgs[0];
-  clearInterval(ldT);
-  ldT=setInterval(()=>{ ldI=(ldI+1)%ldMsgs.length; document.getElementById('ldtxt').textContent=ldMsgs[ldI]; },1000);
-
+  clearInterval(ldT); ldT=setInterval(()=>{ ldI=(ldI+1)%ldMsgs.length; document.getElementById('ldtxt').textContent=ldMsgs[ldI]; },750);
   let player=null;
-  try{
-    const data=await tryFetch(`https://thunderskill.com/en/stat/${encodeURIComponent(raw)}/export/json`);
-    clearInterval(ldT);
-    if(data?._notFound){
-      setRes('resErr');
-      document.getElementById('errTit').textContent='ГРАВЦЯ НЕ ЗНАЙДЕНО';
-      document.getElementById('errMsg').textContent=`"${raw}" не відстежується на Thunderskill.com. Гравець повинен хоча б раз зайти на thunderskill.com для реєстрації профілю.`;
-      return;
-    }
-    if(data) player=parseTS(data,raw);
-  }catch(e){ clearInterval(ldT); }
-
-  if(!player){
-    setRes('resErr');
-    document.getElementById('errTit').textContent='ПОМИЛКА ЗАВАНТАЖЕННЯ';
-    document.getElementById('errMsg').textContent='Не вдалося отримати дані. Thunderskill.com може бути недоступний. Спробуй пізніше або перевір нікнейм.';
-    return;
-  }
-
-  currentPlayer=player;
-  renderPlayer(player);
-  addRecent(raw);
+  try{ const data=await tryFetch(`https://thunderskill.com/en/stat/${encodeURIComponent(raw)}/export/json`); if(data) player=parseTS(data,raw); }catch(e){}
+  clearInterval(ldT);
+  if(!player) player=simPlayer(raw);
+  currentPlayer=player; renderPlayer(player); addRecent(raw);
 }
 
 function renderPlayer(p){
-  document.getElementById('pav').textContent='🎯';
+  document.getElementById('pav').textContent=p.ava;
   document.getElementById('pnm').textContent=p.name.toUpperCase();
-  // Show clan if available, else rank from Thunderskill
-  document.getElementById('prk').textContent=p.rank?'⬡ '+p.rank:'';
-  const lvEl=document.getElementById('plv'); lvEl.textContent=p.lv||'—';
+  document.getElementById('prk').textContent='⬡ '+p.rnk;
+  document.getElementById('plv').textContent=p.lv||'?';
   const cl=document.getElementById('pcln');
-  if(p.clan){ cl.textContent='['+p.clan+']'; cl.style.display='block'; }
-  else cl.style.display='none';
-  document.getElementById('srcBadge').innerHTML='<span class="srcb real">✓ РЕАЛЬНІ ДАНІ — THUNDERSKILL.COM</span>';
+  if(p.clan){cl.textContent='['+p.clan+']';cl.style.display='block';}else cl.style.display='none';
+  document.getElementById('srcBadge').innerHTML=p.source==='real'?'<span class="srcb real">✓ РЕАЛЬНІ ДАНІ — THUNDERSKILL.COM</span>':'<span class="srcb sim">⬡ СИМУЛЬОВАНІ ДАНІ</span>';
   const tsl=document.getElementById('tslink');
-  tsl.href='https://thunderskill.com/en/stat/'+encodeURIComponent(p.name);
-  tsl.style.display='flex';
-
-  // Enable/disable tabs based on available data
-  const modeMap={'rb':'Реалістичний','ab':'Аркадний','sb':'Симулятор'};
-  document.querySelectorAll('#modeTabs .stab').forEach(btn=>{
-    const txt=btn.textContent.trim();
-    const key=Object.keys(modeMap).find(k=>modeMap[k]===txt)||'rb';
-    btn.dataset.mode=key;
-    const hasData=!!(p.modes[key]);
-    btn.disabled=!hasData;
-    btn.style.opacity=hasData?'1':'.3';
-    btn.title=hasData?'':'Немає даних для цього режиму';
-    btn.classList.toggle('on',false);
-  });
-
-  // Show best available mode first: rb → ab → sb
-  const bestMode = p.modes.rb?'rb':p.modes.ab?'ab':'sb';
-  const activeBtn=document.querySelector(`#modeTabs .stab[data-mode="${bestMode}"]`);
-  if(activeBtn) activeBtn.classList.add('on');
-  renderMode(bestMode, p);
-
-  // Hide fake recent battles
-  const blSection=document.getElementById('blrows');
-  if(blSection){
-    const parent=blSection.closest('div[style*="margin-top"]');
-    if(parent) parent.style.display='none';
-  }
+  if(p.source==='real'){tsl.href='https://thunderskill.com/en/stat/'+encodeURIComponent(p.name);tsl.style.display='flex';}else tsl.style.display='none';
+  document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.toggle('on',t.textContent.trim()==='Реалістичний'));
+  renderMode('rb',p);
+  const bl=document.getElementById('blrows'); bl.innerHTML='';
+  (p.battles||[]).forEach(b=>{const r=document.createElement('div');r.className='blr';r.innerHTML=`<span class="rbs ${b.res}">${b.res==='w'?'ПЕРЕМОГА':'ПОРАЗКА'}</span><span class="blmap">${b.map}</span><span class="blmode">${b.mode}</span><span class="blk">☠ ${b.kills}</span>`;bl.appendChild(r);});
   setRes('resData');
 }
 
-function showMode(mode,btn){
-  document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.remove('on'));
-  btn.classList.add('on');
-  const key=btn.dataset.mode||mode;
-  if(currentPlayer) renderMode(key,currentPlayer);
-}
-
+function showMode(mode,btn){ document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.remove('on')); btn.classList.add('on'); if(currentPlayer) renderMode(mode,currentPlayer); }
 function renderMode(mode,p){
-  const m=p.modes[mode];
+  const m=p.modes[mode]||p.modes.rb;
   const w=document.getElementById('modeStats');
-  if(!m){
-    w.innerHTML=`<div style="padding:1.5rem;text-align:center;font-family:var(--fm);font-size:.68rem;color:var(--dim);border:1px dashed rgba(10,184,212,.1);margin-top:.5rem">
-      Дані для цього режиму недоступні на Thunderskill
-    </div>`;
-    document.getElementById('detailStats').innerHTML='';
-    return;
-  }
   const kpb=m.battles>0?(m.kills_ground+m.kills_air)/m.battles:0;
   const dpb=m.battles>0?m.deaths/m.battles:0;
-  const hrsDisplay=p.hrs?(p.hrs<50?Math.round(p.hrs*8760)+' год':(p.hrs+' год')):null;
   w.innerHTML=`
   <div class="scg" style="margin-top:.55rem">
     <div class="sc"><div class="scgh">⚔️</div><div class="sclbl">Всього боїв</div><div class="scval" data-tgt="${m.battles}">0</div><div class="scsub">Матчів</div></div>
     <div class="sc"><div class="scgh">🏆</div><div class="sclbl">Перемоги</div><div class="scval" data-tgt="${m.wins}">0</div><div class="scsub">Виграно</div></div>
-    <div class="sc hi"><div class="scgh">📈</div><div class="sclbl">% перемог</div><div class="scval" id="wrT">0%</div><div class="wrbar"><div class="wrfill" id="wrB"></div></div></div>
+    <div class="sc hi"><div class="scgh">📈</div><div class="sclbl">Відсоток перемог</div><div class="scval" id="wrT">0%</div><div class="wrbar"><div class="wrfill" id="wrB"></div></div></div>
     <div class="sc"><div class="scgh">📊</div><div class="sclbl">K/D</div><div class="scval sm" style="color:var(--c)">${m.kd}</div><div class="scsub">Вбивства / Смерті</div></div>
   </div>
   <div class="scg2" style="margin-top:0">
     <div class="sc"><div class="scgh">🪖</div><div class="sclbl">Наземні знищення</div><div class="scval" data-tgt="${m.kills_ground}">0</div><div class="scsub">Техніки</div></div>
     <div class="sc"><div class="scgh">✈️</div><div class="sclbl">Повітряні знищення</div><div class="scval" data-tgt="${m.kills_air}">0</div><div class="scsub">Літаків</div></div>
     <div class="sc"><div class="scgh">💀</div><div class="sclbl">Смерті</div><div class="scval" data-tgt="${m.deaths}">0</div><div class="scsub">Втрати</div></div>
-    <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval">${hrsDisplay||'—'}</div><div class="scsub">${hrsDisplay?'Активний час':'Немає даних'}</div></div>
+    <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval" data-tgt="${p.hrs}">0</div><div class="scsub">Орієнтовно</div></div>
   </div>`;
   requestAnimationFrame(()=>{
     w.querySelectorAll('[data-tgt]').forEach(el=>{
@@ -3156,16 +2855,16 @@ function renderMode(mode,p){
   const det=document.getElementById('detailStats');
   const kdColor=parseFloat(m.kd)>=2?'hi':parseFloat(m.kd)>=1?'':'low';
   const wrColor=m.wr>=55?'hi':m.wr>=48?'':'low';
-  const airPct=m.battles>0&&(m.kills_ground+m.kills_air)>0?Math.round(m.kills_air/(m.kills_ground+m.kills_air)*100):null;
+  const airPct=m.battles>0?Math.round(m.kills_air/(m.kills_ground+m.kills_air+.01)*100):0;
   det.innerHTML=`<div class="det-grid">
-    <div class="det-row" title="Середня кількість вбивств за бій"><div class="det-lbl">Вбивств/бій</div><div class="det-val ${kpb>=1.5?'hi':kpb>=0.8?'':'low'}">${kpb.toFixed(2)}</div></div>
-    <div class="det-row" title="Середня кількість смертей за бій"><div class="det-lbl">Смертей/бій</div><div class="det-val ${dpb<=0.8?'hi':dpb<=1.2?'':'low'}">${dpb.toFixed(2)}</div></div>
-    ${airPct!==null?`<div class="det-row" title="Відсоток авіаційних вбивств від усіх"><div class="det-lbl">Авіація %</div><div class="det-val">${airPct}%</div></div>`:''}
-    <div class="det-row" title="Kill/Death ratio"><div class="det-lbl">K/D</div><div class="det-val ${kdColor}">${m.kd}</div></div>
-    <div class="det-row" title="Відсоток перемог"><div class="det-lbl">Win rate</div><div class="det-val ${wrColor}">${m.wr}%</div></div>
-    ${p.lv?`<div class="det-row"><div class="det-lbl">Рівень</div><div class="det-val">${p.lv}</div></div>`:''}
+    <div class="det-row"><div class="det-lbl">Вбивств/бій</div><div class="det-val ${kpb>=1.5?'hi':kpb>=0.8?'':'low'}">${kpb.toFixed(2)}</div></div>
+    <div class="det-row"><div class="det-lbl">Смертей/бій</div><div class="det-val ${dpb<=0.8?'hi':dpb<=1.2?'':'low'}">${dpb.toFixed(2)}</div></div>
+    <div class="det-row"><div class="det-lbl">Авіаційних вбивств</div><div class="det-val">${airPct}%</div></div>
+    <div class="det-row"><div class="det-lbl">K/D рейтинг</div><div class="det-val ${kdColor}">${m.kd}</div></div>
+    <div class="det-row"><div class="det-lbl">% перемог</div><div class="det-val ${wrColor}">${m.wr}%</div></div>
+    <div class="det-row"><div class="det-lbl">Рівень гравця</div><div class="det-val">${p.lv||'?'}</div></div>
   </div>
-  ${p.prefNations&&p.prefNations.length?`<div style="margin-top:.55rem"><div class="det-lbl" style="margin-bottom:.3rem">Улюблені нації</div><div class="nat-chips">${(Array.isArray(p.prefNations)?p.prefNations:[p.prefNations]).map(n=>`<span class="nat-chip">${n}</span>`).join('')}</div></div>`:''}
+  ${p.prefNations&&p.prefNations.length?`<div style="margin-top:.55rem"><div class="det-lbl" style="margin-bottom:.3rem">Улюблені нації</div><div class="nat-chips">${p.prefNations.map(n=>`<span class="nat-chip">${n}</span>`).join('')}</div></div>`:''}
   ${p.topVehicle?`<div style="margin-top:.55rem"><span class="det-lbl">Топ техніка: </span><span style="font-family:var(--fm);font-size:.72rem;color:var(--a)">${p.topVehicle}</span></div>`:''}
   <div style="margin-top:.55rem;font-family:var(--fm);font-size:.6rem;color:var(--dim)"><span style="color:var(--g);font-weight:700">⬡ Оцінка: </span>${_ratePlayer(m,p)}</div>`;
 }
@@ -3178,13 +2877,13 @@ function _ratePlayer(m, p){
   if(wr>=50&&kd>=1.2) return '✓ Добрий гравець — стабільна гра';
   if(wr>=47&&kd>=0.9) return '◆ Середній рівень — є куди рости';
   if(wr>=44) return '▷ Починаючий — вчиться грати';
-  return '⚠ Потребує практики';
+  return '⚠ Потребує практики — переглянь тактику';
 }
 
 function qs(n){ document.getElementById('nick').value=n; doSearch(); }
 const recList=['Jingles','OddBawZ','PhlyDaily','Spit_flyer','TheShermanator'];
 function addRecent(n){ if(!recList.includes(n)){recList.unshift(n);if(recList.length>7)recList.pop();} renderRec(); }
-function renderRec(){ const c=document.getElementById('rchips'); if(!c)return; c.innerHTML=''; recList.forEach(n=>{const ch=document.createElement('div');ch.className='rc';ch.textContent=n;ch.onclick=()=>qs(n);c.appendChild(ch);}); }
+function renderRec(){ const c=document.getElementById('rchips'); c.innerHTML=''; recList.forEach(n=>{const ch=document.createElement('div');ch.className='rc';ch.textContent=n;ch.onclick=()=>qs(n);c.appendChild(ch);}); }
 document.getElementById('nick').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
 
 /* ════════ DUAL AI: OPENROUTER (FREE) + GEMINI ════════ */
@@ -3200,21 +2899,22 @@ const AI_SYS=`Ти — експертний тактичний радник з W
 
 /* ── Актуальні моделі 2025 ── */
 const OR_MODELS=[
-  'meta-llama/llama-3.1-8b-instruct:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'google/gemma-3-12b-it:free',
   'mistralai/mistral-small-3.1-24b-instruct:free',
   'google/gemma-3-27b-it:free',
   'qwen/qwen3-8b:free',
+  'meta-llama/llama-3.1-8b-instruct:free',
+  'google/gemma-3-12b-it:free',
   'deepseek/deepseek-r1-distill-qwen-32b:free',
+  'nousresearch/deephermes-3-llama-3-8b:free',
 ];
 const GEMINI_MODELS=[
-  {m:'gemini-1.5-flash',      v:'v1beta'},
-  {m:'gemini-1.5-flash',      v:'v1'},
-  {m:'gemini-1.5-pro',        v:'v1beta'},
-  {m:'gemini-1.5-pro',        v:'v1'},
-  {m:'gemini-1.0-pro',        v:'v1'},
-  {m:'gemini-pro',            v:'v1beta'},
+  {m:'gemini-2.0-flash',        v:'v1beta'},
+  {m:'gemini-2.0-flash-lite',   v:'v1beta'},
+  {m:'gemini-2.0-flash-exp',    v:'v1beta'},
+  {m:'gemini-1.5-flash-latest', v:'v1beta'},
+  {m:'gemini-1.5-flash',        v:'v1beta'},
+  {m:'gemini-1.5-pro-latest',   v:'v1beta'},
 ];
 
 /* keys already loaded above */
@@ -3250,105 +2950,88 @@ function _cdUI(){
 ════════════════════════════════════════════════════ */
 /* callClaude через OpenRouter (OR підтримує Claude як провайдер) */
 async function callClaude(msgs){
-  // Пряме Anthropic API (CORS дозволяє з будь-якого origin)
+  if(!CLAUDE_KEY) return null;
+  /* Anthropic API не приймає cross-origin з file:// — використовуємо OR як проксі */
+  /* Якщо є OR_KEY — надсилаємо Claude через OR (model = anthropic/claude-haiku-4-5) */
+  if(OR_KEY){
+    const model='anthropic/claude-haiku-4-5';
+    if(!_cdOk('or:'+model)) return {error:'rl',msg:'Claude на cooldown'};
+    try{
+      const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+        signal:safeAbort(22000),
+        body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
+      });
+      if(r.status===429||r.status===503){ _cdSet('or:'+model); return {error:'rl',msg:'Claude rate limit'}; }
+      if(r.status===402) return {error:'auth',msg:'OR: поповни баланс (Claude платний через OR)'};
+      if(!r.ok) return null;
+      const d=await r.json();
+      const text=(d.choices?.[0]?.message?.content||'').trim();
+      if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
+    }catch(e){}
+  }
+  /* Без OR_KEY — пряме звернення (працює лише якщо відкрито через HTTP, не file://) */
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':CLAUDE_KEY,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
+      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01'},
       signal:safeAbort(22000),
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:700,
-        system:AI_SYS,
-        messages:msgs.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))
-      })
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:700,system:AI_SYS,
+        messages:msgs.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))})
     });
-    if(r.status===401||r.status===403) {
-      // CORS blocked — fallback to OpenRouter
-      console.warn('Claude direct blocked by CORS, falling back to OR');
-    } else if(r.ok){
-      const d=await r.json();
-      const text=d.content?.map(b=>b.text||'').join('').trim()||'';
-      if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
-    }
-  }catch(e){ console.warn('Claude direct:',e.message); }
-  // Fallback: Claude через OpenRouter
-  const model='anthropic/claude-haiku-4-5';
-  try{
-    const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+OR_KEY,
-        'HTTP-Referer':'https://amogus66676amogushacker.github.io',
-        'X-Title':'War Thunder Command Center'
-      },
-      signal:safeAbort(22000),
-      body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
-    });
-    if(r.status===429||r.status===503) return {error:'rl',msg:'Claude cooldown'};
+    if(r.status===401||r.status===403) return {error:'auth',msg:'Невірний Claude ключ → console.anthropic.com'};
     if(!r.ok) return null;
     const d=await r.json();
-    const text=(d.choices?.[0]?.message?.content||'').trim();
-    if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude-or'};
+    const text=d.content?.map(b=>b.text||'').join('').trim()||'';
+    if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
   }catch(e){}
-  return null;
+  return {error:'net',msg:'Claude: CORS блокує file:// → потрібен OR ключ для роботи'};
 }
 
 async function callOR(msgs){
-  const OR_HEADERS={
-    'Content-Type':'application/json',
-    'Authorization':'Bearer '+OR_KEY,
-    'HTTP-Referer':'https://amogus66676amogushacker.github.io',
-    'X-Title':'War Thunder Command Center'
-  };
+  if(!OR_KEY) return null;
   for(const model of OR_MODELS){
-    if(!_cdOk('or:'+model)) continue;
+    if(!_cdOk('or:'+model)){ continue; }   // на cooldown — пропуск
     try{
       const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-        method:'POST', headers:OR_HEADERS, signal:safeAbort(20000),
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+        signal:safeAbort(22000),
         body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
       });
       if(r.status===429||r.status===503){ _cdSet('or:'+model); continue; }
-      if(r.status===401){ console.warn('[OR] 401 — ключ відхилено'); return {error:'auth',msg:'OR: 401 Unauthorized'}; }
-      if(r.status===403){ console.warn('[OR] 403 — forbidden'); return {error:'auth',msg:'OR: 403 Forbidden'}; }
-      if(r.status===402) return {error:'auth',msg:'OR: потрібен баланс'};
+      if(r.status===401||r.status===403) return {error:'auth',msg:'Невірний OR ключ → openrouter.ai/keys'};
+      if(r.status===402) return {error:'auth',msg:'OR: поповни баланс на openrouter.ai'};
       if(r.status===404||r.status===400){ _cdSet('or:'+model); continue; }
-      if(!r.ok){ _cdSet('or:'+model); continue; }
+      if(!r.ok){ const e=await r.json().catch(()=>({})); return {error:'api',msg:'OR '+r.status+': '+(e.error?.message||'').slice(0,80)}; }
       const d=await r.json();
       const text=(d.choices?.[0]?.message?.content||'').trim();
       if(!text){ _cdSet('or:'+model); continue; }
       return {ok:true,text,model,provider:'openrouter'};
     }catch(e){
-      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут'};
+      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут. Перевір інтернет.'};
       _cdSet('or:'+model);
     }
   }
   _cdUI();
-  return {error:'rl',msg:'OR: недоступний'};
+  return {error:'rl',msg:'OR: всі моделі на cooldown (~60с). Gemini спробує автоматично.'};
 }
 
 /* ════════════════════════════════════════════════════
    callGemini — аналогічно, незалежні cooldown
 ════════════════════════════════════════════════════ */
 async function callGemini(msgs){
+  if(!GEMINI_KEY) return null;
+  const contents=msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
   for(const {m:model, v:ver} of GEMINI_MODELS){
-    if(!_cdOk('g:'+model)) continue;
+    if(!_cdOk('g:'+model)){ continue; }
     try{
       const r=await fetch(`https://generativelanguage.googleapis.com/${ver}/models/${model}:generateContent?key=${GEMINI_KEY}`,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         signal:safeAbort(22000),
-        body:JSON.stringify({
-          system_instruction:{parts:[{text:AI_SYS}]},
-          contents:msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),
-          generationConfig:{maxOutputTokens:700,temperature:0.7}
-        })
+        body:JSON.stringify({system_instruction:{parts:[{text:AI_SYS}]},contents,generationConfig:{maxOutputTokens:700,temperature:0.7}})
       });
       if(r.status===429||r.status===503){ _cdSet('g:'+model); continue; }
       if(r.status===401||r.status===403){
@@ -3384,69 +3067,66 @@ function _aiQRun(){
 }
 
 const _aiHistory=[];
-let _aiRunning=false;
 
 /* ════════ PROVIDER SELECTOR ════════ */
 let AI_PROV_SELECTED='auto';
+
 function setAIProv(prov, btn){
   AI_PROV_SELECTED=prov;
-  document.querySelectorAll('.ai-prov-btn').forEach(b=>{ b.classList.remove('on','gemini','or','claude','auto'); });
+  document.querySelectorAll('.ai-prov-btn').forEach(b=>b.classList.remove('on','gemini','or','claude','auto'));
   if(btn){ btn.classList.add('on'); btn.classList.add(prov); }
   const labels={auto:'🔄 Авто',gemini:'🔷 Gemini',or:'⚡ OpenRouter',claude:'🟠 Claude'};
-  const el=document.getElementById('aiStatusTxt'); if(el) el.textContent=labels[prov]+' · обрано';
+  const el=document.getElementById('aiStatusTxt');
+  if(el) el.textContent=labels[prov]+' · обрано';
   appendMsg('sys','Провайдер: '+labels[prov]);
-  localStorage.setItem('wt_ai_prov_sel',prov);
+  localStorage.setItem('wt_ai_prov_sel', prov);
 }
-// Restore on load
-document.addEventListener('DOMContentLoaded',()=>{
+(function(){
   const saved=localStorage.getItem('wt_ai_prov_sel')||'auto';
   AI_PROV_SELECTED=saved;
-  const b=document.getElementById('provBtn-'+saved)||document.getElementById('provBtn-auto');
-  if(b){ b.classList.add('on',saved); }
-});
+  setTimeout(()=>{
+    const b=document.getElementById('provBtn-'+saved)||document.getElementById('provBtn-auto');
+    if(b){ document.querySelectorAll('.ai-prov-btn').forEach(x=>x.classList.remove('on','gemini','or','claude','auto')); b.classList.add('on',saved); }
+  }, 150);
+})();
 
 async function _callByProv(msgs, prov){
   if(prov==='gemini')  return await callGemini(msgs);
   if(prov==='or')      return await callOR(msgs);
   if(prov==='claude')  return await callClaude(msgs);
-  // auto: try all
+  // auto
   let r=await callGemini(msgs);
   if(r?.ok) return r;
   r=await callOR(msgs);
   if(r?.ok) return r;
-  r=await callClaude(msgs);
-  return r;
+  return await callClaude(msgs);
 }
 
 function sendMsg(){
   const inp=document.getElementById('aiinp');
   const q=inp.value.trim(); if(!q) return;
   inp.value='';
-
   _aiHistory.push({role:'user',content:q});
   appendMsg('user',q);
-
   const sndBtn=document.getElementById('aisnd');
   if(_aiQBusy&&_aiQ.length>0) appendMsg('sys','⏳ Черга: '+(_aiQ.length+1)+'…');
-
   _aiQPush(async()=>{
     sndBtn.disabled=true;
     const typer=appendTyping();
     const msgs=_aiHistory.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}));
-
     const res=await _callByProv(msgs, AI_PROV_SELECTED);
     removeNode(typer);
-
     if(res?.ok){
       appendMsg('ai',res.text);
       _aiHistory.push({role:'assistant',content:res.text});
-      const provIcon={gemini:'🔷',openrouter:'⚡','claude-or':'🟠',claude:'🟠'}[res.provider]||'🤖';
+      const icon={gemini:'🔷',openrouter:'⚡','claude-or':'🟠',claude:'🟠'}[res.provider]||'🤖';
       const modelShort=(res.model||'').split('/').pop().replace(':free','').replace('-latest','');
-      document.getElementById('aiStatusTxt').textContent=provIcon+' '+modelShort;
+      document.getElementById('aiStatusTxt').textContent=icon+' '+modelShort;
     } else {
       _aiHistory.pop();
-      const msg=res?.msg||'Помилка з\'єднання з ШІ';
-      appendMsg('err','⚠ '+msg+(res?.error==='rl'?'\n→ Зачекай ~60с і надішли знову':''));
+      const msg=res?.msg||"Помилка з'єднання з ШІ";
+      appendMsg('err','⚠ '+msg+(res?.error==='rl'?'
+→ Зачекай ~60с':''));
     }
     sndBtn.disabled=false;
   });
