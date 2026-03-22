@@ -2089,29 +2089,39 @@ function _parseWikiJson(raw){
 /* fetch wiki page through multiple proxies, returns wikitext or null */
 async function _wikiFetch(apiBase, title){
   const enc=encodeURIComponent(title.replace(/ /g,'_'));
-  const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=main&origin=*`;
+  const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=main`;
   const direct=`${apiBase}?${q}`;
 
+  // Прямий fetch заблокований CORS (github.io не в whitelist wiki)
+  // Використовуємо тільки проксі
   const attempts=[
-    // 1. Direct — works from HTTPS (GitHub Pages) when wiki has CORS
-    {url:direct, timeout:8000},
-    // 2. allorigins — reliable general proxy
-    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:10000},
-    // 3. corsproxy.io — good CORS proxy
-    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:10000},
-    // 4. codetabs — backup
-    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:10000},
+    // allorigins — найнадійніший
+    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:12000},
+    // corsproxy.io
+    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:12000},
+    // codetabs
+    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:12000},
+    // cors.sh
+    {url:`https://proxy.cors.sh/${direct}`, timeout:12000, headers:{'x-cors-api-key':'temp_...'}},
+    // Спробуємо Fandom якщо WT Wiki не відповідає — тільки для WT_WIKI_URL
+    ...(apiBase===WT_WIKI_URL ? [
+      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:12000},
+      {url:`https://corsproxy.io/?${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:12000},
+    ] : []),
   ];
 
-  for(const {url, timeout} of attempts){
+  for(const {url, timeout, headers={}} of attempts){
     try{
-      const r=await fetch(url,{signal:safeAbort(timeout)});
+      const r=await fetch(url,{signal:safeAbort(timeout), headers});
       if(!r.ok) continue;
       const text=await r.text();
       const wt=_parseWikiJson(text);
-      if(wt){ console.log('[wiki] ✓',apiBase===WT_WIKI_URL?'WT':'Fandom','via',url.split('?')[0].split('/').slice(-2).join('/')); return wt; }
+      if(wt){
+        console.log('[wiki] ✓',title,'via',url.split('/')[2]);
+        return wt;
+      }
     }catch(e){
-      console.warn('[wiki]',url.split('/')[2],'→',e.message);
+      console.warn('[wiki]',url.split('/')[2],'→',e.message?.slice(0,60));
     }
   }
   return null;
@@ -2143,8 +2153,9 @@ ${isTank
 }`;
   const msgs=[{role:'user',content:prompt}];
   let res=null;
-  if(OR_KEY) res=await callOR(msgs);
-  if(!res?.ok&&GEMINI_KEY) res=await callGemini(msgs);
+  res=await callOR(msgs);
+  if(!res?.ok) res=await callGemini(msgs);
+  if(!res?.ok) res=await callClaude(msgs);
   if(!res?.ok) return null;
   try{
     const txt=res.text.replace(/```json|```/g,'').trim();
@@ -3088,18 +3099,18 @@ const AI_SYS=`Ти — експертний тактичний радник з W
 
 /* ── Актуальні моделі 2025 ── */
 const OR_MODELS=[
+  'meta-llama/llama-3.1-8b-instruct:free',
   'meta-llama/llama-3.3-70b-instruct:free',
+  'google/gemma-3-12b-it:free',
   'mistralai/mistral-small-3.1-24b-instruct:free',
   'google/gemma-3-27b-it:free',
   'qwen/qwen3-8b:free',
-  'meta-llama/llama-3.1-8b-instruct:free',
-  'google/gemma-3-12b-it:free',
   'deepseek/deepseek-r1-distill-qwen-32b:free',
-  'nousresearch/deephermes-3-llama-3-8b:free',
 ];
 const GEMINI_MODELS=[
-  'gemini-2.0-flash',
+  'gemini-1.5-flash',
   'gemini-2.0-flash-lite',
+  'gemini-2.0-flash',
 ];
 
 /* keys already loaded above */
@@ -3167,7 +3178,12 @@ async function callClaude(msgs){
   try{
     const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+OR_KEY,
+        'HTTP-Referer':'https://amogus66676amogushacker.github.io',
+        'X-Title':'War Thunder Command Center'
+      },
       signal:safeAbort(22000),
       body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
     });
@@ -3181,12 +3197,18 @@ async function callClaude(msgs){
 }
 
 async function callOR(msgs){
+  const OR_HEADERS={
+    'Content-Type':'application/json',
+    'Authorization':'Bearer '+OR_KEY,
+    'HTTP-Referer':'https://amogus66676amogushacker.github.io',
+    'X-Title':'War Thunder Command Center'
+  };
   for(const model of OR_MODELS){
-    if(!_cdOk('or:'+model)){ continue; }   // на cooldown — пропуск
+    if(!_cdOk('or:'+model)){ continue; }
     try{
       const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
         method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+        headers:OR_HEADERS,
         signal:safeAbort(22000),
         body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
       });
@@ -3200,12 +3222,12 @@ async function callOR(msgs){
       if(!text){ _cdSet('or:'+model); continue; }
       return {ok:true,text,model,provider:'openrouter'};
     }catch(e){
-      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут. Перевір інтернет.'};
+      if(e.name==='AbortError') return {error:'net',msg:'OR: таймаут.'};
       _cdSet('or:'+model);
     }
   }
   _cdUI();
-  return {error:'rl',msg:'OR: всі моделі на cooldown (~60с). Gemini спробує автоматично.'};
+  return {error:'rl',msg:'OR: всі моделі на cooldown. Gemini спробує автоматично.'};
 }
 
 /* ════════════════════════════════════════════════════
@@ -3259,8 +3281,6 @@ const _aiHistory=[];
 let _aiRunning=false;  // для відображення черги в UI
 
 function sendMsg(){
-  const key=OR_KEY||GEMINI_KEY||CLAUDE_KEY;
-  if(!key){ openKeyModal(); return; }
   const inp=document.getElementById('aiinp');
   const q=inp.value.trim(); if(!q) return;
   inp.value='';
@@ -3276,36 +3296,26 @@ function sendMsg(){
     sndBtn.disabled=true;
     const typer=appendTyping();
 
-    /* Вибір провайдера + fallback */
     const msgs=_aiHistory.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}));
     let res=null;
-    if(AI_PROVIDER==='claude'){
-      res=await callClaude(msgs);
-      if(!res?.ok&&OR_KEY) res=await callOR(msgs);
-      if(!res?.ok&&GEMINI_KEY) res=await callGemini(msgs);
-    } else if(AI_PROVIDER==='gemini'){
-      res=await callGemini(msgs);
-      if(!res?.ok&&OR_KEY) res=await callOR(msgs);
-      if(!res?.ok&&CLAUDE_KEY) res=await callClaude(msgs);
-    } else {
-      res=await callOR(msgs);
-      if(!res?.ok&&GEMINI_KEY) res=await callGemini(msgs);
-      if(!res?.ok&&CLAUDE_KEY) res=await callClaude(msgs);
-    }
+
+    // Завжди пробуємо OR спершу (безкоштовні моделі), потім Gemini, потім Claude
+    res=await callOR(msgs);
+    if(!res?.ok) res=await callGemini(msgs);
+    if(!res?.ok) res=await callClaude(msgs);
 
     removeNode(typer);
 
     if(res?.ok){
       appendMsg('ai',res.text);
       _aiHistory.push({role:'assistant',content:res.text});
-      const icon=res.provider==='gemini'?'🔷 Gemini':res.provider==='claude'?'🟠 Claude':'⚡ OR';
-      document.getElementById('aiStatusTxt').textContent=icon+' · '+res.model.split('/').pop().replace(':free','');
+      const icon=res.provider==='gemini'?'🔷 Gemini':res.provider?.includes('claude')?'🟠 Claude':'⚡ OR';
+      document.getElementById('aiStatusTxt').textContent=icon+' · '+(res.model||'').split('/').pop().replace(':free','');
     } else {
       _aiHistory.pop();
-      const msg=res?.msg||'Невідома помилка';
+      const msg=res?.msg||'Помилка з\'єднання з ШІ';
       const isRL=res?.error==='rl';
-      appendMsg('err','⚠ '+msg+(isRL?'\n→ Просто надішли ще раз після таймера':'\n→ Перевір ключ у "ШІ Ключ"'));
-      if(res?.error==='auth') setTimeout(openKeyModal,500);
+      appendMsg('err','⚠ '+msg+(isRL?'\n→ Зачекай ~60с і надішли знову':''));
     }
     sndBtn.disabled=false;
   });
