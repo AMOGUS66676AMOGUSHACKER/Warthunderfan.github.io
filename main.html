@@ -1094,7 +1094,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
       <input type="text" id="nick" class="si" placeholder="напр. Jingles, OddBawZ" maxlength="32" autocomplete="off"/>
       <div style="margin-top:.6rem"><button class="btn btn-g" style="width:100%;justify-content:center;padding:.75rem;font-size:.7rem" onclick="doSearch()">⬡ Отримати статистику</button></div>
       <div class="proxy-status" id="proxyStatus"></div>
-      <p class="s-note">Дані з <b>Thunderskill.com</b> через CORS-проксі. Якщо гравець не відстежується — генерується симуляція.</p>
+      <p class="s-note">Дані з <b>Thunderskill.com</b> через CORS-проксі. Гравець повинен бути зареєстрований на Thunderskill — якщо профілю немає, буде показано помилку.</p>
       <div class="recs">
         <div class="rlbl">Спробуй цих гравців</div>
         <div class="rchips" id="rchips">
@@ -1127,7 +1127,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
           <div class="blt">⬡ Детальна статистика</div>
           <div id="detailStats" style="margin-top:.5rem"></div>
         </div>
-        <div style="margin-top:.8rem"><div class="blt">⬡ Останні бої</div><div class="blrows" id="blrows"></div></div>
+        <div style="margin-top:.8rem;display:none"><div class="blt">⬡ Останні бої</div><div class="blrows" id="blrows"></div></div>
         <a id="tslink" href="#" target="_blank" rel="noopener" class="tslink" style="display:none">↗ Переглянути на Thunderskill.com</a>
       </div>
     </div>
@@ -2894,131 +2894,179 @@ const PROXIES=[
   u=>`https://thingproxy.freeboard.io/fetch/${u}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
 ];
-function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); el.textContent=msg; el.className='proxy-status '+(cls||''); }
+function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); if(el){el.textContent=msg; el.className='proxy-status '+(cls||'');} }
 
 async function tryFetch(targetUrl){
   for(let i=0;i<PROXIES.length;i++){
     const purl=PROXIES[i](targetUrl);
-    setProxyStatus(`Спроба проксі ${i+1}/${PROXIES.length}...`,'trying');
+    setProxyStatus(`Спроба ${i+1}/${PROXIES.length}…`,'trying');
     try{
       const ctrl=new AbortController();
-      const tid=setTimeout(()=>ctrl.abort(),7000);
+      const tid=setTimeout(()=>ctrl.abort(),9000);
       const res=await fetch(purl,{signal:ctrl.signal});
       clearTimeout(tid);
       if(!res.ok) continue;
       const raw=await res.text();
       let parsed;
-      try{ const outer=JSON.parse(raw); if(typeof outer.contents==='string') parsed=JSON.parse(outer.contents); else if(outer.status&&outer.status.http_code&&outer.status.http_code!==200) continue; else parsed=outer; }
-      catch{ try{ parsed=JSON.parse(raw); }catch{ continue; } }
-      if(parsed&&!parsed.error&&!parsed.detail&&!parsed.message){ setProxyStatus(`✓ Проксі ${i+1}`,'ok'); return parsed; }
+      try{
+        const outer=JSON.parse(raw);
+        if(typeof outer.contents==='string') parsed=JSON.parse(outer.contents);
+        else if(outer.status&&outer.status.http_code&&outer.status.http_code!==200) continue;
+        else parsed=outer;
+      }catch{ try{ parsed=JSON.parse(raw); }catch{ continue; } }
+      if(parsed&&!parsed.error&&parsed.detail!=='Not found'&&parsed.message!=='Not found'){
+        setProxyStatus(`✓ Проксі ${i+1}`,'ok');
+        return parsed;
+      }
+      // Thunderskill returns {error: ...} when player not found
+      if(parsed&&(parsed.error||parsed.detail==='Not found')) return {_notFound:true};
     }catch(e){ if(e.name!=='AbortError') console.warn(`Проксі ${i+1}:`,e.message); }
   }
-  setProxyStatus('Всі проксі недоступні — симуляція','fail'); return null;
+  setProxyStatus('Всі проксі недоступні','fail');
+  return null;
 }
 
 /* ════════ PLAYER STATS ════════ */
-function hash32(s){ let h=2166136261>>>0; for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;} return h; }
-function sr(k,mn,mx){ return mn+(hash32(k)%(mx-mn+1)); }
-const RANKS=['Новобранець','Польовий оперативник','Бойовий сержант','Командир танку','Маршал повітря','Ас-пілот','Елітний командир','Верховний воєначальник'];
-const AVAS=['🪖','✈️','⚓','🎯','⚔️','🛡','🦅','🔱'];
-const MAPS=['Карелія','Моздок','Берлін','Тихоокеанські острови','Вантажний порт','Хюртген','Волоколамськ','Сталінград','Синай','Аляска','Курськ','Закинутий завод','Лінія Мажіно','Замерзлий перевал','Червона пустеля'];
-const BMODES=['Реалістичний','Аркадний','Симулятор'];
-
-function simPlayer(name){
-  const k=name.toLowerCase().trim();
-  const lv=sr(k+'lv',1,100), hrs=sr(k+'hr',80,6500);
-  const rnk=RANKS[Math.min(Math.floor(lv/13),RANKS.length-1)];
-  const ava=AVAS[sr(k+'av',0,AVAS.length-1)];
-  const mkm=(sfx,bMn,bMx,wMn,wMx)=>{
-    const battles=sr(k+sfx+'b',bMn,bMx),wr=sr(k+sfx+'w',wMn,wMx);
-    const wins=Math.floor(battles*wr/100);
-    const kg=sr(k+sfx+'g',Math.floor(battles*.4),battles*2);
-    const ka=sr(k+sfx+'a',Math.floor(battles*.08),Math.floor(battles*1.2));
-    const deaths=sr(k+sfx+'d',Math.floor(battles*.35),Math.floor(battles*.9));
-    return{battles,wins,wr,kills_ground:kg,kills_air:ka,deaths,kd:deaths>0?((kg+ka)/deaths).toFixed(2):'∞'};
-  };
-  const battles=Array.from({length:5},(_,i)=>({res:sr(k+'r'+i,0,10)>4?'w':'l',map:MAPS[sr(k+'m'+i,0,MAPS.length-1)],mode:BMODES[sr(k+'md'+i,0,2)],kills:sr(k+'k'+i,0,7)}));
-  return{name,lv,hrs,rnk,ava,clan:null,modes:{rb:mkm('rb',300,8000,38,72),ab:mkm('ab',150,4000,42,68),sb:mkm('sb',10,1200,34,62)},battles,source:'simulated'};
-}
-
-function parseTS(raw,nick){
+function parseTS(raw, nick){
   try{
-    const info=raw.info||raw; const st=raw.stats||raw.stat||{};
-    const lv=parseInt(info.level||info.rank||0)||1;
-    const name=info.nick||info.name||nick;
+    // Thunderskill export JSON structure
+    const info=raw.info||raw;
+    const st=raw.stats||raw.stat||{};
+    const name=info.nick||info.name||info.nickname||nick;
     const clan=info.clan||info.clan_tag||null;
-    function parseMode(m){ if(!m||typeof m!=='object') return null;
-      const battles=parseInt(m.battles||m.total_battles||0); if(!battles) return null;
-      const wins=parseInt(m.victories||m.wins||0);
-      const wr=battles>0?Math.round(wins/battles*100):parseInt(m.win_rate||0);
-      const ka=parseInt(m.air_kills||m.aircraft_kills||m.kills_air||0);
+    const lv=parseInt(info.level||info.rank||info.prestige||0)||null;
+
+    function parseMode(m){
+      if(!m||typeof m!=='object') return null;
+      const battles=parseInt(m.battles||m.total_battles||m.games||0);
+      if(!battles) return null;
+      const wins=parseInt(m.victories||m.wins||m.win||0);
+      const wr=battles>0?Math.round(wins/battles*100):parseInt(m.win_rate||m.winrate||0);
+      const ka=parseInt(m.air_kills||m.aircraft_kills||m.kills_air||m.plane_kills||0);
       const kg=parseInt(m.ground_kills||m.vehicle_kills||m.tank_kills||m.kills_ground||0);
-      const deaths=Math.max(1,parseInt(m.deaths||m.losses||1));
-      return{battles,wins,wr,kills_air:ka,kills_ground:kg,deaths,kd:((ka+kg)/deaths).toFixed(2)}; }
-    const rb=parseMode(st.rb||st.realistic||st.ground||st.ground_rb)||parseMode(st);
+      const deaths=Math.max(1,parseInt(m.deaths||m.losses||m.death||1));
+      const kd=((ka+kg)/deaths).toFixed(2);
+      return{battles,wins,wr,kills_air:ka,kills_ground:kg,deaths,kd};
+    }
+
+    const rb=parseMode(st.rb||st.realistic||st.ground_rb||st.ground)||parseMode(st);
     if(!rb) return null;
-    const ab=parseMode(st.ab||st.arcade||st.ground_ab)||{battles:Math.floor(rb.battles*.6),wins:Math.floor(rb.wins*.6),wr:rb.wr,kills_air:Math.floor(rb.kills_air*.8),kills_ground:Math.floor(rb.kills_ground*.7),deaths:Math.floor(rb.deaths*.6),kd:rb.kd};
-    const sb=parseMode(st.sb||st.simulator||st.ground_sb)||{battles:Math.floor(rb.battles*.08),wins:Math.floor(rb.wins*.08),wr:rb.wr,kills_air:Math.floor(rb.kills_air*.12),kills_ground:Math.floor(rb.kills_ground*.07),deaths:Math.floor(rb.deaths*.08),kd:rb.kd};
-    const hrs=parseInt(st.hours_played||st.play_time||info.hours||info.hours_played||0)||Math.floor((rb.battles+(ab.battles||0))*0.13);
-    const rnk=RANKS[Math.min(Math.floor(lv/13),RANKS.length-1)];
-    const ava=AVAS[Math.floor(Math.random()*AVAS.length)];
-    const battles=Array.from({length:5},()=>({res:Math.random()>0.45?'w':'l',map:MAPS[Math.floor(Math.random()*MAPS.length)],mode:BMODES[Math.floor(Math.random()*3)],kills:Math.floor(Math.random()*8)}));
-    return{name,lv,hrs,rnk,ava,clan,modes:{rb,ab,sb},battles,source:'real'};
-  }catch(e){ return null; }
+
+    // Only use modes we actually have data for — no derivation
+    const ab=parseMode(st.ab||st.arcade||st.ground_ab)||null;
+    const sb=parseMode(st.sb||st.simulator||st.ground_sb)||null;
+
+    const hrs=parseInt(st.hours_played||st.play_time||info.hours||info.hours_played||info.time_played||0)||null;
+    const topVehicle=info.top_vehicle||info.favorite_vehicle||info.most_played||null;
+    const prefNations=info.nations||info.preferred_nations||null;
+
+    return{name,lv,hrs,clan,topVehicle,prefNations,
+      modes:{rb, ab, sb},
+      source:'real'};
+  }catch(e){ console.warn('parseTS error:',e); return null; }
 }
 
 let currentPlayer=null;
-const ldMsgs=["З'єднання з Thunderskill...",'Завантаження профілю...','Обробка бойових записів...','Компіляція статистики...','Майже готово...'];
+const ldMsgs=["З'єднання з Thunderskill…",'Завантаження профілю…','Обробка бойових записів…','Аналіз статистики…','Ще секунду…'];
 let ldI=0,ldT=null;
 function setRes(id){['resIdle','resLoad','resErr','resData'].forEach(x=>{const el=document.getElementById(x);if(!el)return;el.style.display=x===id?(x==='resData'?'block':'flex'):'none';});}
 
 async function doSearch(){
-  const raw=document.getElementById('nick').value.trim(); if(!raw) return;
+  const raw=document.getElementById('nick').value.trim();
+  if(!raw) return;
   setRes('resLoad'); setProxyStatus('');
   ldI=0; document.getElementById('ldtxt').textContent=ldMsgs[0];
-  clearInterval(ldT); ldT=setInterval(()=>{ ldI=(ldI+1)%ldMsgs.length; document.getElementById('ldtxt').textContent=ldMsgs[ldI]; },750);
-  let player=null;
-  try{ const data=await tryFetch(`https://thunderskill.com/en/stat/${encodeURIComponent(raw)}/export/json`); if(data) player=parseTS(data,raw); }catch(e){}
   clearInterval(ldT);
-  if(!player) player=simPlayer(raw);
-  currentPlayer=player; renderPlayer(player); addRecent(raw);
+  ldT=setInterval(()=>{ ldI=(ldI+1)%ldMsgs.length; document.getElementById('ldtxt').textContent=ldMsgs[ldI]; },1000);
+
+  let player=null;
+  try{
+    const data=await tryFetch(`https://thunderskill.com/en/stat/${encodeURIComponent(raw)}/export/json`);
+    clearInterval(ldT);
+    if(data?._notFound){
+      setRes('resErr');
+      document.getElementById('errTit').textContent='ГРАВЦЯ НЕ ЗНАЙДЕНО';
+      document.getElementById('errMsg').textContent=`"${raw}" не відстежується на Thunderskill.com. Гравець повинен хоча б раз зайти на thunderskill.com для реєстрації профілю.`;
+      return;
+    }
+    if(data) player=parseTS(data,raw);
+  }catch(e){ clearInterval(ldT); }
+
+  if(!player){
+    setRes('resErr');
+    document.getElementById('errTit').textContent='ПОМИЛКА ЗАВАНТАЖЕННЯ';
+    document.getElementById('errMsg').textContent='Не вдалося отримати дані. Thunderskill.com може бути недоступний. Спробуй пізніше або перевір нікнейм.';
+    return;
+  }
+
+  currentPlayer=player;
+  renderPlayer(player);
+  addRecent(raw);
 }
 
 function renderPlayer(p){
-  document.getElementById('pav').textContent=p.ava;
+  document.getElementById('pav').textContent='🎯';
   document.getElementById('pnm').textContent=p.name.toUpperCase();
-  document.getElementById('prk').textContent='⬡ '+p.rnk;
-  document.getElementById('plv').textContent=p.lv||'?';
-  const cl=document.getElementById('pcln');
-  if(p.clan){cl.textContent='['+p.clan+']';cl.style.display='block';}else cl.style.display='none';
-  document.getElementById('srcBadge').innerHTML=p.source==='real'?'<span class="srcb real">✓ РЕАЛЬНІ ДАНІ — THUNDERSKILL.COM</span>':'<span class="srcb sim">⬡ СИМУЛЬОВАНІ ДАНІ</span>';
+  document.getElementById('prk').textContent=p.clan?'['+p.clan+']':'';
+  const lvEl=document.getElementById('plv'); lvEl.textContent=p.lv||'—';
+  const cl=document.getElementById('pcln'); cl.style.display='none';
+  document.getElementById('srcBadge').innerHTML='<span class="srcb real">✓ РЕАЛЬНІ ДАНІ — THUNDERSKILL.COM</span>';
   const tsl=document.getElementById('tslink');
-  if(p.source==='real'){tsl.href='https://thunderskill.com/en/stat/'+encodeURIComponent(p.name);tsl.style.display='flex';}else tsl.style.display='none';
-  document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.toggle('on',t.textContent.trim()==='Реалістичний'));
+  tsl.href='https://thunderskill.com/en/stat/'+encodeURIComponent(p.name);
+  tsl.style.display='flex';
+
+  // Show tabs only for available modes
+  document.querySelectorAll('#modeTabs .stab').forEach(btn=>{
+    const modeKey=btn.dataset.mode||btn.textContent.trim().toLowerCase().slice(0,2);
+    const map={ре:'rb',ар:'ab',си:'sb','rb':'rb','ab':'ab','sb':'sb'};
+    const k=map[modeKey]||'rb';
+    // disable tab if no data
+    const hasData=!!(k==='rb'?p.modes.rb:k==='ab'?p.modes.ab:p.modes.sb);
+    btn.disabled=!hasData;
+    btn.style.opacity=hasData?'1':'.3';
+    btn.title=hasData?'':'Дані недоступні для цього режиму';
+  });
+
+  document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.toggle('on',false));
+  const firstActive=document.querySelector('#modeTabs .stab:not([disabled])');
+  if(firstActive) firstActive.classList.add('on');
   renderMode('rb',p);
-  const bl=document.getElementById('blrows'); bl.innerHTML='';
-  (p.battles||[]).forEach(b=>{const r=document.createElement('div');r.className='blr';r.innerHTML=`<span class="rbs ${b.res}">${b.res==='w'?'ПЕРЕМОГА':'ПОРАЗКА'}</span><span class="blmap">${b.map}</span><span class="blmode">${b.mode}</span><span class="blk">☠ ${b.kills}</span>`;bl.appendChild(r);});
+  // Hide fake "recent battles" section
+  const blSection=document.getElementById('blrows');
+  if(blSection) blSection.closest('div[style]').style.display='none';
   setRes('resData');
 }
 
-function showMode(mode,btn){ document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.remove('on')); btn.classList.add('on'); if(currentPlayer) renderMode(mode,currentPlayer); }
+function showMode(mode,btn){
+  document.querySelectorAll('#modeTabs .stab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  if(currentPlayer) renderMode(mode,currentPlayer);
+}
+
 function renderMode(mode,p){
-  const m=p.modes[mode]||p.modes.rb;
+  const m=p.modes[mode];
   const w=document.getElementById('modeStats');
+  if(!m){
+    w.innerHTML=`<div style="padding:1.5rem;text-align:center;font-family:var(--fm);font-size:.68rem;color:var(--dim);border:1px dashed rgba(10,184,212,.1);margin-top:.5rem">
+      Дані для цього режиму недоступні на Thunderskill
+    </div>`;
+    document.getElementById('detailStats').innerHTML='';
+    return;
+  }
   const kpb=m.battles>0?(m.kills_ground+m.kills_air)/m.battles:0;
   const dpb=m.battles>0?m.deaths/m.battles:0;
   w.innerHTML=`
   <div class="scg" style="margin-top:.55rem">
     <div class="sc"><div class="scgh">⚔️</div><div class="sclbl">Всього боїв</div><div class="scval" data-tgt="${m.battles}">0</div><div class="scsub">Матчів</div></div>
     <div class="sc"><div class="scgh">🏆</div><div class="sclbl">Перемоги</div><div class="scval" data-tgt="${m.wins}">0</div><div class="scsub">Виграно</div></div>
-    <div class="sc hi"><div class="scgh">📈</div><div class="sclbl">Відсоток перемог</div><div class="scval" id="wrT">0%</div><div class="wrbar"><div class="wrfill" id="wrB"></div></div></div>
+    <div class="sc hi"><div class="scgh">📈</div><div class="sclbl">% перемог</div><div class="scval" id="wrT">0%</div><div class="wrbar"><div class="wrfill" id="wrB"></div></div></div>
     <div class="sc"><div class="scgh">📊</div><div class="sclbl">K/D</div><div class="scval sm" style="color:var(--c)">${m.kd}</div><div class="scsub">Вбивства / Смерті</div></div>
   </div>
   <div class="scg2" style="margin-top:0">
     <div class="sc"><div class="scgh">🪖</div><div class="sclbl">Наземні знищення</div><div class="scval" data-tgt="${m.kills_ground}">0</div><div class="scsub">Техніки</div></div>
     <div class="sc"><div class="scgh">✈️</div><div class="sclbl">Повітряні знищення</div><div class="scval" data-tgt="${m.kills_air}">0</div><div class="scsub">Літаків</div></div>
     <div class="sc"><div class="scgh">💀</div><div class="sclbl">Смерті</div><div class="scval" data-tgt="${m.deaths}">0</div><div class="scsub">Втрати</div></div>
-    <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval" data-tgt="${p.hrs}">0</div><div class="scsub">Орієнтовно</div></div>
+    <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval${p.hrs?' data-tgt="'+p.hrs+'"':''}">${p.hrs||'—'}</div><div class="scsub">${p.hrs?'Годин':'Немає даних'}</div></div>
   </div>`;
   requestAnimationFrame(()=>{
     w.querySelectorAll('[data-tgt]').forEach(el=>{
@@ -3033,16 +3081,16 @@ function renderMode(mode,p){
   const det=document.getElementById('detailStats');
   const kdColor=parseFloat(m.kd)>=2?'hi':parseFloat(m.kd)>=1?'':'low';
   const wrColor=m.wr>=55?'hi':m.wr>=48?'':'low';
-  const airPct=m.battles>0?Math.round(m.kills_air/(m.kills_ground+m.kills_air+.01)*100):0;
+  const airPct=m.battles>0&&(m.kills_ground+m.kills_air)>0?Math.round(m.kills_air/(m.kills_ground+m.kills_air)*100):null;
   det.innerHTML=`<div class="det-grid">
-    <div class="det-row"><div class="det-lbl">Вбивств/бій</div><div class="det-val ${kpb>=1.5?'hi':kpb>=0.8?'':'low'}">${kpb.toFixed(2)}</div></div>
-    <div class="det-row"><div class="det-lbl">Смертей/бій</div><div class="det-val ${dpb<=0.8?'hi':dpb<=1.2?'':'low'}">${dpb.toFixed(2)}</div></div>
-    <div class="det-row"><div class="det-lbl">Авіаційних вбивств</div><div class="det-val">${airPct}%</div></div>
-    <div class="det-row"><div class="det-lbl">K/D рейтинг</div><div class="det-val ${kdColor}">${m.kd}</div></div>
-    <div class="det-row"><div class="det-lbl">% перемог</div><div class="det-val ${wrColor}">${m.wr}%</div></div>
-    <div class="det-row"><div class="det-lbl">Рівень гравця</div><div class="det-val">${p.lv||'?'}</div></div>
+    <div class="det-row" title="Середня кількість вбивств за бій"><div class="det-lbl">Вбивств/бій</div><div class="det-val ${kpb>=1.5?'hi':kpb>=0.8?'':'low'}">${kpb.toFixed(2)}</div></div>
+    <div class="det-row" title="Середня кількість смертей за бій"><div class="det-lbl">Смертей/бій</div><div class="det-val ${dpb<=0.8?'hi':dpb<=1.2?'':'low'}">${dpb.toFixed(2)}</div></div>
+    ${airPct!==null?`<div class="det-row" title="Відсоток авіаційних вбивств від усіх"><div class="det-lbl">Авіація %</div><div class="det-val">${airPct}%</div></div>`:''}
+    <div class="det-row" title="Kill/Death ratio"><div class="det-lbl">K/D</div><div class="det-val ${kdColor}">${m.kd}</div></div>
+    <div class="det-row" title="Відсоток перемог"><div class="det-lbl">Win rate</div><div class="det-val ${wrColor}">${m.wr}%</div></div>
+    ${p.lv?`<div class="det-row"><div class="det-lbl">Рівень</div><div class="det-val">${p.lv}</div></div>`:''}
   </div>
-  ${p.prefNations&&p.prefNations.length?`<div style="margin-top:.55rem"><div class="det-lbl" style="margin-bottom:.3rem">Улюблені нації</div><div class="nat-chips">${p.prefNations.map(n=>`<span class="nat-chip">${n}</span>`).join('')}</div></div>`:''}
+  ${p.prefNations&&p.prefNations.length?`<div style="margin-top:.55rem"><div class="det-lbl" style="margin-bottom:.3rem">Улюблені нації</div><div class="nat-chips">${(Array.isArray(p.prefNations)?p.prefNations:[p.prefNations]).map(n=>`<span class="nat-chip">${n}</span>`).join('')}</div></div>`:''}
   ${p.topVehicle?`<div style="margin-top:.55rem"><span class="det-lbl">Топ техніка: </span><span style="font-family:var(--fm);font-size:.72rem;color:var(--a)">${p.topVehicle}</span></div>`:''}
   <div style="margin-top:.55rem;font-family:var(--fm);font-size:.6rem;color:var(--dim)"><span style="color:var(--g);font-weight:700">⬡ Оцінка: </span>${_ratePlayer(m,p)}</div>`;
 }
@@ -3055,13 +3103,13 @@ function _ratePlayer(m, p){
   if(wr>=50&&kd>=1.2) return '✓ Добрий гравець — стабільна гра';
   if(wr>=47&&kd>=0.9) return '◆ Середній рівень — є куди рости';
   if(wr>=44) return '▷ Починаючий — вчиться грати';
-  return '⚠ Потребує практики — переглянь тактику';
+  return '⚠ Потребує практики';
 }
 
 function qs(n){ document.getElementById('nick').value=n; doSearch(); }
 const recList=['Jingles','OddBawZ','PhlyDaily','Spit_flyer','TheShermanator'];
 function addRecent(n){ if(!recList.includes(n)){recList.unshift(n);if(recList.length>7)recList.pop();} renderRec(); }
-function renderRec(){ const c=document.getElementById('rchips'); c.innerHTML=''; recList.forEach(n=>{const ch=document.createElement('div');ch.className='rc';ch.textContent=n;ch.onclick=()=>qs(n);c.appendChild(ch);}); }
+function renderRec(){ const c=document.getElementById('rchips'); if(!c)return; c.innerHTML=''; recList.forEach(n=>{const ch=document.createElement('div');ch.className='rc';ch.textContent=n;ch.onclick=()=>qs(n);c.appendChild(ch);}); }
 document.getElementById('nick').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
 
 /* ════════ DUAL AI: OPENROUTER (FREE) + GEMINI ════════ */
