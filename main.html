@@ -233,6 +233,12 @@ section{padding:5.5rem 0}
 .cmp-drop-hd{font-family:var(--fm);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;
   padding:.32rem .85rem;color:var(--dim);background:rgba(0,0,0,.25);border-bottom:1px solid rgba(255,255,255,.03)}
 .cmp-drop-none{padding:.65rem .85rem;font-family:var(--fm);font-size:.65rem;color:var(--dim)}
+.cmp-drop-wiki-hint{padding:.4rem .85rem;font-family:var(--fm);font-size:.57rem;color:var(--a);animation:pulse 1s infinite}
+.cmp-drop-hd{font-family:var(--fm);font-size:.52rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);padding:.42rem .85rem;background:rgba(0,212,245,.03);border-bottom:1px solid rgba(0,212,245,.07)}
+.cmp-drop-hd-wiki{color:var(--c);background:rgba(0,212,245,.05)}
+.cmp-di-wiki{opacity:.85;border-left:2px solid rgba(0,212,245,.2)!important}
+.cmp-di-wiki:hover{border-left-color:var(--c)!important;background:rgba(0,212,245,.08)!important}
 /* cards */
 .cmp-cards{display:grid;grid-template-columns:1fr auto 1fr;gap:.8rem;align-items:center;margin-bottom:1.1rem}
 .cmp-card{padding:1rem 1.1rem;border:1px solid rgba(10,184,212,.12);background:var(--bg2);
@@ -1409,7 +1415,179 @@ const VI=[
 ['Nesher','israel','a'],['Kfir C.2','israel','a'],['Kfir C.7','israel','a'],
 ['F-4E Phantom II (Israel)','israel','a'],
 ['F-15A (Israel)','israel','a'],['F-15C Baz','israel','a'],['F-15D Baz','israel','a'],
+['F-16A Netz','israel','a'],['F-16C Barak II','israel','a'],['F-16D Barak II','israel','a'],,
+
+/* ── SWEDEN tanks ── */
+['Strv m/31','sweden','t'],['Strv m/40L','sweden','t'],['Strv m/42 DT','sweden','t'],
+['Strv m/42 EH','sweden','t'],['Strv 74','sweden','t'],['Pvkv m/43 (1946)','sweden','t'],
+['Ikv 72','sweden','t'],['Ikv 91','sweden','t'],['Ikv 91-105','sweden','t'],
+['Strv 81','sweden','t'],['Strv 101','sweden','t'],['Strv 102','sweden','t'],
+['Strv 103-0','sweden','t'],['Strv 103A','sweden','t'],['Strv 103B','sweden','t'],['Strv 103C','sweden','t'],
+['Strv 121','sweden','t'],['Strv 122','sweden','t'],['Strv 122A','sweden','t'],['Strv 122B PLSS','sweden','t'],
+['Pbv 301','sweden','t'],['Pbv 302','sweden','t'],['Pbv 302 (BILL)','sweden','t'],
+['CV 90105 TML','sweden','t'],['CV 9030','sweden','t'],['CV 9035NL','sweden','t'],['CV 9040B','sweden','t'],['CV 9040C','sweden','t'],
+['VEAK 40','sweden','t'],['L-62 ANTI II','sweden','t'],['Lvkv fm/43','sweden','t'],
+['Lvrbv 701','sweden','t'],['Lvkv 9040C','sweden','t'],
+['Bandkanon 1C','sweden','t'],['Akv 151','sweden','t'],
+['Landsverk Anti II','sweden','t'],
+['UDES 03','sweden','t'],['UDES 15/16','sweden','t'],['UDES 33','sweden','t'],
+['Leopard 2A4 (Sweden)','sweden','t'],
+/* ── ISRAEL tanks ── */
+['M4A4 (SA50)','israel','t'],['M-51','israel','t'],['M50','israel','t'],
+['AMX-13 (Israel)','israel','t'],['Sherman M-51','israel','t'],
+['Magach 1','israel','t'],['Magach 2','israel','t'],['Magach 3','israel','t'],
+['Magach 5','israel','t'],['Magach 6A','israel','t'],['Magach 6B','israel','t'],['Magach 6B GAL','israel','t'],
+['Magach 6M','israel','t'],['Magach 7A','israel','t'],['Magach 7C','israel','t'],
+['Merkava Mk.1','israel','t'],['Merkava Mk.1B','israel','t'],
+['Merkava Mk.2B','israel','t'],['Merkava Mk.2C','israel','t'],['Merkava Mk.2D','israel','t'],
+['Merkava Mk.3B','israel','t'],['Merkava Mk.3C','israel','t'],['Merkava Mk.3D','israel','t'],
+['Merkava Mk.3 Baz','israel','t'],['Merkava Mk.3 Baz Windbreaker','israel','t'],
+['Merkava Mk.4B','israel','t'],['Merkava Mk.4M','israel','t'],
+['Sho\'t','israel','t'],['Sho\'t Kal Alef','israel','t'],['Sho\'t Kal Dalet','israel','t'],
+['Pereh','israel','t'],['Namer','israel','t'],
+['TCM-20','israel','t'],['M163 Vulcan (Israel)','israel','t'],
+['ZSU-23-4 (Israel)','israel','t'],['MIM146','israel','t'],
+['Machbet','israel','t'],
+/* ── CHINA tanks ── */
+['Type 59','china','t'],['Type 59-IIA','china','t'],['Type 69','china','t'],['Type 69-IIA','china','t'],
+['Type 79','china','t'],['Type 80','china','t'],['Type 85-IIM','china','t'],
+['ZTZ96','china','t'],['ZTZ96A','china','t'],['ZTZ96A (P)','china','t'],
+['ZTZ99','china','t'],['ZTZ99A','china','t'],['ZTZ99-III','china','t'],
+['Type 62','china','t'],['Type 63A','china','t'],
+['ZBD86','china','t'],['ZBD04A','china','t'],['ZTD05','china','t'],
+['PTL02','china','t'],['WMA301','china','t'],['AFT09','china','t'],
+['PGZ09','china','t'],['PGZ04A','china','t'],['HQ-17A','china','t'],
+['T-62 (China)','china','t'],['T-55A (China)','china','t'],
+['IS-2 (China)','china','t'],['T-34-85 (China)','china','t'],
+['SU-76M (China)','china','t'],['ISU-122 (China)','china','t'],
+/* ── FRANCE tanks ── */
+['H.35','france','t'],['H.39','france','t'],['AMR.35 ZT2','france','t'],
+['Char B1 bis','france','t'],['Char B1 ter','france','t'],
+['S.35','france','t'],['FCM.36','france','t'],
+['M4A1 (France)','france','t'],['M4A4 (France)','france','t'],
+['ARL-44','france','t'],['AMX-13','france','t'],['AMX-13 (SS.11)','france','t'],
+['AMX-13-90','france','t'],['AMX-13-105','france','t'],
+['AMX-30','france','t'],['AMX-30B2','france','t'],['AMX-30B2 BRENUS','france','t'],
+['AMX-32','france','t'],['AMX-40','france','t'],
+['Leclerc','france','t'],['Leclerc S2','france','t'],['Leclerc SXXI','france','t'],['Leclerc S21','france','t'],
+['EBR (1954)','france','t'],['EBR (1963)','france','t'],['EBR (1963) (SA681)','france','t'],
+['AMX-50','france','t'],['AMX-50 Surbaisse','france','t'],['Lorraine 40t','france','t'],
+['VFM5','france','t'],['Char 25t','france','t'],
+['R3 T20 FA-HS','france','t'],['VBCI-2 (MCT30)','france','t'],
+['AMX-10P','france','t'],['AMX-10RC','france','t'],
+['Roland 1','france','t'],['Ocelot','france','t'],
+['M247','france','t'],
+/* ── ITALY tanks ── */
+['Fiat L6/40','italy','t'],['M13/40 (III)','italy','t'],['M14/41 (47/40)','italy','t'],
+['M15/42','italy','t'],['Semovente 75/18','italy','t'],['Semovente 75/46','italy','t'],
+['Semovente da 105/25','italy','t'],['Semovente 149/40','italy','t'],
+['Carro M11/39','italy','t'],['Carro M26/43 T','italy','t'],
+['P40','italy','t'],['P26/40','italy','t'],
+['M26 (Italy)','italy','t'],['M47 (Italy)','italy','t'],
+['OF-40','italy','t'],['OF-40 (MTCA)','italy','t'],['OF-40 Mk.2A','italy','t'],
+['C1 Ariete','italy','t'],['C1 Ariete PSO','italy','t'],['C1 Ariete AMV','italy','t'],
+['Centauro','italy','t'],['Centauro I 105','italy','t'],['Centauro I 105 R','italy','t'],
+['Centauro II','italy','t'],['Centauro RGO','italy','t'],
+['AUBL/74','italy','t'],['B1 Centauro','italy','t'],
+['SIDAM 25','italy','t'],['Otomatic','italy','t'],
+['FIAT 6614','italy','t'],['VBC (PT2)','italy','t'],
+['M60A1 (AOS)','italy','t'],['M60A1 RISE (P) (Italy)','italy','t'],
+['Leopard 1A5 (Italy)','italy','t'],
+/* ── SWEDEN aircraft ── */
+['J22-A','sweden','a'],['J22-B','sweden','a'],
+['B18A','sweden','a'],['B18B','sweden','a'],['T18B','sweden','a'],
+['J26','sweden','a'],['P-51D (Sweden)','sweden','a'],
+['J21A-1','sweden','a'],['J21A-2','sweden','a'],['J21A-3','sweden','a'],['J21RA','sweden','a'],['A21RB','sweden','a'],
+['J29A','sweden','a'],['J29B','sweden','a'],['J29D','sweden','a'],['J29F','sweden','a'],
+['A29B','sweden','a'],
+['J32B','sweden','a'],['J32E','sweden','a'],
+['J35A','sweden','a'],['J35D','sweden','a'],['J35F','sweden','a'],['J35J','sweden','a'],['J35XS','sweden','a'],
+['AJ37','sweden','a'],['JA37C','sweden','a'],['JA37D','sweden','a'],['AJS37','sweden','a'],['AJSH37','sweden','a'],
+['JAS39A','sweden','a'],['JAS39C','sweden','a'],['JAS39EX','sweden','a'],['JAS39EX (AESA)','sweden','a'],
+['SK60B','sweden','a'],['Lansen C','sweden','a'],['Draken','sweden','a'],
+['F-84E Thunderjet (Sweden)','sweden','a'],['P-47D (Sweden)','sweden','a'],
+['Vampire FB 5 (Sweden)','sweden','a'],['de Havilland Vampire (Sweden)','sweden','a'],
+/* ── ISRAEL aircraft ── */
+['Piper Cub','israel','a'],['Mustang (Israel)','israel','a'],
+['Harvard Mk.IIa','israel','a'],
+['Spitfire Mk IXe (Israel)','israel','a'],
+['Ouragan','israel','a'],['Mystere IVA','israel','a'],['Super Mystere B2 (Israel)','israel','a'],
+['Shahak','israel','a'],
+['Nesher','israel','a'],['Kfir C.2','israel','a'],['Kfir C.7','israel','a'],
+['F-4E Phantom II (Israel)','israel','a'],['F-4E Kurnass','israel','a'],['F-4E Kurnass 2000','israel','a'],
+['F-15A (Israel)','israel','a'],['F-15C Baz','israel','a'],['F-15D Baz','israel','a'],['F-15I Ra\'am','israel','a'],
 ['F-16A Netz','israel','a'],['F-16C Barak II','israel','a'],['F-16D Barak II','israel','a'],
+['AH-64A (Israel)','israel','a'],['AH-64D (Israel)','israel','a'],
+/* ── CHINA aircraft ── */
+['Ki-43-III ko (China)','china','a'],['P-38L-5-LO (China)','china','a'],
+['P-40E-1 (China)','china','a'],
+['Q-5 early','china','a'],['Q-5A','china','a'],['Q-5L','china','a'],['Q-5 (Nasr-1)','china','a'],
+['J-4','china','a'],['J-5','china','a'],['J-6A','china','a'],['J-6C','china','a'],
+['J-7E','china','a'],['J-7D','china','a'],['J-7G','china','a'],
+['J-8B','china','a'],['J-8F','china','a'],
+['J-10A','china','a'],['J-10B TVC','china','a'],
+['J-11','china','a'],['J-11A','china','a'],
+['Z-9W','china','a'],['Z-9WA','china','a'],['Z-10','china','a'],['Z-19','china','a'],
+['WZ-11','china','a'],
+['F-5A (China)','china','a'],['F-86F-40 (China)','china','a'],
+/* ── FRANCE aircraft ── */
+['VG 33','france','a'],['MS.406C1','france','a'],['D.520','france','a'],
+['MB.174A-3','france','a'],['Leo 451 early','france','a'],
+['Yak-3 (France)','france','a'],['Yak-9T (France)','france','a'],
+['P-47D-30 (France)','france','a'],['Spitfire Mk.Vb (France)','france','a'],
+['F8F-1B (France)','france','a'],
+['F-84G-26-RE (France)','france','a'],
+['Ouragan','france','a'],['Mystere IVA','france','a'],
+['Super Mystere B2','france','a'],
+['Mirage IIIC','france','a'],['Mirage IIIE','france','a'],['Mirage IIICJ','france','a'],
+['Mirage F1C','france','a'],['Mirage F1C-200','france','a'],['Mirage F1CT','france','a'],
+['Mirage 2000C-S4','france','a'],['Mirage 2000C-S5','france','a'],
+['Mirage 2000-5F','france','a'],['Mirage 4000','france','a'],
+['Rafale C','france','a'],['Rafale F3-R','france','a'],
+['Jaguar A','france','a'],['Jaguar E','france','a'],['Jaguar GR.1A','france','a'],
+['Etendard IVM','france','a'],['Super Etendard','france','a'],
+['F-100D (France)','france','a'],
+['Vautour IIA','france','a'],['Vautour IIN','france','a'],
+['SA.313B Alouette II','france','a'],['SA 341F Gazelle','france','a'],['SA 342L Gazelle','france','a'],['SA 342M Gazelle','france','a'],
+['Tiger HAP','france','a'],['Tiger HAD','france','a'],
+/* ── ITALY aircraft ── */
+['CR.42 Falco','italy','a'],['C. 200 serie 3','italy','a'],['C. 200 serie 7','italy','a'],
+['C. 202','italy','a'],['C. 202EC','italy','a'],['C. 205 serie 1','italy','a'],['C. 205 serie 3','italy','a'],
+['Re.2000 serie 1','italy','a'],['Re.2001 CN','italy','a'],['Re.2001 G','italy','a'],
+['Re.2002 Early','italy','a'],['Re.2005 serie 0','italy','a'],
+['G.50 serie 2','italy','a'],['G.50 AS serie 7','italy','a'],['G.55 sottoserie 0','italy','a'],['G.55S','italy','a'],
+['Spitfire Mk.Vb (Italy)','italy','a'],['P-47D-27 (Italy)','italy','a'],
+['F-86A-5 (Italy)','italy','a'],
+['G.91 R/1','italy','a'],['G.91 YS','italy','a'],['G.91 R/4','italy','a'],['G.91 R/1B','italy','a'],
+['F-104A (Italy)','italy','a'],['F-104G (Italy)','italy','a'],['F-104S ASA','italy','a'],['F-104S ASA-M','italy','a'],
+['Tornado IDS (Italy)','italy','a'],['Tornado ADV','italy','a'],
+['AMX A-1A','italy','a'],['Eurofighter Typhoon (Italy)','italy','a'],
+['F-16A ADF (Italy)','italy','a'],
+['A-129 International','italy','a'],['A129CBT','italy','a'],
+/* ── BRITAIN extra ── */
+['Crusader II','britain','t'],['Crusader III','britain','t'],['Cromwell I','britain','t'],
+['Crusader AA Mk II','britain','t'],['Tetrarch I','britain','t'],
+['Daimler Armoured Car','britain','t'],['AEC Mk II','britain','t'],
+['Caernarvon','britain','t'],['Conqueror','britain','t'],
+['Vickers MBT','britain','t'],['Vickers Mk.1','britain','t'],
+['Challenger Mk.2','britain','t'],['Challenger 2E','britain','t'],
+['Warrior','britain','t'],['CVR(T) Scimitar','britain','t'],
+['FV4030/4 Challenger','britain','t'],
+['Stormer HVM','britain','t'],['Falcon SPAA','britain','t'],
+['Rooikat 76','britain','t'],['Rooikat 105','britain','t'],['ZA-35','britain','t'],
+['G6 Rhino','britain','t'],
+['Typhoon Mk Ib','britain','a'],['Typhoon Mk Ib/L','britain','a'],
+['Sea Fury FB 11','britain','a'],['Seafire FR 47','britain','a'],
+['Sea Meteor F Mk 3','britain','a'],
+['Javelin FAW.9','britain','a'],['Sea Vixen FAW 2','britain','a'],
+['Nimrod MR.2','britain','a'],
+['Hawk T.1A','britain','a'],
+['Harrier GR.1','britain','a'],['Harrier GR.3','britain','a'],['Harrier GR.7','britain','a'],
+['Sea Harrier FRS.1e','britain','a'],['Sea Harrier FA 2','britain','a'],
+['Tornado GR.1','britain','a'],['Tornado GR.4','britain','a'],
+['Eurofighter Typhoon (Great Britain)','britain','a'],
+['Lynx AH.7','britain','a'],['WAH-64D Apache AH1','britain','a'],['Apache AH Mk.1','britain','a'],
+
 ];
 
 function searchVI(q, typeF){
@@ -1881,36 +2059,141 @@ function _updateCardMsg(side,msg){
 ════════════════════════════════════════ */
 let cat='tanks', selA=null, selB=null, customSide='A';
 
-function onSearchInput(side, q){
-  const drop=document.getElementById('drop'+side);
-  if(!q||q.length<1){ renderDrop(side,[],''); return; }
-  const typeF=cat==='tanks'?'t':'a';
-  const hits=searchVI(q,typeF);
-  renderDrop(side, hits, q);
+/* ════ SEARCH — local index + wiki fallback ════ */
+let _wikiSearchCache={};  // query → [{title,nat,type}]
+
+function searchVI(q, typeF){
+  const ql=q.toLowerCase();
+  if(!ql) return [];
+  return VI.filter(v=>{
+    if(typeF==='t'&&v[2]!=='t') return false;
+    if(typeF==='a'&&v[2]!=='a') return false;
+    const n=v[0].toLowerCase();
+    return n.includes(ql)||n.replace(/[.\-()/]/g,' ').includes(ql);
+  }).slice(0,30);
 }
 
-function renderDrop(side, hits, q){
+/* Search War Thunder wiki for vehicles by name */
+async function _wikiSearch(q, typeF){
+  const cacheKey=q.toLowerCase()+'|'+typeF;
+  if(_wikiSearchCache[cacheKey]) return _wikiSearchCache[cacheKey];
+
+  const enc=encodeURIComponent(q);
+  const apiQ=`action=opensearch&search=${enc}&limit=15&namespace=0&format=json&origin=*`;
+  const src=`${WT_WIKI_URL}?${apiQ}`;
+  const proxies=[
+    src,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(src)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src)}`,
+    `https://corsproxy.io/?${encodeURIComponent(src)}`,
+  ];
+
+  for(const url of proxies){
+    try{
+      const r=await fetch(url,{signal:safeAbort(6000)});
+      if(!r.ok) continue;
+      const raw=await r.text();
+      let data;
+      try{
+        const o=JSON.parse(raw);
+        data=typeof o.contents==='string'?JSON.parse(o.contents):o;
+      }catch{ continue; }
+      // opensearch returns [query, [titles], [descriptions], [urls]]
+      const titles=Array.isArray(data)?data[1]:data?.[1];
+      if(!Array.isArray(titles)||!titles.length) continue;
+      // Filter to vehicle-like titles (skip talk pages, categories, etc.)
+      const results=titles
+        .filter(t=>t&&!t.startsWith('Talk:')&&!t.startsWith('Category:')&&!t.startsWith('Template:'))
+        .map(t=>({title:t, nat:'unknown', type:typeF, _wiki:true}));
+      _wikiSearchCache[cacheKey]=results;
+      return results;
+    }catch(e){}
+  }
+  return [];
+}
+
+/* Combined search: local first, then wiki for titles not in local */
+let _searchDebounce=null;
+async function onSearchInput(side, q){
+  const drop=document.getElementById('drop'+side);
+  if(!q||q.length<2){ renderDrop(side,[],''); return; }
+  const typeF=cat==='tanks'?'t':'a';
+
+  // 1. Show local results immediately
+  const local=searchVI(q,typeF);
+  renderDrop(side, local, q, false);
+
+  // 2. Debounce wiki search
+  clearTimeout(_searchDebounce);
+  _searchDebounce=setTimeout(async()=>{
+    // Only do wiki search if local results are few
+    if(local.length>=12) return;
+    const wikiResults=await _wikiSearch(q,typeF).catch(()=>[]);
+    if(!wikiResults.length) return;
+    // Merge: add wiki results not already in local
+    const localTitles=new Set(local.map(v=>v[0].toLowerCase()));
+    const extra=wikiResults
+      .filter(w=>!localTitles.has(w.title.toLowerCase()))
+      .map(w=>[w.title,'unknown',typeF,true]);  // 4th element = from wiki
+    if(!extra.length) return;
+    renderDrop(side, local, q, false, extra);
+  }, 380);
+}
+
+function renderDrop(side, hits, q, loading=false, wikiExtra=[]){
   const drop=document.getElementById('drop'+side);
   const selId=(side==='A'?selA:selB)?.id;
-  if(!hits.length && !q){ drop.classList.remove('open'); return; }
-  if(!hits.length){
-    drop.innerHTML='<div class="cmp-drop-none">Нічого не знайдено — спробуй "Tiger", "F-16", "MiG"</div>';
-    drop.classList.add('open'); return;
+
+  if(!hits.length&&!wikiExtra.length&&!loading){
+    if(!q){ drop.classList.remove('open'); return; }
+    drop.innerHTML=`
+      <div class="cmp-drop-none">Нічого не знайдено локально</div>
+      <div class="cmp-drop-wiki-hint">⟳ Шукаємо у War Thunder Wiki…</div>`;
+    drop.classList.add('open');
+    // trigger wiki search anyway
+    const typeF=cat==='tanks'?'t':'a';
+    _wikiSearch(q,typeF).then(res=>{
+      if(!res.length){
+        drop.innerHTML='<div class="cmp-drop-none">Нічого не знайдено — спробуй англійську назву</div>';
+        return;
+      }
+      const extra=res.map(w=>[w.title,'unknown',typeF,true]);
+      renderDrop(side,[],q,false,extra);
+    });
+    return;
   }
-  let html=`<div class="cmp-drop-hd">${hits.length} результатів</div>`;
-  hits.forEach(v=>{
-    const fl=NAT_FLAGS_IDX[v[1]]||'🌐';
-    const nat=NAT_NAMES_IDX[v[1]]||v[1];
-    const br=BR_MAP[v[0]]||'';
-    const vid='vi_'+v[0].replace(/\W/g,'_');
-    const isSel=selId===vid;
-    const cls='cmp-di'+(isSel?(side==='A')?' act-a':' act-b':'');
-    html+=`<button class="${cls}" data-vtitle="${v[0].replace(/"/g,'&quot;')}" data-vside="${side}">
-      <span class="cdi-fl">${fl}</span>
-      <span class="cdi-nm">${v[0]}</span>
-      <span class="cdi-br">${br?'BR '+br:nat}</span>
-    </button>`;
-  });
+
+  let html='';
+  if(hits.length){
+    html+=`<div class="cmp-drop-hd">📋 ${hits.length} у базі</div>`;
+    hits.forEach(v=>{
+      const fl=NAT_FLAGS_IDX[v[1]]||'🌐';
+      const nat=NAT_NAMES_IDX[v[1]]||v[1];
+      const br=BR_MAP[v[0]]||'';
+      const vid='vi_'+v[0].replace(/\W/g,'_');
+      const isSel=selId===vid;
+      const cls='cmp-di'+(isSel?(side==='A')?' act-a':' act-b':'');
+      html+=`<button class="${cls}" data-vtitle="${v[0].replace(/"/g,'&quot;')}" data-vside="${side}">
+        <span class="cdi-fl">${fl}</span>
+        <span class="cdi-nm">${v[0]}</span>
+        <span class="cdi-br">${br?'BR '+br:nat}</span>
+      </button>`;
+    });
+  }
+
+  if(wikiExtra.length){
+    html+=`<div class="cmp-drop-hd cmp-drop-hd-wiki">🌐 ${wikiExtra.length} з War Thunder Wiki</div>`;
+    wikiExtra.forEach(v=>{
+      const title=v[0];
+      const cls='cmp-di cmp-di-wiki';
+      html+=`<button class="${cls}" data-vtitle="${title.replace(/"/g,'&quot;')}" data-vside="${side}">
+        <span class="cdi-fl">🌐</span>
+        <span class="cdi-nm">${title}</span>
+        <span class="cdi-br" style="color:var(--c);font-size:.5rem">wiki</span>
+      </button>`;
+    });
+  }
+
   drop.innerHTML=html;
   drop.classList.add('open');
   drop.querySelectorAll('.cmp-di[data-vtitle]').forEach(btn=>{
@@ -1923,7 +2206,7 @@ function openDrop(side){
   if(q.length>0) onSearchInput(side,q);
   else {
     const typeF=cat==='tanks'?'t':'a';
-    const sample=VI.filter(v=>v[2]===typeF).slice(0,15);
+    const sample=VI.filter(v=>v[2]===typeF).slice(0,12);
     renderDrop(side, sample, '_');
   }
 }
