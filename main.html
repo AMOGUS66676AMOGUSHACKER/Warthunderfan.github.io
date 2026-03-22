@@ -1465,29 +1465,29 @@ const VSPECS={
 ════════════════════════════════════════════════════ */
 const WT_WIKI_URL   = 'https://wiki.warthunder.com/api.php';
 const WT_FANDOM_URL = 'https://warthunder.fandom.com/api.php';
-const _wikiCache    = {};
+const _wikiCache = {};  // title → {src, wt} | 'MISS'
 
 function safeAbort(ms){
   try{ return AbortSignal.timeout(ms); }
   catch(e){ const c=new AbortController(); setTimeout(()=>c.abort(),ms); return c.signal; }
 }
 
-/* Парсить JSON відповідь від wiki API (враховує allorigins wrapper) */
+/* ─── parse raw wiki API JSON response ─── */
 function _parseWikiJson(raw){
   let d;
   try{ d=JSON.parse(raw); }catch{ return null; }
   if(typeof d?.contents==='string') try{ d=JSON.parse(d.contents); }catch{ return null; }
   const page=Object.values(d?.query?.pages||{})[0];
-  if(!page || page.missing!==undefined) return null;
-  return page?.revisions?.[0]?.slots?.main?.['*'] || page?.revisions?.[0]?.['*'] || null;
+  if(!page||page.missing!==undefined) return null;
+  return page?.revisions?.[0]?.slots?.main?.['*']||page?.revisions?.[0]?.['*']||null;
 }
 
-/* Один запит через проксі-список (послідовно) */
+/* ─── fetch one wiki API through proxy chain ─── */
 async function _wikiFetch(apiBase, title){
-  const enc = encodeURIComponent(title.replace(/ /g,'_'));
-  const q   = `action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=*&origin=*`;
-  const src = `${apiBase}?${q}`;
-  const proxies = [
+  const enc=encodeURIComponent(title.replace(/ /g,'_'));
+  const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=*&origin=*`;
+  const src=`${apiBase}?${q}`;
+  const proxies=[
     src,
     `https://api.allorigins.win/get?url=${encodeURIComponent(src)}`,
     `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src)}`,
@@ -1495,21 +1495,57 @@ async function _wikiFetch(apiBase, title){
   ];
   for(const url of proxies){
     try{
-      const r = await fetch(url, {signal: safeAbort(8000)});
+      const r=await fetch(url,{signal:safeAbort(7000)});
       if(!r.ok) continue;
-      const wt = _parseWikiJson(await r.text());
+      const wt=_parseWikiJson(await r.text());
       if(wt) return wt;
     }catch(e){}
   }
   return null;
 }
 
+/* ─── wikiGetPage: WT wiki → Fandom, returns {src,wt} or null ─── */
 async function wikiGetPage(title){
   if(_wikiCache.hasOwnProperty(title)) return _wikiCache[title];
-  const wt = await _wikiFetch(WT_WIKI_URL, title)
-          || await _wikiFetch(WT_FANDOM_URL, title);
-  _wikiCache[title] = wt;   // null means "tried, not found"
-  return wt;
+  let wt=await _wikiFetch(WT_WIKI_URL, title);
+  if(wt){ _wikiCache[title]={src:'wt',wt}; return _wikiCache[title]; }
+  wt=await _wikiFetch(WT_FANDOM_URL, title);
+  if(wt){ _wikiCache[title]={src:'fandom',wt}; return _wikiCache[title]; }
+  _wikiCache[title]='MISS';
+  return null;
+}
+
+/* ─── AI spec generation when wiki unavailable ─── */
+async function _aiGetSpecs(title, vType, nat, br){
+  if(!(OR_KEY||GEMINI_KEY)) return null;
+  const isTank=vType==='tanks';
+  const prompt=`Дай точні характеристики бойової техніки War Thunder "${title}" (${isTank?'танк':'літак'}, BR ${br}, нація: ${nat}).
+Відповідь ТІЛЬКИ у форматі JSON, без коментарів:
+${isTank
+? `{"frontal":"XX мм","gun":"XXмм YYY","pen":"XXX мм APFSDS","speed":"XX км/г","reload":"X.Xс","weight":"XXт","armor":0-99,"firepower":0-99,"speed_sc":0-99,"agility":0-99,"reload_sc":0-99,"crew":0-99}`
+: `{"topSpeed":"XXXX км/г","climbRate":"XX м/с","turnTime":"XXс","ceiling":"XXXXXм","armament":"1×20мм, ракети","engine":"двигун (XXкН)","speed_sc":0-99,"climb_sc":0-99,"turn_sc":0-99,"firepower":0-99,"altitude":0-99,"durability":0-99}`
+}`;
+  const msgs=[{role:'user',content:prompt}];
+  let res=null;
+  if(OR_KEY) res=await callOR(msgs);
+  if(!res?.ok&&GEMINI_KEY) res=await callGemini(msgs);
+  if(!res?.ok) return null;
+  try{
+    const txt=res.text.replace(/```json|```/g,'').trim();
+    const j=JSON.parse(txt);
+    if(isTank) return {
+      fl: NAT_FLAGS_IDX[Object.keys(NAT_NAMES_IDX).find(k=>NAT_NAMES_IDX[k]===nat)||'']||'🌐',
+      br, nation:nat, type:'tank', _src:'ai',
+      scores:{armor:j.armor||50,firepower:j.firepower||60,speed:j.speed_sc||50,agility:j.agility||50,reload:j.reload_sc||55,crew:j.crew||60},
+      specs:{frontal:j.frontal||'—',gun:j.gun||'—',pen:j.pen||'—',speed:j.speed||'—',reload:j.reload||'—',weight:j.weight||'—'}
+    };
+    return {
+      fl: NAT_FLAGS_IDX[Object.keys(NAT_NAMES_IDX).find(k=>NAT_NAMES_IDX[k]===nat)||'']||'🌐',
+      br, nation:nat, type:'aircraft', _src:'ai',
+      scores:{speed:j.speed_sc||65,climb:j.climb_sc||65,turn:j.turn_sc||60,firepower:j.firepower||65,altitude:j.altitude||65,durability:j.durability||55},
+      specs:{topSpeed:j.topSpeed||'—',climbRate:j.climbRate||'—',turnTime:j.turnTime||'—',ceiling:j.ceiling||'—',armament:j.armament||'—',engine:j.engine||'—'}
+    };
+  }catch(e){ return null; }
 }
 
 function wikiVal(wt,...keys){
@@ -1520,7 +1556,7 @@ function wikiVal(wt,...keys){
   return null;
 }
 
-function parseWikiVehicle(wt,title){
+function parseWikiVehicle(wt, title){
   const isTank=/\|type\s*=\s*(tank|spaa|td|spg|heavy|medium|light)|hull_armour|armour_front|tracks_width/i.test(wt);
   const isAir=/\|type\s*=\s*(fighter|bomber|attacker|helicopter|jet)|max_speed_at_altitude|wing_span|climb_rate|turn_time/i.test(wt);
   const natRaw=(wikiVal(wt,'country','nation')||'').toLowerCase().trim();
@@ -1530,40 +1566,107 @@ function parseWikiVehicle(wt,title){
   if(!br){const m=wt.match(/\|\s*br[_\s]rb\s*=\s*([\d.]+)/i);if(m)br=m[1];}
   br=br||'?';
   if(isTank){
-    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour')||'?';
-    const gun=wikiVal(wt,'gun_name','main_armament','calibre','weapon1')||'?';
+    const frontal=wikiVal(wt,'armour_front','hull_front','hull_armour')||'—';
+    const gun=wikiVal(wt,'gun_name','main_armament','calibre','weapon1')||'—';
     const pen=wikiVal(wt,'max_pen','penetration','shell_pen_1')||'—';
-    const spd=wikiVal(wt,'speed_max','max_speed','speed')||'?';
-    const rel=wikiVal(wt,'reload','reload_time','reload_basic')||'?';
+    const spd=wikiVal(wt,'speed_max','max_speed','speed')||'—';
+    const rel=wikiVal(wt,'reload','reload_time','reload_basic')||'—';
     const wgtRaw=wikiVal(wt,'weight','mass','weight_kg');
-    const wgt=wgtRaw?(parseFloat(wgtRaw)>1000?(parseFloat(wgtRaw)/1000).toFixed(1)+'т':wgtRaw+'т'):'?';
+    const wgt=wgtRaw?(parseFloat(wgtRaw)>1000?(parseFloat(wgtRaw)/1000).toFixed(1)+'т':wgtRaw+'т'):'—';
     const armorSc=Math.min(99,Math.round((parseFloat(frontal)||50)/3.2));
     const spdSc=Math.min(99,Math.round((parseFloat(spd)||40)*1.5));
     const relSc=Math.min(99,Math.round(100-(parseFloat(rel)||10)*4));
     return{fl,br,nation:natName,type:'tank',_wiki:true,
-      scores:{armor:armorSc||50,firepower:65,speed:spdSc||50,agility:50,reload:relSc||50,crew:60},
-      specs:{frontal:frontal+(frontal!=='?'&&!/мм|mm/.test(frontal)?'мм':''),gun,pen,speed:spd+(spd!=='?'&&!/км|kph/.test(spd)?' км/г':''),reload:rel+(rel!=='?'&&!/с|s/.test(rel)?'с':''),weight:wgt},
-      desc:`Дані з War Thunder Wiki. BR ${br}.`};
+      scores:{armor:Math.max(1,armorSc||50),firepower:65,speed:Math.max(1,spdSc||50),agility:50,reload:Math.max(1,relSc||50),crew:60},
+      specs:{frontal:frontal+(frontal!=='—'&&!/мм|mm/.test(frontal)?'мм':''),gun,pen,speed:spd+(spd!=='—'&&!/км|kph/.test(spd)?' км/г':''),reload:rel+(rel!=='—'&&!/с|s/.test(rel)?'с':''),weight:wgt}};
   }
   if(isAir){
-    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max')||'?';
-    const clmb=wikiVal(wt,'climb_rate','climbrate')||'?';
-    const turn=wikiVal(wt,'turn_time','turn')||'?';
-    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude')||'?';
-    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1')||'?';
-    const eng=wikiVal(wt,'engine','powerplant','engine_name')||'?';
+    const spd=wikiVal(wt,'max_speed','max_speed_alt','speed_max')||'—';
+    const clmb=wikiVal(wt,'climb_rate','climbrate')||'—';
+    const turn=wikiVal(wt,'turn_time','turn')||'—';
+    const ceil=wikiVal(wt,'service_ceiling','ceiling','max_altitude')||'—';
+    const arm=wikiVal(wt,'armament','weapons','gun_name','weapon1')||'—';
+    const eng=wikiVal(wt,'engine','powerplant','engine_name')||'—';
     const spdN=parseFloat(spd)||500;const clmbN=parseFloat(clmb)||15;const turnN=parseFloat(turn)||20;
     return{fl,br,nation:natName,type:'aircraft',_wiki:true,
       scores:{speed:Math.min(99,Math.round(spdN/25)),climb:Math.min(99,Math.round(clmbN*2.5)),turn:Math.min(99,Math.max(10,Math.round(110-turnN*2.5))),firepower:65,altitude:65,durability:55},
-      specs:{topSpeed:spd+(spd!=='?'&&!/км|kph/.test(spd)?' км/г':''),climbRate:clmb+(clmb!=='?'&&!/м|m/.test(clmb)?' м/с':''),turnTime:turn+(turn!=='?'&&!/с|s/.test(turn)?'с':''),ceiling:ceil+(ceil!=='?'&&!/м|m/.test(ceil)?'м':''),armament:arm,engine:eng},
-      desc:`Дані з War Thunder Wiki. BR ${br}.`};
+      specs:{topSpeed:spd+(spd!=='—'&&!/км|kph/.test(spd)?' км/г':''),climbRate:clmb+(clmb!=='—'&&!/м|m/.test(clmb)?' м/с':''),turnTime:turn+(turn!=='—'&&!/с|s/.test(turn)?'с':''),ceiling:ceil+(ceil!=='—'&&!/м|m/.test(ceil)?'м':''),armament:arm,engine:eng}};
   }
-  return{fl,br,nation:natName,type:cat,_wiki:true,
-    scores:cat==='tanks'?{armor:50,firepower:50,speed:50,agility:50,reload:50,crew:50}:{speed:50,climb:50,turn:50,firepower:50,altitude:50,durability:50},
-    specs:cat==='tanks'?{frontal:'—',gun:'—',pen:'—',speed:'—',reload:'—',weight:'—'}:{topSpeed:'—',climbRate:'—',turnTime:'—',ceiling:'—',armament:'—',engine:'—'},
-    desc:`Завантажено з War Thunder Wiki. BR ${br}.`};
+  return null;
 }
 
+/* ─── selectVehicle: VSPECS → Wiki(WT→Fandom) → AI → Estimate ─── */
+const _selLoading=new Set();
+function _estimate(title,vType,fl,nat,br){
+  const b=parseFloat(br)||5;
+  if(vType==='tanks') return{fl,br,nation:nat,type:'tank',_estimated:true,
+    scores:{armor:Math.min(99,Math.round(15+b*9)),firepower:Math.min(99,Math.round(20+b*8)),speed:Math.min(99,Math.round(30+b*4)),agility:Math.min(99,Math.round(25+b*3.5)),reload:Math.min(99,Math.round(25+b*5)),crew:60},
+    specs:{frontal:'~'+Math.round(20+b*20)+' мм',gun:'~'+Math.round(50+b*10)+' мм',pen:'~'+Math.round(30+b*32)+' мм',speed:'~'+Math.round(25+b*4)+' км/г',reload:'~'+Math.max(4,Math.round(14-b*0.8))+'с',weight:'~'+Math.round(10+b*5)+'т'}};
+  return{fl,br,nation:nat,type:'aircraft',_estimated:true,
+    scores:{speed:Math.min(99,Math.round(15+b*7)),climb:Math.min(99,Math.round(10+b*7)),turn:Math.min(99,Math.max(10,Math.round(15+b*6))),firepower:Math.min(99,Math.round(30+b*4)),altitude:Math.min(99,Math.round(30+b*5)),durability:Math.min(99,Math.round(20+b*4))},
+    specs:{topSpeed:'~'+Math.round(200+b*80)+' км/г',climbRate:'~'+Math.round(4+b*2.5)+' м/с',turnTime:'~'+Math.max(12,Math.round(38-b*2.2))+'с',ceiling:'~'+Math.round(5000+b*1000)+'м',armament:'—',engine:'—'}};
+}
+
+async function selectVehicle(title, side, btnEl){
+  const lockKey=title+'|'+side;
+  if(_selLoading.has(lockKey)) return;
+  _selLoading.add(lockKey);
+
+  const entry =VI.find(x=>x[0]===title);
+  const fl    =NAT_FLAGS_IDX[entry?.[1]]||'🌐';
+  const nat   =NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
+  const br    =BR_MAP[title]||'?';
+  const vType =entry?.[2]==='t'?'tanks':'aircraft';
+  const baseId='vi_'+title.replace(/\W/g,'_');
+
+  document.getElementById('search'+side).value=title;
+  closeDrop(side);
+
+  /* ── 1. VSPECS — миттєво, немає мережі ── */
+  const local=VSPECS[title];
+  if(local){
+    pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,
+      _loading:false,_src:'db'}, side);
+    _selLoading.delete(lockKey);
+    return;
+  }
+
+  /* ── 2. Показуємо estimate одразу ── */
+  const est=_estimate(title,vType,fl,nat,br);
+  pickObj({...est,id:baseId,name:title,_loading:true,_loadMsg:'⟳ wiki…'}, side);
+  _selLoading.delete(lockKey);
+
+  /* ── 3. WT Wiki ── */
+  _updateCardMsg(side,'⟳ WT wiki…');
+  const wtResult=await wikiGetPage(title).catch(()=>null);
+  if(wtResult){
+    const parsed=parseWikiVehicle(wtResult.wt, title);
+    if(parsed){
+      parsed.id=baseId; parsed.name=title; parsed._loading=false;
+      parsed._src=wtResult.src==='fandom'?'fandom':'wt';
+      pickObj(parsed,side); return;
+    }
+  }
+
+  /* ── 4. Wiki мертва → просимо ШІ ── */
+  if(OR_KEY||GEMINI_KEY){
+    _updateCardMsg(side,'⟳ ШІ генерує…');
+    const aiData=await _aiGetSpecs(title,vType,nat,br).catch(()=>null);
+    if(aiData){
+      pickObj({...aiData,id:baseId,name:title,_loading:false,_src:'ai'}, side); return;
+    }
+  }
+
+  /* ── 5. Все впало — залишаємо estimate ── */
+  pickObj({...est,id:baseId,name:title,_loading:false}, side);
+}
+
+/* helper to update loading message in card without full re-render */
+function _updateCardMsg(side,msg){
+  const card=document.getElementById('card'+side);
+  const el=card?.querySelector('.cmp-card-loading');
+  if(el) el.textContent=msg;
+}
 /* ════════════════════════════════════════
    COMPARE ENGINE v3 — inline dropdown + cards
 ════════════════════════════════════════ */
@@ -1629,13 +1732,15 @@ function updateCard(side, v){
 
   let badge='';
   if(v._loading){
-    badge='<span style="color:var(--a);font-size:.5rem;animation:pulse 1s infinite">⟳ вікі…</span>';
-  } else if(v._src==='wiki'){
-    badge='<span style="color:var(--g);font-size:.5rem" title="Дані з War Thunder Wiki">✓ вікі</span>';
-  } else if(v._src==='db'){
-    badge='<span style="color:var(--c);font-size:.5rem" title="Дані з вбудованої бази">⬡ база даних</span>';
-  } else if(v._estimated){
-    badge='<span style="color:var(--mute);font-size:.5rem" title="Розраховано з BR рейтингу">≈ розрахунково</span>';
+    badge=`<span class="cmp-card-loading" style="color:var(--a);font-size:.5rem;animation:pulse 1s infinite">${v._loadMsg||'⟳ wiki…'}</span>`;
+  } else {
+    const _badges={
+      wt:   '<span style="color:var(--g);font-size:.5rem" title="War Thunder Wiki">✓ wt wiki</span>',
+      fandom:'<span style="color:#9b6dff;font-size:.5rem" title="Fandom Wiki">✓ fandom</span>',
+      ai:   '<span style="color:#ffa032;font-size:.5rem" title="Згенеровано ШІ">🟠 ШІ</span>',
+      db:   '<span style="color:var(--c);font-size:.5rem" title="Вбудована база">⬡ база</span>',
+    };
+    badge=_badges[v._src]||'<span style="color:var(--mute);font-size:.5rem">≈ розрахунково</span>';
   }
 
   card.innerHTML=`
@@ -1828,77 +1933,6 @@ function debouncedWikiPick(side,q){ onSearchInput(side,q); }
 function attachPickerClicks(){}
 
 /* ── select vehicle from dropdown ── */
-const _selLoading=new Set();
-function _estimate(title, vType, fl, nat, br){
-  const b=parseFloat(br)||5;
-  if(vType==='tanks') return {
-    fl,br,nation:nat,type:'tank',_estimated:true,
-    scores:{armor:Math.min(99,Math.round(15+b*9)),firepower:Math.min(99,Math.round(20+b*8)),
-            speed:Math.min(99,Math.round(30+b*4)),agility:Math.min(99,Math.round(25+b*3.5)),
-            reload:Math.min(99,Math.round(25+b*5)),crew:60},
-    specs:{frontal:'~'+Math.round(20+b*20)+' мм',gun:'~'+Math.round(50+b*10)+' мм',
-           pen:'~'+Math.round(30+b*32)+' мм',speed:'~'+Math.round(25+b*4)+' км/г',
-           reload:'~'+Math.max(4,Math.round(14-b*0.8))+'с',weight:'~'+Math.round(10+b*5)+'т'}
-  };
-  return {
-    fl,br,nation:nat,type:'aircraft',_estimated:true,
-    scores:{speed:Math.min(99,Math.round(15+b*7)),climb:Math.min(99,Math.round(10+b*7)),
-            turn:Math.min(99,Math.max(10,Math.round(15+b*6))),firepower:Math.min(99,Math.round(30+b*4)),
-            altitude:Math.min(99,Math.round(30+b*5)),durability:Math.min(99,Math.round(20+b*4))},
-    specs:{topSpeed:'~'+Math.round(200+b*80)+' км/г',climbRate:'~'+Math.round(4+b*2.5)+' м/с',
-           turnTime:'~'+Math.max(12,Math.round(38-b*2.2))+'с',ceiling:'~'+Math.round(5000+b*1000)+'м',
-           armament:'—',engine:'—'}
-  };
-}
-
-async function selectVehicle(title, side, btnEl){
-  const lockKey=title+'|'+side;
-  if(_selLoading.has(lockKey)) return;
-  _selLoading.add(lockKey);
-
-  const entry  = VI.find(x=>x[0]===title);
-  const fl     = NAT_FLAGS_IDX[entry?.[1]]||'🌐';
-  const nat    = NAT_NAMES_IDX[entry?.[1]]||entry?.[1]||'?';
-  const br     = BR_MAP[title]||'?';
-  const vType  = entry?.[2]==='t'?'tanks':'aircraft';
-  const baseId = 'vi_'+title.replace(/\W/g,'_');
-
-  document.getElementById('search'+side).value=title;
-  closeDrop(side);
-
-  /* 1 — VSPECS: миттєво, без мережі */
-  const local=VSPECS[title];
-  if(local){
-    pickObj({id:baseId,fl,name:title,br,nation:nat,
-      scores:local.scores,specs:local.specs,
-      _wiki:true,_wikiLoaded:true,_loading:false,_src:'db'}, side);
-    _selLoading.delete(lockKey);
-    return;
-  }
-
-  /* 2 — Estimate: показуємо одразу, wiki в фоні */
-  const est=_estimate(title,vType,fl,nat,br);
-  const v={...est,id:baseId,name:title,_loading:true};
-  pickObj(v, side);
-  _selLoading.delete(lockKey);
-
-  /* 3 — Wiki (фон): WT wiki → Fandom */
-  try{
-    const wt=await wikiGetPage(title);
-    if(wt){
-      const parsed=parseWikiVehicle(wt,title);
-      if(parsed){
-        parsed.id=baseId; parsed.name=title;
-        parsed._wikiLoaded=true; parsed._loading=false; parsed._src='wiki';
-        pickObj(parsed, side); return;
-      }
-    }
-  }catch(e){}
-
-  /* 4 — Wiki failed, keep estimate */
-  pickObj({...v,_loading:false}, side);
-}
-
 document.getElementById('cmpCount').textContent='700+ техніки · введи назву для пошуку';
 
 /* ════════ CUSTOM VEHICLE ════════ */
