@@ -1996,11 +1996,11 @@ function _estimate(title,vType,fl,nat,br){
 }
 
 async function selectVehicle(title, side, btnEl){
-  // Simple per-side lock — never stale, always clearable
-  if(_selActive[side]) return;
-  _selActive[side]=true;
-  // Auto-release after 15s max to prevent permanent lock
-  const _lockTimer=setTimeout(()=>{ _selActive[side]=false; }, 15000);
+  // Reset lock on every call — stale locks should never block
+  _selActive[side]=false;
+  // Debounce: ignore if same vehicle already selected on this side
+  const currentId=(side==='A'?selA:selB)?.id;
+  if(currentId && currentId==='vi_'+title.replace(/\W/g,'_')) return;
 
   const entry =VI.find(x=>x[0]===title);
   const fl    =NAT_FLAGS_IDX[entry?.[1]]||'🌐';
@@ -2017,15 +2017,13 @@ async function selectVehicle(title, side, btnEl){
   if(local){
     pickObj({id:baseId,fl,name:title,br,nation:nat,scores:local.scores,specs:local.specs,
       _loading:false,_src:'db'}, side);
-    clearTimeout(_lockTimer); _selActive[side]=false;
     return;
   }
 
   /* ── 2. Показуємо estimate одразу ── */
   const est=_estimate(title,vType,fl,nat,br);
   pickObj({...est,id:baseId,name:title,_loading:true,_loadMsg:'⟳ wiki…'}, side);
-  // Release lock now (async wiki/AI continues in background)
-  clearTimeout(_lockTimer); _selActive[side]=false;
+  // Lock is NOT needed after pickObj — user can pick again any time
 
   /* ── 3. WT Wiki ── */
   _updateCardMsg(side,'⟳ WT wiki…');
@@ -2224,16 +2222,15 @@ function closeDrop(side){
   if(d) d.classList.remove('open');
 }
 // Event delegation on drop containers — bulletproof selection
-document.addEventListener('DOMContentLoaded',()=>{
-  ['A','B'].forEach(side=>{
-    const drop=document.getElementById('drop'+side);
-    if(!drop) return;
-    drop.addEventListener('mousedown', e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      const btn=e.target.closest('.cmp-di[data-vtitle]');
-      if(btn) selectVehicle(btn.dataset.vtitle, btn.dataset.vside||side, btn);
-    });
+// Script is at bottom of body — elements exist now, attach directly
+;['A','B'].forEach(side=>{
+  const drop=document.getElementById('drop'+side);
+  if(!drop) return;
+  drop.addEventListener('mousedown', e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const btn=e.target.closest('[data-vtitle]');
+    if(btn) selectVehicle(btn.dataset.vtitle, btn.dataset.vside||side, btn);
   });
 });
 
