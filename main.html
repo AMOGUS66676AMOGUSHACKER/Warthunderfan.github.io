@@ -267,6 +267,32 @@ section{padding:5.5rem 0}
 .cmp-srow{display:flex;align-items:baseline;gap:.35rem}
 .cmp-sk{font-family:var(--fm);font-size:.53rem;color:var(--mute);white-space:nowrap;flex-shrink:0;min-width:78px}
 .cmp-sv{font-family:var(--fm);font-size:.72rem;color:var(--txt)}
+/* pros/cons */
+.cmp-pc-wrap{border-top:1px solid rgba(10,184,212,.08);padding-top:.85rem;margin-top:.1rem}
+.cmp-pc-hd{font-family:var(--fm);font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:.7rem}
+.cmp-pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.cmp-pc-col{}
+.cmp-pc-name{font-family:var(--fm);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;padding-bottom:.25rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.cmp-pc-name.a{color:var(--a)}.cmp-pc-name.b{color:var(--c)}
+.cmp-pc-list{display:flex;flex-direction:column;gap:.28rem}
+.cmp-pc-item{font-family:var(--fm);font-size:.68rem;line-height:1.4;display:flex;gap:.45rem;align-items:flex-start}
+.cmp-pc-item .sign{flex-shrink:0;font-size:.72rem;line-height:1.2}
+.cmp-pc-item.pro .sign{color:var(--g)}.cmp-pc-item.con .sign{color:var(--r)}
+.cmp-pc-item.pro{color:rgba(255,255,255,.8)}.cmp-pc-item.con{color:rgba(255,255,255,.5)}
+/* verdict */
+.cmp-verdict{margin-top:.9rem;padding:.75rem 1rem;background:rgba(0,232,122,.04);border:1px solid rgba(0,232,122,.12);border-left:3px solid var(--g)}
+.cmp-verdict-lbl{font-family:var(--fm);font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--g);margin-bottom:.3rem}
+.cmp-verdict-txt{font-size:.78rem;color:rgba(255,255,255,.8);line-height:1.6}
+/* detail stats */
+.det-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+@media(max-width:480px){.det-grid{grid-template-columns:1fr 1fr}}
+.det-row{background:var(--bg1);border:1px solid rgba(255,255,255,.04);padding:.55rem .7rem;display:flex;flex-direction:column;gap:.12rem}
+.det-lbl{font-family:var(--fm);font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.det-val{font-family:var(--fm);font-size:.82rem;color:var(--txt);font-weight:700}
+.det-val.hi{color:var(--g)}.det-val.warn{color:var(--a)}.det-val.low{color:var(--r)}
+/* preferred nations */
+.nat-chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
+.nat-chip{font-family:var(--fm);font-size:.6rem;padding:.22rem .55rem;background:rgba(10,184,212,.07);border:1px solid rgba(10,184,212,.15);color:var(--c)}
 /* idle */
 .cmp-idle{text-align:center;padding:2.5rem;background:var(--bg2);border:1px dashed rgba(10,184,212,.08)}
 .cmp-idle-ico{font-size:2rem;opacity:.1;margin-bottom:.5rem}
@@ -800,6 +826,14 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
         <div class="cmp-specs-hd">Характеристики</div>
         <div class="cmp-specs-grid" id="cmpSpecs"></div>
       </div>
+      <div class="cmp-pc-wrap">
+        <div class="cmp-pc-hd">Плюси та мінуси</div>
+        <div class="cmp-pc-grid" id="cmpPros"></div>
+      </div>
+      <div class="cmp-verdict" id="cmpVerdict" style="display:none">
+        <div class="cmp-verdict-lbl">⬡ Тактичний вердикт</div>
+        <div class="cmp-verdict-txt" id="cmpVerdictTxt"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -847,6 +881,10 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
           <button class="stab" onclick="showMode('sb',this)">Симулятор</button>
         </div>
         <div id="modeStats"></div>
+        <div style="margin-top:.85rem">
+          <div class="blt">⬡ Детальна статистика</div>
+          <div id="detailStats" style="margin-top:.5rem"></div>
+        </div>
         <div style="margin-top:.8rem"><div class="blt">⬡ Останні бої</div><div class="blrows" id="blrows"></div></div>
         <a id="tslink" href="#" target="_blank" rel="noopener" class="tslink" style="display:none">↗ Переглянути на Thunderskill.com</a>
       </div>
@@ -1671,6 +1709,102 @@ function renderCmp(){
       <div class="cmp-slabel b">${selB.fl} ${selB.name}</div>
       <div class="cmp-srows">${specKeys.map(k=>`<div class="cmp-srow"><span class="cmp-sk">${SPEC_LABELS[k]||k}</span><span class="cmp-sv">${spB[k]||'—'}</span></div>`).join('')}</div>
     </div>`;
+
+  /* ── Pros / Cons ── */
+  const prosEl=document.getElementById('cmpPros');
+  prosEl.innerHTML=`
+    <div class="cmp-pc-col">
+      <div class="cmp-pc-name a">${selA.fl} ${selA.name}</div>
+      <div class="cmp-pc-list">${_buildPros(selA,selB,cat).map(p=>`<div class="cmp-pc-item ${p.t}"><span class="sign">${p.t==='pro'?'＋':'－'}</span><span>${p.text}</span></div>`).join('')}</div>
+    </div>
+    <div class="cmp-pc-col">
+      <div class="cmp-pc-name b">${selB.fl} ${selB.name}</div>
+      <div class="cmp-pc-list">${_buildPros(selB,selA,cat).map(p=>`<div class="cmp-pc-item ${p.t}"><span class="sign">${p.t==='pro'?'＋':'－'}</span><span>${p.text}</span></div>`).join('')}</div>
+    </div>`;
+
+  /* ── Verdict ── */
+  const verdict=_buildVerdict(selA,selB,cat);
+  const vEl=document.getElementById('cmpVerdict');
+  document.getElementById('cmpVerdictTxt').textContent=verdict;
+  vEl.style.display='block';
+}
+
+/* Generate pros/cons for vehicle v vs opponent o */
+function _buildPros(v, o, type){
+  const sc=v.scores, os=o.scores;
+  const sp=v.specs;
+  const items=[];
+  const pro=(text)=>items.push({t:'pro',text});
+  const con=(text)=>items.push({t:'con',text});
+
+  if(type==='tanks'){
+    const brN=parseFloat(v.br)||5;
+    if(sc.armor>(os.armor+8))  pro('Краща броня — важче пробити');
+    else if(sc.armor<(os.armor-8)) con('Слабша броня — вразливіший');
+    if(sc.firepower>(os.firepower+8)) pro('Вища вогнева міць — більше пробиття');
+    else if(sc.firepower<(os.firepower-8)) con('Менша вогнева міць');
+    if(sc.speed>(os.speed+8))  pro('Швидша — краща позиційна гра');
+    else if(sc.speed<(os.speed-8)) con('Повільніша — важко переміщатись');
+    if(sc.reload>(os.reload+8)) pro('Швидка перезарядка — більше шансів на добивання');
+    else if(sc.reload<(os.reload-8)) con('Повільна перезарядка — ризик після промаху');
+    if(sc.agility>(os.agility+8)) pro('Краща маневреність — зручніше на міській карті');
+    if(sc.crew>(os.crew+5)) pro('Більший екіпаж — вижити після пробиття');
+    // Spec-based
+    if(sp.pen){const p=parseFloat(sp.pen);if(p>300) pro('Пробиття '+p+'мм — надійне навіть ззаду');}
+    if(brN>=9) pro('Сучасна техніка — є термоприціл та НВП');
+    if(brN<=3) con('Стара техніка — без стабілізатора та термоприціла');
+    if(sp.speed&&parseFloat(sp.speed)>65) pro('Швидкість '+sp.speed+' — хороша для флангування');
+  } else {
+    if(sc.speed>(os.speed+8))  pro('Швидша — краще при злеті і BnZ тактиці');
+    else if(sc.speed<(os.speed-8)) con('Повільніша — важко вийти з бою');
+    if(sc.climb>(os.climb+8))  pro('Кращий набір висоти — перевага висоти в бою');
+    else if(sc.climb<(os.climb-8)) con('Гірший набір висоти — втрачає ініціативу');
+    if(sc.turn>(os.turn+8))    pro('Краще маневрує — перевага у dog-fight');
+    else if(sc.turn<(os.turn-8))   con('Гірше маневрує — уникай поворотних боїв');
+    if(sc.firepower>(os.firepower+8)) pro('Потужне озброєння — більше ракет/гармат');
+    else if(sc.firepower<(os.firepower-8)) con('Слабше озброєння');
+    if(sc.altitude>(os.altitude+8)) pro('Вища стеля — контроль висоти');
+    if(sc.durability>(os.durability+8)) pro('Живучіший — витримує більше попадань');
+    else if(sc.durability<(os.durability-8)) con('Менш живучий — гине від одного попадання');
+    if(sp.armament&&sp.armament.includes('AIM-120')) pro('Має AIM-120 — BVR перевага');
+    if(sp.armament&&sp.armament.includes('R-73'))   pro('Має R-73 — відмінна ракета ближнього бою');
+    if(sp.armament&&sp.armament.includes('Maverick')) pro('Є Maverick — ефективний проти наземних цілей');
+  }
+  if(items.length===0){
+    items.push({t:'pro',text:'Збалансована техніка для свого BR'});
+    items.push({t:'con',text:'Немає явних переваг над супротивником'});
+  }
+  return items.slice(0,5);
+}
+
+function _buildVerdict(a, b, type){
+  const scoreA=Object.values(a.scores).reduce((s,v)=>s+v,0);
+  const scoreB=Object.values(b.scores).reduce((s,v)=>s+v,0);
+  const diff=scoreA-scoreB;
+  const winner=diff>5?a:diff<-5?b:null;
+  const brA=parseFloat(a.br)||0, brB=parseFloat(b.br)||0;
+
+  if(!winner){
+    return `${a.name} та ${b.name} дуже рівні за загальним рейтингом (${scoreA} vs ${scoreB}). Перевага залежить від карти та стилю гри.`;
+  }
+  const loser=winner===a?b:a;
+  let verdict=`${winner.name} має загальну перевагу (${Math.abs(diff)} очків).`;
+
+  if(type==='tanks'){
+    const ws=winner.scores, ls=loser.scores;
+    if(ws.armor>(ls.armor+10)) verdict+=' Значно краща броня — у дуелі виживе довше.';
+    if(ws.firepower>(ls.firepower+10)) verdict+=' Вища вогнева міць — надійно пробиває суперника.';
+    if(ws.speed>(ls.speed+10)) verdict+=' Мобільніший — захопить позицію першим.';
+    if(ws.reload>(ls.reload+10)) verdict+=' Швидша перезарядка — більше можливостей добити.';
+  } else {
+    const ws=winner.scores, ls=loser.scores;
+    if(ws.climb>(ls.climb+10)) verdict+=' Домінує по висоті — нав\'язує умови бою.';
+    if(ws.turn>(ls.turn+10)) verdict+=' Краще маневрує — виграє у затяжному dog-fight.';
+    if(ws.speed>(ls.speed+10)) verdict+=' Швидший — перехоплює або відривається за бажанням.';
+    if(ws.firepower>(ls.firepower+10)) verdict+=' Потужніше озброєння — більший шанс знищення з першого пуску.';
+  }
+  if(Math.abs(brA-brB)>=1) verdict+=` Різниця BR ${Math.abs(brA-brB).toFixed(1)} — техніка з вищим BR в невигідній позиції у бою з нижчим.`;
+  return verdict;
 }
 
 // compat shims
@@ -1933,11 +2067,13 @@ function showMode(mode,btn){ document.querySelectorAll('#modeTabs .stab').forEac
 function renderMode(mode,p){
   const m=p.modes[mode]||p.modes.rb;
   const w=document.getElementById('modeStats');
+  const kpb=m.battles>0?(m.kills_ground+m.kills_air)/m.battles:0;
+  const dpb=m.battles>0?m.deaths/m.battles:0;
   w.innerHTML=`
   <div class="scg" style="margin-top:.55rem">
     <div class="sc"><div class="scgh">⚔️</div><div class="sclbl">Всього боїв</div><div class="scval" data-tgt="${m.battles}">0</div><div class="scsub">Матчів</div></div>
     <div class="sc"><div class="scgh">🏆</div><div class="sclbl">Перемоги</div><div class="scval" data-tgt="${m.wins}">0</div><div class="scsub">Виграно</div></div>
-    <div class="sc hi"><div class="scgh">🏆</div><div class="sclbl">Відсоток перемог</div><div class="scval" id="wrT">0%</div><div class="wrbar"><div class="wrfill" id="wrB"></div></div></div>
+    <div class="sc hi"><div class="scgh">📈</div><div class="sclbl">Відсоток перемог</div><div class="scval" id="wrT">0%</div><div class="wrbar"><div class="wrfill" id="wrB"></div></div></div>
     <div class="sc"><div class="scgh">📊</div><div class="sclbl">K/D</div><div class="scval sm" style="color:var(--c)">${m.kd}</div><div class="scsub">Вбивства / Смерті</div></div>
   </div>
   <div class="scg2" style="margin-top:0">
@@ -1955,6 +2091,33 @@ function renderMode(mode,p){
     const wT=document.getElementById('wrT'),wB=document.getElementById('wrB');
     if(wT&&wB){ const t=setInterval(()=>{ w2+=wr/55; if(w2>=wr){wT.textContent=wr+'%';wB.style.width=wr+'%';clearInterval(t);}else{wT.textContent=Math.floor(w2)+'%';wB.style.width=w2+'%';} },16); }
   });
+  /* detail stats */
+  const det=document.getElementById('detailStats');
+  const kdColor=parseFloat(m.kd)>=2?'hi':parseFloat(m.kd)>=1?'':'low';
+  const wrColor=m.wr>=55?'hi':m.wr>=48?'':'low';
+  const airPct=m.battles>0?Math.round(m.kills_air/(m.kills_ground+m.kills_air+.01)*100):0;
+  det.innerHTML=`<div class="det-grid">
+    <div class="det-row"><div class="det-lbl">Вбивств/бій</div><div class="det-val ${kpb>=1.5?'hi':kpb>=0.8?'':'low'}">${kpb.toFixed(2)}</div></div>
+    <div class="det-row"><div class="det-lbl">Смертей/бій</div><div class="det-val ${dpb<=0.8?'hi':dpb<=1.2?'':'low'}">${dpb.toFixed(2)}</div></div>
+    <div class="det-row"><div class="det-lbl">Авіаційних вбивств</div><div class="det-val">${airPct}%</div></div>
+    <div class="det-row"><div class="det-lbl">K/D рейтинг</div><div class="det-val ${kdColor}">${m.kd}</div></div>
+    <div class="det-row"><div class="det-lbl">% перемог</div><div class="det-val ${wrColor}">${m.wr}%</div></div>
+    <div class="det-row"><div class="det-lbl">Рівень гравця</div><div class="det-val">${p.lv||'?'}</div></div>
+  </div>
+  ${p.prefNations&&p.prefNations.length?`<div style="margin-top:.55rem"><div class="det-lbl" style="margin-bottom:.3rem">Улюблені нації</div><div class="nat-chips">${p.prefNations.map(n=>`<span class="nat-chip">${n}</span>`).join('')}</div></div>`:''}
+  ${p.topVehicle?`<div style="margin-top:.55rem"><span class="det-lbl">Топ техніка: </span><span style="font-family:var(--fm);font-size:.72rem;color:var(--a)">${p.topVehicle}</span></div>`:''}
+  <div style="margin-top:.55rem;font-family:var(--fm);font-size:.6rem;color:var(--mute)"><span style="color:var(--g);font-weight:700">⬡ Оцінка: </span>${_ratePlayer(m,p)}</div>`;
+}
+
+function _ratePlayer(m, p){
+  const wr=m.wr||0, kd=parseFloat(m.kd)||0, b=m.battles||0;
+  if(b<100) return 'Недостатньо боїв для оцінки';
+  if(wr>=58&&kd>=2.5) return '🌟 Елітний гравець — видатна статистика';
+  if(wr>=54&&kd>=1.8) return '⭐ Досвідчений — вище середнього';
+  if(wr>=50&&kd>=1.2) return '✓ Добрий гравець — стабільна гра';
+  if(wr>=47&&kd>=0.9) return '◆ Середній рівень — є куди рости';
+  if(wr>=44) return '▷ Починаючий — вчиться грати';
+  return '⚠ Потребує практики — переглянь тактику';
 }
 
 function qs(n){ document.getElementById('nick').value=n; doSearch(); }
