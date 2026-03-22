@@ -2091,21 +2091,25 @@ async function _wikiFetch(apiBase, title){
   const enc=encodeURIComponent(title.replace(/ /g,'_'));
   const q=`action=query&titles=${enc}&prop=revisions&rvprop=content&format=json&rvslots=main`;
   const direct=`${apiBase}?${q}`;
+  // For WT wiki, also prepare Fandom URL as fallback
+  const fandomDirect=`${WT_FANDOM_URL}?${q}`;
 
-  // corsproxy.io returns 404 for wiki.warthunder.com — skip it, use allorigins
   const attempts=[
-    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:15000},
+    // codetabs first — more reliable than allorigins for wiki
     {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:15000},
+    // allorigins backup
+    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:15000},
+    // If WT wiki — also try Fandom via same proxies
     ...(apiBase===WT_WIKI_URL?[
-      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:15000},
-      {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(WT_FANDOM_URL+'?'+q)}`, timeout:15000},
+      {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fandomDirect)}`, timeout:15000},
+      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(fandomDirect)}`, timeout:15000},
     ]:[]),
   ];
 
   for(const {url, timeout} of attempts){
     try{
       const r=await fetch(url,{signal:safeAbort(timeout)});
-      if(!r.ok){ continue; }
+      if(!r.ok){ console.warn('[wiki] HTTP',r.status,url.split('/')[2]); continue; }
       const text=await r.text();
       const wt=_parseWikiJson(text);
       if(wt){
@@ -2119,17 +2123,61 @@ async function _wikiFetch(apiBase, title){
   return null;
 }
 
+// Wiki page names differ from in-game names for some vehicles
+const WIKI_NAME_ALIASES={
+  'Pantsir-S1':       'Pantsir-S1',
+  'NASAMS':           'NASAMS',
+  '2S6 Tunguska':     '2S6',
+  '9K22 Tunguska-M':  '2S6M',
+  '9K35 Strela-10':   '9K35_Strela-10',
+  'Strela-10M2':      '9K35_Strela-10',
+  'Tor-M1':           '9K330_Tor',
+  'Gepard':           'Gepard',
+  'ASRAD-R':          'ASRAD-R',
+  'Ozelot':           'Ozelot',
+  'FlaRakPz 1':       'FlaRakPz_1',
+  'FlaRakRad':        'FlaRakRad',
+  'Stormer HVM':      'Stormer_HVM',
+  'Tracked Rapier':   'Tracked_Rapier',
+  'Type 93':          'Type_93',
+  'Type 87':          'Type_87',
+  'Type 81 (C)':      'Type_81_(C)',
+  'Lvkv 9040C':       'Lvkv_9040C',
+  'Lvrbv 701':        'Lvrbv_701',
+  'Otomatic':         'OTOMATIC',
+  'SIDAM 25':         'SIDAM_25',
+  'SIDAM 25 (Mistral)':'SIDAM_25_(Mistral)',
+  'PGZ09':            'PGZ09',
+  'PGZ04A':           'PGZ04A',
+  'HQ-17A':           'HQ-17A',
+  'LAV-AD':           'LAV-AD',
+  'ADATS':            'ADATS_(Ground)',
+  'M48 Chaparral':    'M48A1_Chaparral',
+  'MIM146':           'MIM146_ADATS',
+  'Machbet':          'Machbet',
+  'Roland 1':         'Roland_1',
+  'Roland 3':         'Roland_3',
+  'VT1':              'VT1',
+};
+
 async function wikiGetPage(title){
   if(_wikiCache.hasOwnProperty(title)){
     const cached=_wikiCache[title];
     return cached==='MISS'?null:cached;
   }
+  // Use wiki alias if available
+  const wikiTitle=WIKI_NAME_ALIASES[title]||title;
   // Try official WT wiki first
-  let wt=await _wikiFetch(WT_WIKI_URL, title);
+  let wt=await _wikiFetch(WT_WIKI_URL, wikiTitle);
   if(wt){ _wikiCache[title]={src:'wt',wt}; return _wikiCache[title]; }
   // Fandom fallback
-  wt=await _wikiFetch(WT_FANDOM_URL, title);
+  wt=await _wikiFetch(WT_FANDOM_URL, wikiTitle);
   if(wt){ _wikiCache[title]={src:'fandom',wt}; return _wikiCache[title]; }
+  // Try original title if alias didn't work
+  if(wikiTitle!==title){
+    wt=await _wikiFetch(WT_WIKI_URL, title);
+    if(wt){ _wikiCache[title]={src:'wt',wt}; return _wikiCache[title]; }
+  }
   _wikiCache[title]='MISS';
   return null;
 }
@@ -3060,6 +3108,7 @@ function renderMode(mode,p){
   }
   const kpb=m.battles>0?(m.kills_ground+m.kills_air)/m.battles:0;
   const dpb=m.battles>0?m.deaths/m.battles:0;
+  const hrsDisplay=p.hrs?(p.hrs<50?Math.round(p.hrs*8760)+' год':(p.hrs+' год')):null;
   w.innerHTML=`
   <div class="scg" style="margin-top:.55rem">
     <div class="sc"><div class="scgh">⚔️</div><div class="sclbl">Всього боїв</div><div class="scval" data-tgt="${m.battles}">0</div><div class="scsub">Матчів</div></div>
@@ -3071,7 +3120,6 @@ function renderMode(mode,p){
     <div class="sc"><div class="scgh">🪖</div><div class="sclbl">Наземні знищення</div><div class="scval" data-tgt="${m.kills_ground}">0</div><div class="scsub">Техніки</div></div>
     <div class="sc"><div class="scgh">✈️</div><div class="sclbl">Повітряні знищення</div><div class="scval" data-tgt="${m.kills_air}">0</div><div class="scsub">Літаків</div></div>
     <div class="sc"><div class="scgh">💀</div><div class="sclbl">Смерті</div><div class="scval" data-tgt="${m.deaths}">0</div><div class="scsub">Втрати</div></div>
-    const hrsDisplay=p.hrs?(p.hrs<100?Math.round(p.hrs*8760)+' год':p.hrs+' год'):null;
     <div class="sc"><div class="scgh">⏱</div><div class="sclbl">Год. у грі</div><div class="scval">${hrsDisplay||'—'}</div><div class="scsub">${hrsDisplay?'Активний час':'Немає даних'}</div></div>
   </div>`;
   requestAnimationFrame(()=>{
