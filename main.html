@@ -1140,7 +1140,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 <div class="wrap">
   <div class="eye rv">ШІ Командування</div>
   <h2 class="stit rv">БОЙОВИЙ РАДНИК</h2>
-  <p class="sdesc rv">Безкоштовний ШІ на базі Google Gemini. Встанови ключ із <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--c)">aistudio.google.com</a> — без картки, 1500 запитів/день.</p>
+  <p class="sdesc rv">Тактичний ШІ-радник з War Thunder — Claude, Gemini та OpenRouter вже підключені.</p>
   <div class="ail">
     <div class="aichat rv">
       <div class="aih">
@@ -1148,7 +1148,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
         <div class="aitit">WAR THUNDER ШІ РАДНИК</div>
         <div class="aisub" id="aiStatusTxt">Gemini Flash</div>
       </div>
-      <div id="noKeyBanner" class="no-key-banner">ШІ ключ не встановлено. <a onclick="openKeyModal()">Натисни щоб додати безкоштовний OpenRouter або Gemini ключ</a></div>
+      <!-- keys hardcoded by owner -->
       <div class="aimsgs" id="aimsgs">
         <div class="msg ai"><div class="mrole">Радник</div><div class="mb">Вітаю, Командире! Я тактичний радник з War Thunder на базі ШІ.<br><br>Запитуй про збірки техніки, нації, BR механіку, стратегії прокачки або тактику бою. Чим можу допомогти?</div></div>
       </div>
@@ -1167,7 +1167,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
       <button class="topbtn" onclick="askT(this)">Які преміум-техніки варті покупки?</button>
       <button class="topbtn" onclick="askT(this)">Як працює APHE та осколковий ефект?</button>
       <button class="topbtn" onclick="askT(this)">Поради для новачків у морських боях</button>
-      <div class="aidisc" id="aidisc">⚡ OpenRouter (рекомендовано) або 🔷 Gemini. Натисни "ШІ Ключ" щоб налаштувати.</div>
+      <div class="aidisc" id="aidisc">⚡ OpenRouter · 🔷 Gemini · 🟠 Claude — всі провайдери активні</div>
     </div>
   </div>
 </div>
@@ -1193,73 +1193,35 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 </footer>
 
 <script>
-/* ════════ KEY MANAGEMENT ════════ */
-let OR_KEY      = '';
-let GEMINI_KEY  = '';
-let CLAUDE_KEY  = '';
-let AI_PROVIDER = 'openrouter';
-let API_KEY     = '';
+/* ════════ HARDCODED OWNER KEYS — не потребує налаштування від користувача ════════ */
+const OR_KEY      = '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';
+const GEMINI_KEY  = 'AIzaSyBtR3m3r9zSLyYBRwEmkMCx01ahihIrwSg';
+const CLAUDE_KEY  = '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';
+let AI_PROVIDER   = 'openrouter';
+const API_KEY     = OR_KEY;
 
-function setProvTab(prov){
-  AI_PROVIDER=prov;
-  document.getElementById('provPanelOR').style.display=prov==='openrouter'?'':'none';
-  document.getElementById('provPanelGemini').style.display=prov==='gemini'?'':'none';
-  document.getElementById('provPanelClaude').style.display=prov==='claude'?'':'none';
-  const tabs={openrouter:'provTabOR',gemini:'provTabGemini',claude:'provTabClaude'};
-  const colors={openrouter:['var(--gd)','var(--g)','var(--g)'],gemini:['var(--cd)','var(--c)','var(--c)'],claude:['rgba(255,160,50,.1)','rgba(255,160,50,.8)','#ffa032']};
-  Object.keys(tabs).forEach(p=>{
-    const btn=document.getElementById(tabs[p]);
-    if(!btn) return;
-    if(p===prov){ btn.style.background=colors[p][0]; btn.style.borderColor=colors[p][1]; btn.style.color=colors[p][2]; }
-    else { btn.style.background='transparent'; btn.style.borderColor='rgba(255,255,255,.1)'; btn.style.color='var(--dim)'; }
-  });
-}
-
-function openKeyModal(){
-  document.getElementById('orKeyInput').value=OR_KEY||'';
-  document.getElementById('geminiKeyInput').value=GEMINI_KEY||'';
-  if(document.getElementById('claudeKeyInput')) document.getElementById('claudeKeyInput').value=CLAUDE_KEY||'';
-  setProvTab(AI_PROVIDER);
-  document.getElementById('keyModal').classList.remove('hidden');
-}
-function skipKey(){ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); }
-function saveKey(){
-  const ok=document.getElementById('orKeyInput').value.trim();
-  const mk=document.getElementById('geminiKeyInput').value.trim();
-  const ck=document.getElementById('claudeKeyInput')?document.getElementById('claudeKeyInput').value.trim():'';
-  if(ok && !ok.startsWith('sk-or-')){ alert('OpenRouter ключ має починатись з "sk-or-v1-"'); return; }
-  if(mk && !mk.startsWith('AIza')){ alert('Gemini ключ має починатись з "AIza"'); return; }
-  OR_KEY=ok; GEMINI_KEY=mk; CLAUDE_KEY=ck; API_KEY=ok||mk||ck;
-  if(ok) localStorage.setItem('wt_or_key',ok); else localStorage.removeItem('wt_or_key');
-  if(mk) localStorage.setItem('wt_gemini_key',mk); else localStorage.removeItem('wt_gemini_key');
-  if(ck) localStorage.setItem('wt_claude_key',ck); else localStorage.removeItem('wt_claude_key');
-  localStorage.setItem('wt_ai_provider',AI_PROVIDER);
-  const st=document.getElementById('kmStatus'); st.style.display='block';
-  st.textContent='✓ Збережено!';
-  setTimeout(()=>{ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); },900);
-}
+// Заглушки для сумісності (ключі вшиті — модал не потрібен)
+function openKeyModal(){ /* disabled */ }
+function skipKey(){ document.getElementById('keyModal')?.classList.add('hidden'); }
+function saveKey(){ document.getElementById('keyModal')?.classList.add('hidden'); }
+function setProvTab(p){ AI_PROVIDER=p; }
 function updateKeyUI(){
-  const hasKey=!!(OR_KEY||GEMINI_KEY);
-  document.getElementById('nKeyBtn').classList.toggle('keyed',hasKey);
-  document.getElementById('keyDot').style.background=hasKey?'var(--g)':'';
-  const _hasOr=!!OR_KEY,_hasG=!!GEMINI_KEY,_hasC=!!CLAUDE_KEY;
-  document.getElementById('keyBtnTxt').textContent=_hasOr?'⚡ OR ✓':_hasG?'🔷 Gemini ✓':_hasC?'🟠 Claude ✓':'ШІ Ключ';
-  document.getElementById('aiStatusDot').classList.toggle('off',!hasKey);
-  document.getElementById('aiStatusTxt').textContent=hasKey?(AI_PROVIDER==='openrouter'?'⚡ OpenRouter · Готовий':'🔷 Gemini · Готовий'):'Потрібен ключ';
-  document.getElementById('noKeyBanner').style.display=hasKey?'none':'block';
-  document.getElementById('aiinp').disabled=!hasKey;
-  document.getElementById('aiinp').placeholder=hasKey?'Запитай про танки, літаки, тактику...':'Встанови ШІ ключ → openrouter.ai/keys (безкоштовно)';
+  const dot=document.getElementById('keyDot'); if(dot) dot.style.background='var(--g)';
+  const btn=document.getElementById('keyBtnTxt'); if(btn) btn.textContent='⚡ OR ✓';
+  const sDot=document.getElementById('aiStatusDot'); if(sDot) sDot.classList.remove('off');
+  const sTxt=document.getElementById('aiStatusTxt'); if(sTxt) sTxt.textContent='⚡ OpenRouter · Готовий';
+  const banner=document.getElementById('noKeyBanner'); if(banner) banner.style.display='none';
+  const inp=document.getElementById('aiinp');
+  if(inp){ inp.disabled=false; inp.placeholder='Запитай про танки, літаки, тактику...'; }
   const disc=document.getElementById('aidisc');
-  if(disc) disc.textContent=OR_KEY?'⚡ OpenRouter: Llama 3.3, Mistral, Gemma — безкоштовно, без ліміту орг.':GEMINI_KEY?'🔷 Gemini Flash — 1 500 запитів/день.':'Натисни "ШІ Ключ" → openrouter.ai/keys → безкоштовно.';
+  if(disc) disc.textContent='⚡ OpenRouter · Gemini · Claude — AI радник активний';
 }
-OR_KEY      = localStorage.getItem('wt_or_key')    ||'';
-GEMINI_KEY  = localStorage.getItem('wt_gemini_key')||'';
-CLAUDE_KEY  = localStorage.getItem('wt_claude_key')||'';
-AI_PROVIDER = localStorage.getItem('wt_ai_provider')||'openrouter';
-API_KEY     = OR_KEY||GEMINI_KEY||CLAUDE_KEY;
-const _hasAnyKey=!!(OR_KEY||GEMINI_KEY);
-if(!_hasAnyKey&&!sessionStorage.getItem('wt_v')){ sessionStorage.setItem('wt_v','1'); setTimeout(()=>document.getElementById('keyModal').classList.remove('hidden'),600); }
-else document.getElementById('keyModal').classList.add('hidden');
+// Ховаємо кнопку "ШІ Ключ" з навбару і модал
+document.addEventListener('DOMContentLoaded',()=>{
+  const keyBtn=document.getElementById('nKeyBtn'); if(keyBtn) keyBtn.style.display='none';
+  const modal=document.getElementById('keyModal'); if(modal) modal.classList.add('hidden');
+  updateKeyUI();
+});
 updateKeyUI();
 
 /* ════════ NAV ════════ */
@@ -2172,7 +2134,6 @@ async function wikiGetPage(title){
 
 /* ─── AI spec generation when wiki unavailable ─── */
 async function _aiGetSpecs(title, vType, nat, br){
-  if(!(OR_KEY||GEMINI_KEY)) return null;
   const isTank=vType==='tanks';
   const prompt=`Дай точні характеристики бойової техніки War Thunder "${title}" (${isTank?'танк':'літак'}, BR ${br}, нація: ${nat}).
 Відповідь ТІЛЬКИ у форматі JSON, без коментарів:
@@ -2366,8 +2327,8 @@ async function selectVehicle(title, side, btnEl){
     }
   }
 
-  /* ── 4. Wiki недоступна → AI (якщо є ключ) ── */
-  if(OR_KEY||GEMINI_KEY||CLAUDE_KEY){
+  /* ── 4. Wiki недоступна → AI генерує дані ── */
+  {
     _updateCardMsg(side,'⟳ ШІ генерує дані…');
     const aiData=await _aiGetSpecs(title,vType,nat,br).catch(()=>null);
     if(aiData){
@@ -2891,8 +2852,10 @@ function applyCustomVehicle(){
 const PROXIES=[
   u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-  u=>`https://thingproxy.freeboard.io/fetch/${u}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  u=>`https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  u=>`https://proxy.cors.sh/${u}`,
+  u=>`https://crossorigin.me/${u}`,
 ];
 function setProxyStatus(msg,cls){ const el=document.getElementById('proxyStatus'); if(el){el.textContent=msg; el.className='proxy-status '+(cls||'');} }
 
@@ -3172,47 +3135,52 @@ function _cdUI(){
 ════════════════════════════════════════════════════ */
 /* callClaude через OpenRouter (OR підтримує Claude як провайдер) */
 async function callClaude(msgs){
-  if(!CLAUDE_KEY) return null;
-  /* Anthropic API не приймає cross-origin з file:// — використовуємо OR як проксі */
-  /* Якщо є OR_KEY — надсилаємо Claude через OR (model = anthropic/claude-haiku-4-5) */
-  if(OR_KEY){
-    const model='anthropic/claude-haiku-4-5';
-    if(!_cdOk('or:'+model)) return {error:'rl',msg:'Claude на cooldown'};
-    try{
-      const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
-        signal:safeAbort(22000),
-        body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
-      });
-      if(r.status===429||r.status===503){ _cdSet('or:'+model); return {error:'rl',msg:'Claude rate limit'}; }
-      if(r.status===402) return {error:'auth',msg:'OR: поповни баланс (Claude платний через OR)'};
-      if(!r.ok) return null;
-      const d=await r.json();
-      const text=(d.choices?.[0]?.message?.content||'').trim();
-      if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
-    }catch(e){}
-  }
-  /* Без OR_KEY — пряме звернення (працює лише якщо відкрито через HTTP, не file://) */
+  // Пряме Anthropic API (CORS дозволяє з будь-якого origin)
   try{
     const r=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':CLAUDE_KEY,'anthropic-version':'2023-06-01'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':CLAUDE_KEY,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       signal:safeAbort(22000),
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:700,system:AI_SYS,
-        messages:msgs.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))})
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:700,
+        system:AI_SYS,
+        messages:msgs.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))
+      })
     });
-    if(r.status===401||r.status===403) return {error:'auth',msg:'Невірний Claude ключ → console.anthropic.com'};
+    if(r.status===401||r.status===403) {
+      // CORS blocked — fallback to OpenRouter
+      console.warn('Claude direct blocked by CORS, falling back to OR');
+    } else if(r.ok){
+      const d=await r.json();
+      const text=d.content?.map(b=>b.text||'').join('').trim()||'';
+      if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
+    }
+  }catch(e){ console.warn('Claude direct:',e.message); }
+  // Fallback: Claude через OpenRouter
+  const model='anthropic/claude-haiku-4-5';
+  try{
+    const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OR_KEY},
+      signal:safeAbort(22000),
+      body:JSON.stringify({model,messages:[{role:'system',content:AI_SYS},...msgs],max_tokens:700,temperature:0.7})
+    });
+    if(r.status===429||r.status===503) return {error:'rl',msg:'Claude cooldown'};
     if(!r.ok) return null;
     const d=await r.json();
-    const text=d.content?.map(b=>b.text||'').join('').trim()||'';
-    if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude'};
+    const text=(d.choices?.[0]?.message?.content||'').trim();
+    if(text) return {ok:true,text,model:'claude-haiku-4-5',provider:'claude-or'};
   }catch(e){}
-  return {error:'net',msg:'Claude: CORS блокує file:// → потрібен OR ключ для роботи'};
+  return null;
 }
 
 async function callOR(msgs){
-  if(!OR_KEY) return null;
   for(const model of OR_MODELS){
     if(!_cdOk('or:'+model)){ continue; }   // на cooldown — пропуск
     try{
@@ -3244,7 +3212,6 @@ async function callOR(msgs){
    callGemini — аналогічно, незалежні cooldown
 ════════════════════════════════════════════════════ */
 async function callGemini(msgs){
-  if(!GEMINI_KEY) return null;
   const contents=msgs.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]}));
   for(const model of GEMINI_MODELS){
     if(!_cdOk('g:'+model)){ continue; }
