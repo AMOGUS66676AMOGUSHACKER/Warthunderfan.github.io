@@ -716,61 +716,6 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 </head>
 <body>
 
-<!-- ══════ KEY MODAL ══════ -->
-<div id="keyModal" class="modal-overlay">
-  <div class="modal-box sz-sm">
-    <div class="m-icon">🤖</div>
-    <div class="m-title">ШІ РАДНИК — ВИБІР ПРОВАЙДЕРА</div>
-
-    <!-- Provider tabs -->
-    <div style="display:flex;gap:.4rem;margin-bottom:1.2rem">
-      <button id="provTabOR" onclick="setProvTab('openrouter')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:var(--gd);border:1px solid var(--g);color:var(--g);cursor:pointer;transition:all var(--T)">⚡ OPENROUTER</button>
-      <button id="provTabGemini" onclick="setProvTab('gemini')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:transparent;border:1px solid rgba(10,184,212,.2);color:var(--dim);cursor:pointer;transition:all var(--T)">🔷 GEMINI</button>
-      <button id="provTabClaude" onclick="setProvTab('claude')" style="flex:1;font-family:var(--fm);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem;background:transparent;border:1px solid rgba(255,160,50,.2);color:var(--dim);cursor:pointer;transition:all var(--T)">🟠 CLAUDE</button>
-    </div>
-
-    <!-- OpenRouter panel -->
-    <div id="provPanelOR">
-      <div class="m-badge" style="background:rgba(0,232,122,.08);border-color:rgba(0,232,122,.3);color:var(--g)">⚡ OPENROUTER — БЕЗКОШТОВНО · 8 моделей · Llama · Mistral · Gemma · DeepSeek</div>
-      <div class="m-sub" style="margin-top:.6rem">
-        Реєстрація без картки на <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — 2 хвилини. Ключ: <code style="color:var(--g)">sk-or-v1-</code>
-      </div>
-      <label class="m-label" for="orKeyInput">OpenRouter API Ключ</label>
-      <input type="password" id="orKeyInput" class="m-inp" placeholder="sk-or-v1-..."/>
-      <div class="m-note">Моделі: Llama 3.3 70B, Mistral Small, Gemma 3 27B, Qwen3-8B, DeepSeek R1. Ключ лише у localStorage.</div>
-    </div>
-
-    <!-- GEMINI panel -->
-    <div id="provPanelGemini" style="display:none">
-      <div class="m-badge" style="background:rgba(10,184,212,.08);border-color:rgba(10,184,212,.3);color:var(--c)">🔷 GEMINI — 1 500 запитів/день · Flash 2.0</div>
-      <div class="m-sub" style="margin-top:.6rem">
-        Ключ на <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> — 1 хвилина. Ключ: <code style="color:var(--c)">AIza</code>
-      </div>
-      <label class="m-label" for="geminiKeyInput">Gemini API Ключ</label>
-      <input type="password" id="geminiKeyInput" class="m-inp" placeholder="AIzaSy..."/>
-      <div class="m-note">Ключ лише у localStorage — нікуди не передається.</div>
-    </div>
-
-    <!-- CLAUDE panel -->
-    <div id="provPanelClaude" style="display:none">
-      <div class="m-badge" style="background:rgba(255,160,50,.08);border-color:rgba(255,160,50,.3);color:#ffa032">🟠 CLAUDE — Anthropic · Haiku 4.5 · через OpenRouter</div>
-      <div class="m-sub" style="margin-top:.6rem">
-        Claude надсилається через OpenRouter (потрібен OR ключ). Ключ Claude зберігається для ідентифікації.<br><br>
-        Ключ на <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Починається з <code style="color:#ffa032">sk-ant-</code>
-      </div>
-      <label class="m-label" for="claudeKeyInput">Anthropic API Ключ</label>
-      <input type="password" id="claudeKeyInput" class="m-inp" placeholder="sk-ant-api03-..."/>
-      <div class="m-note">⚠ Для роботи Claude також потрібен OR ключ (вкладка OpenRouter). Ключ лише у localStorage.</div>
-    </div>
-
-    <div class="m-btns">
-      <button class="m-btn-skip" onclick="skipKey()">Пропустити</button>
-      <button class="m-btn-save" onclick="saveKey()">Зберегти та активувати →</button>
-    </div>
-    <div class="m-status" id="kmStatus">✓ Збережено</div>
-  </div>
-</div>
-
 <!-- ══════ CUSTOM VEHICLE MODAL ══════ -->
 <div id="customModal" class="modal-overlay hidden">
   <div class="modal-box sz-md">
@@ -857,7 +802,6 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
     <li><a href="#home">Головна</a></li><li><a href="#info">Про гру</a></li>
     <li><a href="#cmp">Порівняння</a></li><li><a href="#stats">Статистика</a></li><li><a href="#ai">ШІ Радник</a></li>
   </ul>
-  <button class="n-key" id="nKeyBtn" onclick="openKeyModal()"><span class="dot" id="keyDot"></span><span id="keyBtnTxt">ШІ Ключ</span></button>
   <a href="https://warthunder.com/en/game/download/" target="_blank" rel="noopener" class="ndl">▶ Завантажити</a>
   <div class="ham" id="ham"><span></span><span></span><span></span></div>
 </div>
@@ -1181,71 +1125,23 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 
 <script>
 /* ════════ KEY MANAGEMENT ════════ */
-let OR_KEY      = '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';
-let GEMINI_KEY  = 'AIzaSyBtR3m3r9zSLyYBRwEmkMCx01ahihIrwSg';
-let CLAUDE_KEY  = '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';
-let AI_PROVIDER = 'openrouter';
-let API_KEY     = OR_KEY;
+const OR_KEY     = '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';
+const GEMINI_KEY = 'AIzaSyBtR3m3r9zSLyYBRwEmkMCx01ahihIrwSg';
+const CLAUDE_KEY = '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';
+const AI_PROVIDER = 'openrouter';
+const API_KEY = OR_KEY;
 
-function setProvTab(prov){
-  AI_PROVIDER=prov;
-  document.getElementById('provPanelOR').style.display=prov==='openrouter'?'':'none';
-  document.getElementById('provPanelGemini').style.display=prov==='gemini'?'':'none';
-  document.getElementById('provPanelClaude').style.display=prov==='claude'?'':'none';
-  const tabs={openrouter:'provTabOR',gemini:'provTabGemini',claude:'provTabClaude'};
-  const colors={openrouter:['var(--gd)','var(--g)','var(--g)'],gemini:['var(--cd)','var(--c)','var(--c)'],claude:['rgba(255,160,50,.1)','rgba(255,160,50,.8)','#ffa032']};
-  Object.keys(tabs).forEach(p=>{
-    const btn=document.getElementById(tabs[p]);
-    if(!btn) return;
-    if(p===prov){ btn.style.background=colors[p][0]; btn.style.borderColor=colors[p][1]; btn.style.color=colors[p][2]; }
-    else { btn.style.background='transparent'; btn.style.borderColor='rgba(255,255,255,.1)'; btn.style.color='var(--dim)'; }
-  });
-}
-
-function openKeyModal(){
-  document.getElementById('orKeyInput').value=OR_KEY||'';
-  document.getElementById('geminiKeyInput').value=GEMINI_KEY||'';
-  if(document.getElementById('claudeKeyInput')) document.getElementById('claudeKeyInput').value=CLAUDE_KEY||'';
-  setProvTab(AI_PROVIDER);
-  document.getElementById('keyModal').classList.remove('hidden');
-}
-function skipKey(){ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); }
-function saveKey(){
-  const ok=document.getElementById('orKeyInput').value.trim();
-  const mk=document.getElementById('geminiKeyInput').value.trim();
-  const ck=document.getElementById('claudeKeyInput')?document.getElementById('claudeKeyInput').value.trim():'';
-  if(ok && !ok.startsWith('sk-or-')){ alert('OpenRouter ключ має починатись з "sk-or-v1-"'); return; }
-  if(mk && !mk.startsWith('AIza')){ alert('Gemini ключ має починатись з "AIza"'); return; }
-  OR_KEY=ok; GEMINI_KEY=mk; CLAUDE_KEY=ck; API_KEY=ok||mk||ck;
-  if(ok) localStorage.setItem('wt_or_key',ok); else localStorage.removeItem('wt_or_key');
-  if(mk) localStorage.setItem('wt_gemini_key',mk); else localStorage.removeItem('wt_gemini_key');
-  if(ck) localStorage.setItem('wt_claude_key',ck); else localStorage.removeItem('wt_claude_key');
-  localStorage.setItem('wt_ai_provider',AI_PROVIDER);
-  const st=document.getElementById('kmStatus'); st.style.display='block';
-  st.textContent='✓ Збережено!';
-  setTimeout(()=>{ document.getElementById('keyModal').classList.add('hidden'); updateKeyUI(); },900);
-}
+function openKeyModal(){}
+function setProvTab(){}
 function updateKeyUI(){
-  const hasKey=!!(OR_KEY||GEMINI_KEY);
-  document.getElementById('nKeyBtn').classList.toggle('keyed',hasKey);
-  document.getElementById('keyDot').style.background=hasKey?'var(--g)':'';
-  const _hasOr=!!OR_KEY,_hasG=!!GEMINI_KEY,_hasC=!!CLAUDE_KEY;
-  document.getElementById('keyBtnTxt').textContent=_hasOr?'⚡ OR ✓':_hasG?'🔷 Gemini ✓':_hasC?'🟠 Claude ✓':'ШІ Ключ';
-  document.getElementById('aiStatusDot').classList.toggle('off',!hasKey);
-  document.getElementById('aiStatusTxt').textContent=hasKey?(AI_PROVIDER==='openrouter'?'⚡ OpenRouter · Готовий':'🔷 Gemini · Готовий'):'Потрібен ключ';
-  document.getElementById('noKeyBanner').style.display=hasKey?'none':'block';
-  document.getElementById('aiinp').disabled=!hasKey;
-  document.getElementById('aiinp').placeholder=hasKey?'Запитай про танки, літаки, тактику...':'Встанови ШІ ключ → openrouter.ai/keys (безкоштовно)';
-  const disc=document.getElementById('aidisc');
-  if(disc) disc.textContent=OR_KEY?'⚡ OpenRouter: Llama 3.3, Mistral, Gemma — безкоштовно, без ліміту орг.':GEMINI_KEY?'🔷 Gemini Flash — 1 500 запитів/день.':'Натисни "ШІ Ключ" → openrouter.ai/keys → безкоштовно.';
+  const dot = document.getElementById('keyDot'); if(dot) dot.style.background='var(--g)';
+  const btn = document.getElementById('nKeyBtn'); if(btn) btn.style.display='none';
+  const sDot = document.getElementById('aiStatusDot'); if(sDot) sDot.classList.remove('off');
+  const sTxt = document.getElementById('aiStatusTxt'); if(sTxt) sTxt.textContent='⚡ Активний';
+  const banner = document.getElementById('noKeyBanner'); if(banner) banner.style.display='none';
+  const inp = document.getElementById('aiinp');
+  if(inp){ inp.disabled=false; inp.placeholder='Запитай про танки, літаки, тактику...'; }
 }
-OR_KEY      = localStorage.getItem('wt_or_key')     || OR_KEY;
-GEMINI_KEY  = localStorage.getItem('wt_gemini_key') || GEMINI_KEY;
-CLAUDE_KEY  = localStorage.getItem('wt_claude_key') || CLAUDE_KEY;
-AI_PROVIDER = localStorage.getItem('wt_ai_provider')|| AI_PROVIDER;
-API_KEY     = OR_KEY||GEMINI_KEY||CLAUDE_KEY;
-// Завжди є ключі — не показуємо модал
-document.getElementById('keyModal')?.classList.add('hidden');
 updateKeyUI();
 
 /* ════════ NAV ════════ */
@@ -3078,10 +2974,8 @@ function setAIProv(prov, btn){
   const el=document.getElementById('aiStatusTxt');
   if(el) el.textContent=labels[prov]+' · обрано';
   appendMsg('sys','Провайдер: '+labels[prov]);
-  localStorage.setItem('wt_ai_prov_sel', prov);
 }
 (function(){
-  const saved=localStorage.getItem('wt_ai_prov_sel')||'auto';
   AI_PROV_SELECTED=saved;
   setTimeout(()=>{
     const b=document.getElementById('provBtn-'+saved)||document.getElementById('provBtn-auto');
@@ -3124,8 +3018,7 @@ function sendMsg(){
     } else {
       _aiHistory.pop();
       const msg=res?.msg||"Помилка з'єднання з ШІ";
-      appendMsg('err','⚠ '+msg+(res?.error==='rl'?'
-→ Зачекай ~60с':''));
+      appendMsg('err','⚠ '+msg+(res?.error==='rl'?'\n→ Зачекай ~60с':''));
     }
     sndBtn.disabled=false;
   });
@@ -3148,7 +3041,6 @@ function appendTyping(){
 }
 function removeNode(el){ el?.parentNode?.removeChild(el); }
 function askT(btn){
-  if(!(OR_KEY||GEMINI_KEY||CLAUDE_KEY)){ openKeyModal(); return; }
   document.getElementById('aiinp').value=btn.textContent.trim();
   sendMsg();
 }
