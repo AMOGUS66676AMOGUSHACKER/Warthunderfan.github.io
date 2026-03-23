@@ -1126,7 +1126,7 @@ footer{background:var(--bg1);border-top:1px solid rgba(10,184,212,.1);padding:2.
 <script>
 /* ════════ KEY MANAGEMENT ════════ */
 const OR_KEY     = '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';
-const GEMINI_KEY = 'AIzaSyBtR3m3r9zSLyYBRwEmkMCx01ahihIrwSg';
+const GEMINI_KEY = 'AIzaSyD3rvpHeGuwn3ewZgJmSMTOD3LYXwB1Qw0';
 const CLAUDE_KEY = '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';
 const AI_PROVIDER = 'openrouter';
 const API_KEY = OR_KEY;
@@ -1900,6 +1900,52 @@ const VSPECS={
 'Type 10':{scores:{armor:90,firepower:93,speed:72,agility:70,reload:85,crew:65},specs:{frontal:'≥700 мм RHA-eq.',gun:'120мм TKG L/44',pen:'600 мм JM33',speed:'70 км/г',reload:'5.0с (авт.)',weight:'44т'}},
 'Type 16':{scores:{armor:15,firepower:80,speed:75,agility:72,reload:72,crew:52},specs:{frontal:'15 мм',gun:'105мм Rh-105-30',pen:'380 мм DM23',speed:'100 км/г',reload:'8.1с',weight:'26т'}},
 'Type 87':{scores:{armor:18,firepower:55,speed:60,agility:62,reload:88,crew:52},specs:{frontal:'18 мм',gun:'2×35мм Oerlikon KDA',pen:'40 мм AP',speed:'53 км/г',reload:'автомат',weight:'38т'}},
+/* ══ HELICOPTERS ══ */
+'Ka-50':{scores:{speed:72,climb:62,turn:68,firepower:95,altitude:52,durability:72},specs:{topSpeed:'310 км/г',climbRate:'10 м/с',turnTime:'—',ceiling:'5500м',armament:'1×30мм 2А42, 9К121 Вихрь (12×)',engine:'2×ТВ3-117ВМА (1660к.с.)'}},
+'Ka-52':{scores:{speed:72,climb:62,turn:70,firepower:95,altitude:52,durability:72},specs:{topSpeed:'315 км/г',climbRate:'10 м/с',turnTime:'—',ceiling:'5500м',armament:'1×30мм 2А42, 9К121 Вихрь (12×), Р-73',engine:'2×ТВ3-117ВМА (1660к.с.)'}},
+'Mi-24P':{scores:{speed:65,climb:55,turn:48,firepower:88,altitude:48,durability:78},specs:{topSpeed:'335 км/г',climbRate:'9 м/с',turnTime:'—',ceiling:'4500м',armament:'1×30мм ГШ-30К, 9М17П Фаланга',engine:'2×ТВ3-117 (1500к.с.)'}},
+'Mi-28N':{scores:{speed:65,climb:58,turn:52,firepower:92,altitude:48,durability:72},specs:{topSpeed:'300 км/г',climbRate:'9 м/с',turnTime:'—',ceiling:'5800м',armament:'1×30мм 2А42, 9К121 Вихрь (16×)',engine:'2×ТВ3-117ВМА (1700к.с.)'}},
+'AH-64A':{scores:{speed:62,climb:58,turn:55,firepower:92,altitude:48,durability:68},specs:{topSpeed:'293 км/г',climbRate:'12.5 м/с',turnTime:'—',ceiling:'6250м',armament:'1×30мм M230, AGM-114 Hellfire (16×), Hydra 70',engine:'2×GE T700-GE-701 (1690к.с.)'}},
+'AH-64D':{scores:{speed:62,climb:58,turn:55,firepower:95,altitude:48,durability:68},specs:{topSpeed:'293 км/г',climbRate:'12.5 м/с',turnTime:'—',ceiling:'6250м',armament:'1×30мм M230, AGM-114L Longbow (16×), AIM-92',engine:'2×GE T700-GE-701C (1890к.с.)'}},
+'UH-1C':{scores:{speed:45,climb:42,turn:52,firepower:62,altitude:38,durability:52},specs:{topSpeed:'204 км/г',climbRate:'8 м/с',turnTime:'—',ceiling:'3840м',armament:'2×M60 7.62мм, 2.75 Hydra',engine:'Lycoming T53-L-13 (1100к.с.)'}},
+'OH-58D':{scores:{speed:48,climb:48,turn:62,firepower:72,altitude:42,durability:45},specs:{topSpeed:'228 км/г',climbRate:'6.4 м/с',turnTime:'—',ceiling:'4570м',armament:'AGM-114 Hellfire (4×), Stinger',engine:'Allison 250-C30R (650к.с.)'}},
+'Tiger HAP':{scores:{speed:62,climb:58,turn:60,firepower:85,altitude:48,durability:62},specs:{topSpeed:'280 км/г',climbRate:'10.7 м/с',turnTime:'—',ceiling:'4000м',armament:'1×30мм GIAT, HOT-3/Mistral',engine:'2×MTR390 (958к.с.)'}},
+'Tiger HAD':{scores:{speed:62,climb:58,turn:60,firepower:88,altitude:48,durability:62},specs:{topSpeed:'290 км/г',climbRate:'10.7 м/с',turnTime:'—',ceiling:'4000м',armament:'1×30мм GIAT, AGM-114 Hellfire, Mistral',engine:'2×MTR390E (1090к.с.)'}},
+'Lynx AH.7':{scores:{speed:52,climb:52,turn:68,firepower:72,altitude:42,durability:55},specs:{topSpeed:'259 км/г',climbRate:'8.5 м/с',turnTime:'—',ceiling:'3660м',armament:'2×7.62мм GPMG, TOW (8×)',engine:'2×Rolls-Royce Gem 41 (900к.с.)'}},
+'WAH-64D Apache AH1':{scores:{speed:62,climb:58,turn:55,firepower:95,altitude:48,durability:68},specs:{topSpeed:'293 км/г',climbRate:'12.5 м/с',turnTime:'—',ceiling:'6250м',armament:'1×30мм M230, AGM-114 Longbow (16×)',engine:'2×RTM322 (2000к.с.)'}},
+'Bo 105 CB-2':{scores:{speed:45,climb:48,turn:72,firepower:68,altitude:38,durability:45},specs:{topSpeed:'242 км/г',climbRate:'8 м/с',turnTime:'—',ceiling:'5180м',armament:'HOT-2 (6×)',engine:'2×Allison 250-C20B (420к.с.)'}},
+'UHT':{scores:{speed:55,climb:52,turn:65,firepower:88,altitude:45,durability:55},specs:{topSpeed:'268 км/г',climbRate:'9.5 м/с',turnTime:'—',ceiling:'4000м',armament:'HOT-3 (8×), Stinger',engine:'2×MTR390 (958к.с.)'}},
+/* ══ SPAA / SAM ══ */
+'Pantsir-S1':{scores:{armor:18,firepower:95,speed:65,agility:60,reload:90,crew:52},specs:{frontal:'15 мм',gun:'2×30мм 2А38М + 57Е6 (12×)',pen:'—',speed:'65 км/г',reload:'автомат',weight:'20т'}},
+'NASAMS':{scores:{armor:5,firepower:92,speed:55,agility:50,reload:85,crew:48},specs:{frontal:'5 мм',gun:'AIM-120C (6×)',pen:'—',speed:'70 км/г',reload:'авто',weight:'12т'}},
+'Tor-M1':{scores:{armor:15,firepower:90,speed:60,agility:58,reload:85,crew:52},specs:{frontal:'15 мм',gun:'9М330 (8×)',pen:'—',speed:'60 км/г',reload:'автомат',weight:'32т'}},
+'9K35 Strela-10':{scores:{armor:12,firepower:72,speed:62,agility:65,reload:78,crew:48},specs:{frontal:'10 мм',gun:'9М37 (4×)',pen:'—',speed:'62 км/г',reload:'8с',weight:'12т'}},
+'2S6 Tunguska':{scores:{armor:18,firepower:88,speed:60,agility:58,reload:88,crew:52},specs:{frontal:'15 мм',gun:'2×30мм 2А38 + 9М311 (8×)',pen:'—',speed:'65 км/г',reload:'автомат',weight:'34т'}},
+'Gepard':{scores:{armor:15,firepower:65,speed:60,agility:62,reload:90,crew:52},specs:{frontal:'15 мм',gun:'2×35мм Oerlikon KDA',pen:'40 мм AP',speed:'65 км/г',reload:'автомат',weight:'47.5т'}},
+'Roland 1':{scores:{armor:12,firepower:72,speed:62,agility:60,reload:75,crew:48},specs:{frontal:'12 мм',gun:'Roland (2×)',pen:'—',speed:'65 км/г',reload:'8с',weight:'32т'}},
+'Roland 3':{scores:{armor:12,firepower:78,speed:62,agility:60,reload:78,crew:48},specs:{frontal:'12 мм',gun:'Roland 3 (2×)',pen:'—',speed:'65 км/г',reload:'6с',weight:'32т'}},
+'ADATS':{scores:{armor:15,firepower:90,speed:60,agility:60,reload:82,crew:52},specs:{frontal:'15 мм',gun:'M242+ADATS (8×)',pen:'900 мм HEAT',speed:'70 км/г',reload:'автомат',weight:'14.7т'}},
+'ZSU-23-4':{scores:{armor:12,firepower:65,speed:55,agility:58,reload:95,crew:52},specs:{frontal:'9.4 мм',gun:'4×23мм ЗУ-23',pen:'35 мм AP',speed:'44 км/г',reload:'автомат',weight:'14.5т'}},
+'2S38':{scores:{armor:22,firepower:78,speed:65,agility:65,reload:88,crew:52},specs:{frontal:'15 мм',gun:'57мм 2А90',pen:'130 мм APFSDS',speed:'70 км/г',reload:'1.0с',weight:'21.5т'}},
+'Stormer HVM':{scores:{armor:10,firepower:75,speed:68,agility:70,reload:80,crew:48},specs:{frontal:'12.7 мм',gun:'Starstreak (8×)',pen:'—',speed:'80 км/г',reload:'5с',weight:'12.7т'}},
+/* ══ TOP-TIER JETS ══ */
+'Su-57':{scores:{speed:96,climb:99,turn:88,firepower:95,altitude:95,durability:75},specs:{topSpeed:'2600 км/г (М2.45)',climbRate:'350 м/с',turnTime:'17с',ceiling:'20000м',armament:'1×30мм GSh-301, Р-77-1, Р-74М',engine:'2×AL-41F1 (175кН)'}},
+'Eurofighter Typhoon (Germany)':{scores:{speed:95,climb:98,turn:90,firepower:95,altitude:95,durability:72},specs:{topSpeed:'2495 км/г (М2.35)',climbRate:'318 м/с',turnTime:'16с',ceiling:'19812м',armament:'1×27мм Mauser BK-27, AMRAAM, IRIS-T',engine:'2×EJ200 (90кН)'}},
+'Rafale C':{scores:{speed:92,climb:95,turn:88,firepower:95,altitude:92,durability:72},specs:{topSpeed:'1912 км/г (М1.8)',climbRate:'305 м/с',turnTime:'17с',ceiling:'16800м',armament:'1×30мм DEFA 791B, MICA EM, MICA IR',engine:'2×M88-2 (75кН)'}},
+'Rafale F3-R':{scores:{speed:92,climb:95,turn:88,firepower:96,altitude:92,durability:72},specs:{topSpeed:'1912 км/г (М1.8)',climbRate:'305 м/с',turnTime:'17с',ceiling:'16800м',armament:'1×30мм DEFA 791B, MICA EM/IR, Meteor',engine:'2×M88-4 (75кН)'}},
+'JAS39EX':{scores:{speed:90,climb:95,turn:90,firepower:95,altitude:90,durability:68},specs:{topSpeed:'2200 км/г (М2.0)',climbRate:'255 м/с',turnTime:'17с',ceiling:'15240м',armament:'1×27мм Mauser BK-27, IRIS-T, Meteor',engine:'RM12 (80.5кН)'}},
+'JAS39C':{scores:{speed:88,climb:92,turn:88,firepower:93,altitude:90,durability:68},specs:{topSpeed:'2200 км/г (М2.0)',climbRate:'250 м/с',turnTime:'17с',ceiling:'15240м',armament:'1×27мм Mauser BK-27, AIM-120B, AIM-9M',engine:'RM12 (80.5кН)'}},
+'Tornado F.3':{scores:{speed:88,climb:78,turn:55,firepower:88,altitude:88,durability:72},specs:{topSpeed:'2417 км/г (М2.27)',climbRate:'213 м/с',turnTime:'27с',ceiling:'21000м',armament:'1×27мм Mauser BK-27, AIM-9M, Sky Flash',engine:'2×RB199-34R Mk 104 (73кН)'}},
+'F-4F KWS LV (ICE)':{scores:{speed:88,climb:82,turn:55,firepower:90,altitude:88,durability:72},specs:{topSpeed:'2370 км/г (М2.23)',climbRate:'185 м/с',turnTime:'24с',ceiling:'18900м',armament:'1×20мм M61A1, AIM-120B, AIM-9M',engine:'2×J79-MTU-17A (79.6кН)'}},
+'Mirage 2000-5F':{scores:{speed:92,climb:95,turn:82,firepower:95,altitude:92,durability:68},specs:{topSpeed:'2336 км/г (М2.2)',climbRate:'305 м/с',turnTime:'20с',ceiling:'18000м',armament:'2×30мм DEFA 554, MICA EM, MICA IR',engine:'M53-P2 (95.1кН)'}},
+'J-10A':{scores:{speed:90,climb:94,turn:85,firepower:93,altitude:90,durability:68},specs:{topSpeed:'2200 км/г (М2.0)',climbRate:'295 м/с',turnTime:'18с',ceiling:'18000м',armament:'1×23мм GSh-23L, PL-12, PL-8B',engine:'WS-10A (132кН)'}},
+'J-11A':{scores:{speed:94,climb:98,turn:88,firepower:92,altitude:92,durability:72},specs:{topSpeed:'2500 км/г (М2.35)',climbRate:'340 м/с',turnTime:'17.5с',ceiling:'18500м',armament:'1×30мм GSh-301, PL-12, PL-8B',engine:'2×AL-31F (122.6кН)'}},
+'F-16D Barak II':{scores:{speed:92,climb:95,turn:88,firepower:95,altitude:90,durability:70},specs:{topSpeed:'2142 км/г (М2.02)',climbRate:'280 м/с',turnTime:'17с',ceiling:'15240м',armament:'1×20мм M61A1, AIM-120C, Python-5',engine:'F110-GE-129 (131кН)'}},
+'Merkava Mk.4M':{scores:{armor:95,firepower:94,speed:60,agility:58,reload:82,crew:75},specs:{frontal:'≥800 мм ERA RHA-eq.',gun:'120мм MG253',pen:'600 мм M339',speed:'64 км/г',reload:'6.5с',weight:'65т'}},
+'ZTZ99A':{scores:{armor:94,firepower:92,speed:65,agility:62,reload:82,crew:58},specs:{frontal:'≥800 мм ERA RHA-eq.',gun:'125мм ZPT-98A',pen:'600 мм DTW-125B',speed:'80 км/г',reload:'5.0с (авт.)',weight:'54т'}},
+'Leclerc SXXI':{scores:{armor:93,firepower:92,speed:72,agility:70,reload:88,crew:68},specs:{frontal:'≥760 мм RHA-eq.',gun:'120мм CN120-26',pen:'580 мм OFL 120 F2',speed:'72 км/г',reload:'3.1с (авт.)',weight:'57.4т'}},
+'C1 Ariete AMV':{scores:{armor:82,firepower:85,speed:65,agility:62,reload:72,crew:62},specs:{frontal:'≥600 мм ERA',gun:'120мм OTO Breda',pen:'520 мм',speed:'65 км/г',reload:'6.5с',weight:'56т'}},
+'Strv 122B PLSS':{scores:{armor:94,firepower:92,speed:68,agility:65,reload:80,crew:70},specs:{frontal:'≥780 мм ERA RHA-eq.',gun:'120мм Rh-120 L/44',pen:'590 мм DM53',speed:'68 км/г',reload:'6.5с',weight:'62.5т'}},
 };
 
 
@@ -1936,16 +1982,18 @@ async function _wikiFetch(apiBase, title){
   const fandomDirect=`${WT_FANDOM_URL}?${q}`;
 
   const attempts=[
-    // corsproxy.io — краще для Fandom
-    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:14000},
-    // codetabs — добре для WT wiki
-    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:14000},
-    // allorigins — резерв
-    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:14000},
-    // Fandom як повний fallback (краще CORS)
+    // allorigins — надійний, обертає у {contents:"..."}
+    {url:`https://api.allorigins.win/get?url=${encodeURIComponent(direct)}`, timeout:12000},
+    // corsproxy.io
+    {url:`https://corsproxy.io/?${encodeURIComponent(direct)}`, timeout:12000},
+    // codetabs
+    {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`, timeout:12000},
+    // thingproxy
+    {url:`https://thingproxy.freeboard.io/fetch/${direct}`, timeout:12000},
+    // Fandom як повний fallback (краще CORS підтримка)
     ...(apiBase===WT_WIKI_URL?[
-      {url:`https://corsproxy.io/?${encodeURIComponent(fandomDirect)}`, timeout:14000},
-      {url:`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fandomDirect)}`, timeout:14000},
+      {url:`https://api.allorigins.win/get?url=${encodeURIComponent(fandomDirect)}`, timeout:12000},
+      {url:`https://corsproxy.io/?${encodeURIComponent(fandomDirect)}`, timeout:12000},
     ]:[]),
   ];
 
@@ -2179,13 +2227,14 @@ async function _wikiSearch(q, typeF){
   const apiQ=`action=opensearch&search=${enc}&limit=15&namespace=0&format=json&origin=*`;
   const src=`${WT_WIKI_URL}?${apiQ}`;
   const proxies=[
-    src,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(src)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(src)}`,
-    `https://corsproxy.io/?${encodeURIComponent(src)}`,
+    u=>`https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+    u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    u=>`https://thingproxy.freeboard.io/fetch/${u}`,
   ];
 
-  for(const url of proxies){
+  for(const proxyFn of proxies){
+    const url=proxyFn(src);
     try{
       const r=await fetch(url,{signal:safeAbort(6000)});
       if(!r.ok) continue;
@@ -2697,7 +2746,13 @@ async function doSearch(){
   let player=null;
   try{ const data=await tryFetch(`https://thunderskill.com/en/stat/${encodeURIComponent(raw)}/export/json`); if(data) player=parseTS(data,raw); }catch(e){}
   clearInterval(ldT);
-  if(!player) player=simPlayer(raw);
+  clearInterval(ldT);
+  if(!player){
+    setRes('resErr');
+    document.getElementById('errMsg').textContent='Гравця "'+raw+'" не знайдено на Thunderskill. Переконайся що нікнейм правильний та акаунт публічний на thunderskill.com';
+    setProxyStatus('Гравця не знайдено','fail');
+    return;
+  }
   currentPlayer=player; renderPlayer(player); addRecent(raw);
 }
 
@@ -2976,6 +3031,7 @@ function setAIProv(prov, btn){
   appendMsg('sys','Провайдер: '+labels[prov]);
 }
 (function(){
+  const saved=localStorage.getItem('ai_prov')||'auto';
   AI_PROV_SELECTED=saved;
   setTimeout(()=>{
     const b=document.getElementById('provBtn-'+saved)||document.getElementById('provBtn-auto');
